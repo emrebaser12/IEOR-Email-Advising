@@ -30,7 +30,7 @@ type BackendMetrics = {
   avg_auto_confidence: number;
 };
 
-type EmailStatus = "auto" | "review" | "sent";
+type EmailStatus = "auto" | "review" | "sent" | "personal";
 
 type Email = {
   id: number;
@@ -162,6 +162,7 @@ export default function MetricsCards() {
   const reviewEmails = emails.filter((e) => e.status === "review");
   const pendingSendEmails = emails.filter((e) => e.status === "auto");
   const sentEmails = emails.filter((e) => e.status === "sent");
+  const personalEmails = emails.filter((e) => e.status === "personal");
 
   // FIXED: Use parseReceivedAt for chart data building
   function buildDailyData(sourceEmails: Email[]): ChartPoint[] {
@@ -341,6 +342,21 @@ export default function MetricsCards() {
     });
   })();
 
+  // Oldest personal email waiting time
+  const oldestPersonalLabel = (() => {
+    if (personalEmails.length === 0) return "—";
+    const dates = personalEmails
+      .map((e) => parseReceivedAt(e.received_at))
+      .filter((d): d is Date => d !== null && !isNaN(d.getTime()));
+    if (dates.length === 0) return "—";
+    const now = new Date();
+    const oldest = dates.reduce((min, d) => (d < min ? d : min), dates[0]);
+    let diffMs = now.getTime() - oldest.getTime();
+    if (diffMs < 0) diffMs = 0;
+    const diffMinutes = Math.floor(diffMs / 60000);
+    return formatDurationFromMinutes(diffMinutes);
+  })();
+
   // Average response time for sent emails
   const avgSentResponseLabel = (() => {
     const completed = sentEmails.filter((email) => email.approved_at);
@@ -408,7 +424,7 @@ export default function MetricsCards() {
   return (
     <div className="space-y-4">
       {/* Top Stats */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {/* Emails Today */}
         <Card className="border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-2">
@@ -467,6 +483,22 @@ export default function MetricsCards() {
             <p className="mt-3 text-xs text-muted-foreground">Number of replies delivered</p>
             {sentEmails.length > 0 && (
               <p className="text-xs text-muted-foreground mt-1">Avg response time: {avgSentResponseLabel}</p>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Personal */}
+        <Card className="border border-red-200 bg-red-50 shadow-sm hover:shadow-md transition-shadow">
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium text-red-600">
+              Personal Emails
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="text-3xl font-bold text-red-600 -mt-1">{personalEmails.length}</div>
+            <p className="mt-3 text-xs text-red-500">Require advisor attention</p>
+            {personalEmails.length > 0 && (
+              <p className="text-xs text-red-500 mt-1">Oldest waiting: {oldestPersonalLabel}</p>
             )}
           </CardContent>
         </Card>
