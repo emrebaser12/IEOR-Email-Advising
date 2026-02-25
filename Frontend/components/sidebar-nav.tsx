@@ -48,7 +48,7 @@ export default function SidebarNav({ activeTab, onTabChange }: SidebarNavProps) 
       {/* Footer with Credits - next to N logo */}
       <div className="px-5 pt-5 pb-6 border-t border-sidebar-border bg-sidebar">
         <p className="text-[9px] text-sidebar-foreground/70 leading-tight text-right">
-          Developed by Emre Baser, Lara Jones,<br />Mayyada Shair, Samuel Velez-Hurtado
+          Developed by Emre Baser, Lara Jones,<br />Mayyada Shair, Yasemin Yuksel
         </p>
       </div>
     </aside>
