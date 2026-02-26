@@ -16,38 +16,39 @@ export default function SidebarNav({ activeTab, onTabChange }: SidebarNavProps) 
   ]
 
   return (
-    <aside className="w-64 bg-sidebar border-r border-sidebar-border h-screen flex flex-col sticky top-0">
+    <aside className="w-56 bg-sidebar border-r border-sidebar-border h-screen flex flex-col sticky top-0">
       {/* Logo/Title */}
       <div className="px-6 py-8 border-b border-sidebar-border">
-        <h1 className="text-xl font-bold text-sidebar-primary">Email Advising</h1>
-        <p className="text-xs text-sidebar-foreground/60 mt-1">Columbia IEOR 2025</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Email Advising</h1>
+        <p className="text-xs text-slate-500 mt-1">Columbia IEOR 2025</p>
       </div>
 
       {/* Navigation Items */}
-      <nav className="flex-1 px-4 py-6 space-y-2">
+      <nav className="flex-1 px-3 py-6 space-y-1">
         {navItems.map((item) => {
           const Icon = item.icon
+          const isActive = activeTab === item.id
           return (
             <button
               key={item.id}
               onClick={() => onTabChange(item.id)}
               className={cn(
-                "w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all text-left font-medium text-sm",
-                activeTab === item.id
-                  ? "bg-sidebar-primary text-sidebar-primary-foreground shadow-md"
-                  : "text-sidebar-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
+                "w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all text-left text-sm font-medium",
+                isActive
+                  ? "bg-blue-600 text-white shadow-md"
+                  : "text-slate-400 hover:bg-sidebar-accent hover:text-slate-100",
               )}
             >
-              <Icon className="h-5 w-5" />
+              <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-white" : "text-slate-500")} />
               {item.label}
             </button>
           )
         })}
       </nav>
 
-      {/* Footer with Credits - next to N logo */}
-      <div className="px-5 pt-5 pb-6 border-t border-sidebar-border bg-sidebar">
-        <p className="text-[9px] text-sidebar-foreground/70 leading-tight text-right">
+      {/* Footer with Credits */}
+      <div className="px-5 pt-4 pb-6 border-t border-sidebar-border">
+        <p className="text-[9px] text-slate-600 leading-tight text-center">
           Developed by Emre Baser, Lara Jones,<br />Mayyada Shair, Yasemin Yuksel
         </p>
       </div>

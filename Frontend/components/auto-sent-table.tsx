@@ -160,9 +160,9 @@ export default function AutoSentTable({
   }
 
   return (
-    <div className="overflow-x-auto rounded-lg border border-border">
+    <div className="overflow-x-auto overflow-y-auto max-h-80 rounded-lg border border-border bg-white">
       <table className="w-full text-sm">
-        <thead className="bg-muted">
+        <thead className="bg-muted sticky top-0 z-10">
           <tr>
             {onToggleSelect && (
               <th className="px-3 py-2 text-left w-[40px]">
@@ -226,7 +226,7 @@ export default function AutoSentTable({
                   {email.uni ?? "—"}
                 </td>
 
-                <td className="px-4 py-2 w-[260px] max-w-[260px]">
+                <td className="px-4 py-2 w-40 max-w-40">
                   <span className="block truncate" title={email.subject}>
                     {email.subject}
                   </span>

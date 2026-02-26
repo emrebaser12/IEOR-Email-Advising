@@ -426,7 +426,7 @@ export default function MetricsCards() {
       {/* Top Stats */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-5">
         {/* Emails Today */}
-        <Card className="border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+        <Card className="border border-t-4 border-t-blue-500 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Emails Today
@@ -440,7 +440,7 @@ export default function MetricsCards() {
         </Card>
 
         {/* Needs Review */}
-        <Card className="border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+        <Card className="border border-t-4 border-t-amber-500 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Needs Review
@@ -456,7 +456,7 @@ export default function MetricsCards() {
         </Card>
 
         {/* Pending Send */}
-        <Card className="border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+        <Card className="border border-t-4 border-t-violet-500 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Pending Send
@@ -472,7 +472,7 @@ export default function MetricsCards() {
         </Card>
 
         {/* Sent */}
-        <Card className="border border-blue-100 shadow-sm hover:shadow-md transition-shadow">
+        <Card className="border border-t-4 border-t-emerald-500 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-muted-foreground">
               Sent
@@ -488,7 +488,7 @@ export default function MetricsCards() {
         </Card>
 
         {/* Personal */}
-        <Card className="border border-red-200 bg-red-50 shadow-sm hover:shadow-md transition-shadow">
+        <Card className="border border-t-4 border-t-rose-500 bg-red-50 shadow-sm hover:shadow-md transition-shadow">
           <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium text-red-600">
               Personal Emails

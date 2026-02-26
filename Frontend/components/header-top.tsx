@@ -58,10 +58,10 @@ export default function HeaderTop() {
   }, [])
 
   return (
-    <header className="bg-white border-b border-border shadow-sm sticky top-0 z-40">
-      <div className="px-8 py-4 flex items-center justify-between">
+    <header className="bg-card border-b border-border shadow-sm sticky top-0 z-40">
+      <div className="px-8 py-5 flex items-center justify-between">
         {/* Current Date */}
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-slate-400">
           {new Date().toLocaleDateString("en-US", {
             weekday: "long",
             year: "numeric",
@@ -71,15 +71,15 @@ export default function HeaderTop() {
         </p>
 
         {/* Profile */}
-        <div className="flex items-center gap-2">
-          <div className="h-10 w-10 bg-blue-100 rounded-full flex items-center justify-center">
-            <User className="h-5 w-5 text-blue-600" />
+        <div className="flex items-center gap-3">
+          <div className="h-9 w-9 bg-linear-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center shadow-sm">
+            <User className="h-4 w-4 text-white" />
           </div>
           <div className="hidden sm:block">
-            <p className="text-sm font-medium text-foreground">
+            <p className="text-sm font-semibold text-foreground">
               {profile.name}
             </p>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-slate-400">
               {profile.department}
             </p>
           </div>

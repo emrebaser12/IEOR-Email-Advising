@@ -859,48 +859,32 @@ export default function EmailsTab() {
         </div>
       )}
 
-      <div className="space-y-6">
-        {/* Header */}
-        <div>
+      <div className="space-y-3">
+        {/* Header + Last synced */}
+        <div className="flex items-center justify-between">
           <h2 className="text-2xl font-bold text-foreground">Email Management</h2>
-          <p className="text-muted-foreground mt-1">
-            Review and manage student emails
-          </p>
+          <span className="text-xs text-muted-foreground">
+            Last synced:{" "}
+            {lastSyncedAt
+              ? new Date(lastSyncedAt).toLocaleString("en-US", {
+                  timeZone: "America/New_York",
+                  month: "2-digit",
+                  day: "2-digit",
+                  year: "2-digit",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                  hour12: true,
+                })
+              : "Not yet"}
+          </span>
         </div>
 
-        {/* Metrics strip - use correctEmailsTodayCount instead of backend value */}
-        {metrics && (
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-3">
-            <div className="rounded-lg border border-border p-3">
-              <p className="text-xs text-muted-foreground">Emails Today</p>
-              <p className="text-xl font-semibold text-foreground">{correctEmailsTodayCount}</p>
-            </div>
-            <div className="rounded-lg border border-border p-3">
-              <p className="text-xs text-muted-foreground">Needs Review</p>
-              <p className="text-xl font-semibold text-foreground">{reviewEmails.length}</p>
-            </div>
-            <div className="rounded-lg border border-border p-3">
-              <p className="text-xs text-muted-foreground">Pending Send</p>
-              <p className="text-xl font-semibold text-foreground">{pendingEmails.length}</p>
-            </div>
-            <div className="rounded-lg border border-border p-3">
-              <p className="text-xs text-muted-foreground">Sent</p>
-              <p className="text-xl font-semibold text-foreground">{sentEmails.length}</p>
-            </div>
-            <div className="rounded-lg border border-red-200 bg-red-50 p-3">
-              <p className="text-xs text-red-600">Personal</p>
-              <p className="text-xl font-semibold text-red-700">{personalEmails.length}</p>
-            </div>
-          </div>
-        )}
-
-        {/* Action buttons */}
-        <div className="flex flex-wrap items-center gap-3">
-          {/* Sync from Gmail button */}
+        {/* Action buttons + status */}
+        <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={syncEmails}
             disabled={syncing || !gmailConnected}
-            className={`px-4 py-2 rounded-lg text-sm font-medium shadow-md flex items-center gap-2 ${
+            className={`px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2 ${
               gmailConnected
                 ? "bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
                 : "bg-gray-400 text-white cursor-not-allowed"
@@ -911,52 +895,30 @@ export default function EmailsTab() {
             {syncing ? "Syncing..." : "Sync from Gmail"}
           </button>
 
-          {/* Generate sample email button */}
           <button
             onClick={seedExampleEmails}
             disabled={seeding}
-            className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white shadow-md hover:bg-blue-700 disabled:opacity-60 flex items-center gap-2"
+            className="px-3 py-1.5 rounded-lg text-sm font-medium bg-blue-600 text-white shadow-sm hover:bg-blue-700 disabled:opacity-60 flex items-center gap-2"
           >
             <Mail className="w-4 h-4" />
             {seeding ? "Creating..." : "Generate sample email"}
           </button>
 
-          {/* Status indicators */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <span
-              className={`inline-block w-2 h-2 rounded-full ${
-                gmailConnected ? "bg-green-500" : "bg-gray-400"
-              }`}
-            />
+          <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+            <span className={`inline-block w-2 h-2 rounded-full ${gmailConnected ? "bg-green-500" : "bg-gray-400"}`} />
             {gmailConnected ? "Gmail connected" : "Gmail not connected"}
           </div>
-
-        </div>
-
-        <div className="text-xs text-muted-foreground">
-          Last synced:{" "}
-          {lastSyncedAt
-            ? new Date(lastSyncedAt).toLocaleString("en-US", {
-                timeZone: "America/New_York",
-                month: "2-digit",
-                day: "2-digit",
-                year: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: true,
-              })
-            : "Not yet"}
         </div>
 
         {/* Quick Filters */}
-        <div className="flex flex-wrap gap-2 items-center">
+        <div className="flex flex-wrap gap-1.5 items-center">
           {filters.map((filter) => (
             <button
               key={filter.id}
               onClick={() => setActiveFilter(filter.id)}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 activeFilter === filter.id
-                  ? "bg-blue-600 text-white shadow-md"
+                  ? "bg-blue-600 text-white shadow-sm"
                   : "bg-gray-100 text-foreground hover:bg-gray-200"
               }`}
               title={filter.description}
@@ -1229,6 +1191,22 @@ export default function EmailsTab() {
         )}
       </div>
 
+      {/* Stats Summary Bar */}
+      <div className="mt-6 grid grid-cols-5 gap-3">
+        {[
+          { label: "Emails Today", value: emails.filter(e => isReceivedToday(e.received_at)).length, color: "text-blue-600" },
+          { label: "Needs Review", value: reviewEmails.length, color: "text-amber-600" },
+          { label: "Pending Send", value: pendingEmails.length, color: "text-violet-600" },
+          { label: "Sent", value: sentEmails.length, color: "text-emerald-600" },
+          { label: "Personal", value: personalEmails.length, color: "text-rose-600" },
+        ].map(({ label, value, color }) => (
+          <div key={label} className="bg-white rounded-lg border border-border px-4 py-3 flex flex-col gap-1">
+            <p className="text-xs text-muted-foreground">{label}</p>
+            <p className={`text-2xl font-bold ${color}`}>{value}</p>
+          </div>
+        ))}
+      </div>
+
       {/* Detail Panel */}
       {selectedEmail && (
         <div className="fixed inset-0 bg-black/40 flex justify-end z-50">
@@ -1351,7 +1329,7 @@ export default function EmailsTab() {
               {canEditSelectedEmail ? (
                 // Editable textarea for any unsent email
                 <textarea
-                  className="w-full border border-border rounded-md p-2 text-sm min-h-[160px] resize-vertical focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                  className="w-full border border-border rounded-md p-2 text-sm min-h-40 resize-vertical focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                   value={replyDraft}
                   onChange={(e) => setReplyDraft(e.target.value)}
                 />

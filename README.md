@@ -3,7 +3,7 @@
 An intelligent email management system built for the Columbia IEOR department to help academic advisors respond to student inquiries quickly, consistently, and accurately.
 
 **Developed for:** IEOR 3900 - Columbia University  
-**Team:** Emre Baser, Lara Jones, Mayyada Shair, Samuel Velez-Hurtado  
+**Team:** Emre Baser, Lara Jones, Mayyada Shair, Yasemin Yuksel, Samuel Velez-Hurtado
 **Year:** 2025
 
 ---
@@ -72,7 +72,7 @@ The Email Advising System automates the process of responding to routine student
 ## Tech Stack
 
 ### Frontend
-- **Framework**: Next.js 14 (React)
+- **Framework**: Next.js 16 (React)
 - **Language**: TypeScript
 - **Styling**: Tailwind CSS
 - **Components**: shadcn/ui
@@ -108,21 +108,20 @@ The Email Advising System automates the process of responding to routine student
 │       └── test_advisor.py       # Unit tests
 │
 ├── Frontend/
-│   └── code/
-│       ├── app/
-│       │   ├── page.tsx          # Main application page
-│       │   ├── layout.tsx        # Root layout
-│       │   └── globals.css       # Global styles
-│       ├── components/
-│       │   ├── sidebar-nav.tsx   # Navigation sidebar
-│       │   ├── header-top.tsx    # Top header bar
-│       │   ├── emails-tab.tsx    # Email management view
-│       │   ├── analytics-tab.tsx # Analytics dashboard
-│       │   ├── settings-tab.tsx  # Settings panel
-│       │   ├── metrics-cards.tsx # Dashboard metrics
-│       │   └── ui/               # shadcn/ui components
-│       └── lib/
-│           └── utils.ts          # Utility functions
+│   ├── app/
+│   │   ├── page.tsx          # Main application page
+│   │   ├── layout.tsx        # Root layout
+│   │   └── globals.css       # Global styles
+│   ├── components/
+│   │   ├── sidebar-nav.tsx   # Navigation sidebar
+│   │   ├── header-top.tsx    # Top header bar
+│   │   ├── emails-tab.tsx    # Email management view
+│   │   ├── analytics-tab.tsx # Analytics dashboard
+│   │   ├── settings-tab.tsx  # Settings panel
+│   │   ├── metrics-cards.tsx # Dashboard metrics
+│   │   └── ui/               # shadcn/ui components
+│   └── lib/
+│       └── utils.ts          # Utility functions
 │
 └── README.md
 ```

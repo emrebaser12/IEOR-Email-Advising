@@ -45,8 +45,8 @@ export default function Page() {
           {activeTab === "dashboard" && (
             <div className="space-y-8">
               <div>
-                <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
-                <p className="mt-2 text-muted-foreground">
+                <h1 className="text-3xl font-bold bg-linear-to-r from-slate-900 to-slate-500 bg-clip-text text-transparent">Dashboard</h1>
+                <p className="mt-2 text-slate-400">
                   High-level overview of student email volume and advisor workload
                 </p>
               </div>
