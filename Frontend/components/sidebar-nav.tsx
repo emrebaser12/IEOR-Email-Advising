@@ -16,7 +16,7 @@ export default function SidebarNav({ activeTab, onTabChange }: SidebarNavProps) 
   ]
 
   return (
-    <aside className="w-56 bg-sidebar border-r border-sidebar-border h-screen flex flex-col sticky top-0">
+    <aside className="w-56 border-r border-sidebar-border h-screen flex flex-col sticky top-0" style={{ backgroundColor: 'var(--sidebar)' }}>
       {/* Logo/Title */}
       <div className="px-6 py-8 border-b border-sidebar-border">
         <h1 className="text-2xl font-extrabold text-white tracking-tight">Email Advising</h1>

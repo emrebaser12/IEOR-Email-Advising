@@ -188,14 +188,14 @@ export default function ManualReviewTable({
         <thead className="bg-muted sticky top-0 z-10">
           <tr>
             {onToggleSelect && (
-              <th className="px-3 py-2 text-left w-[40px]">
+              <th className="px-3 py-2 text-left w-10">
                 <span className="sr-only">Select</span>
               </th>
             )}
             <th className={thClass} onClick={() => handleSort("student")}>
               Student <SortIcon field="student" sortField={sortField} sortOrder={sortOrder} />
             </th>
-            <th className={`${thClass} w-[80px]`} onClick={() => handleSort("uni")}>
+            <th className={`${thClass} w-20`} onClick={() => handleSort("uni")}>
               UNI <SortIcon field="uni" sortField={sortField} sortOrder={sortOrder} />
             </th>
             <th className={thClass} onClick={() => handleSort("subject")}>
@@ -213,7 +213,7 @@ export default function ManualReviewTable({
             <th className={thClass} onClick={() => handleSort("received")}>
               Received <SortIcon field="received" sortField={sortField} sortOrder={sortOrder} />
             </th>
-            <th className="px-4 py-2 text-left w-[240px]">Actions</th>
+            <th className="px-4 py-2 text-left w-60">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -252,7 +252,7 @@ export default function ManualReviewTable({
                   </div>
                 </td>
 
-                <td className="px-4 py-2 w-[80px] whitespace-nowrap">
+                <td className="px-4 py-2 w-20 whitespace-nowrap">
                   {email.uni ?? "—"}
                 </td>
 
@@ -263,7 +263,7 @@ export default function ManualReviewTable({
                 </td>
 
                 {/* Assigned column */}
-                <td className="px-4 py-2 w-[140px]">
+                <td className="px-4 py-2 w-35">
                   <select
                     value={assigned}
                     onChange={(e) => onAssignPerson?.(email.id, e.target.value)}
@@ -313,7 +313,7 @@ export default function ManualReviewTable({
                   {formatReceivedEastern(email.received_at)}
                 </td>
 
-                <td className="px-4 py-2 space-x-2 w-[240px] whitespace-nowrap">
+                <td className="px-4 py-2 space-x-2 w-60 whitespace-nowrap">
                   <button
                     onClick={() => onSelect(email)}
                     className="px-3 py-1 rounded-md text-xs font-medium bg-gray-200 text-foreground hover:bg-gray-300"
