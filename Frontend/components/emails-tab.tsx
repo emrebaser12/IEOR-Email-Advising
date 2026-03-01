@@ -816,6 +816,7 @@ export default function EmailsTab() {
   // Determine derived status for selected email from backend state
   const isSelectedEmailPending = !!selectedEmail && selectedEmail.status === "auto";
   const isSelectedEmailNeedsReview = !!selectedEmail && selectedEmail.status === "review";
+  const isSelectedEmailPersonal = !!selectedEmail && selectedEmail.status === "personal";
   const canEditSelectedEmail = !!selectedEmail && selectedEmail.status !== "sent";
   
   if (loading && !seeding && emails.length === 0) {
@@ -1191,22 +1192,6 @@ export default function EmailsTab() {
         )}
       </div>
 
-      {/* Stats Summary Bar */}
-      <div className="mt-6 grid grid-cols-5 gap-3">
-        {[
-          { label: "Emails Today", value: emails.filter(e => isReceivedToday(e.received_at)).length, color: "text-blue-600" },
-          { label: "Needs Review", value: reviewEmails.length, color: "text-amber-600" },
-          { label: "Pending Send", value: pendingEmails.length, color: "text-violet-600" },
-          { label: "Sent", value: sentEmails.length, color: "text-emerald-600" },
-          { label: "Personal", value: personalEmails.length, color: "text-rose-600" },
-        ].map(({ label, value, color }) => (
-          <div key={label} className="bg-card rounded-lg border border-border px-4 py-3 flex flex-col gap-1">
-            <p className="text-xs text-muted-foreground">{label}</p>
-            <p className={`text-2xl font-bold ${color}`}>{value}</p>
-          </div>
-        ))}
-      </div>
-
       {/* Detail Panel */}
       {selectedEmail && (
         <div className="fixed inset-0 bg-black/40 flex justify-end z-50">
@@ -1383,6 +1368,22 @@ export default function EmailsTab() {
 
               {/* Send button for pending send emails */}
               {isSelectedEmailPending && (
+                <button
+                  onClick={async () => {
+                    await handleApproveAndSend(selectedEmail.id, replyDraft);
+                    closeDetail();
+                  }}
+                  disabled={sending || !gmailConnected}
+                  className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
+                  title={gmailConnected ? "Send reply via Gmail" : "Connect Gmail first"}
+                >
+                  <Send className="h-4 w-4" />
+                  {sending ? "Sending..." : "Send"}
+                </button>
+              )}
+
+              {/* Send button for personal emails */}
+              {isSelectedEmailPersonal && (
                 <button
                   onClick={async () => {
                     await handleApproveAndSend(selectedEmail.id, replyDraft);
