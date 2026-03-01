@@ -39,6 +39,7 @@ The Email Advising System automates the process of responding to routine student
 - **Draft editing**: Modify AI suggestions before sending
 - **Draft saving**: Save work-in-progress to localStorage
 - **Waiting time indicators**: Visual urgency badges based on how long emails have been waiting
+- **Personal email detection**: Automatically flags non-advising emails (e.g. personal messages) so they are not auto-replied to
 
 ### Gmail Integration
 - OAuth 2.0 authentication (no password storage)
@@ -59,6 +60,9 @@ The Email Advising System automates the process of responding to routine student
 - **Advisor Profile**: Customize name, email, department
 - **Knowledge Base Management**: Add, edit, delete response templates
 - **Reference Corpus Management**: Add, edit, delete supporting documents
+
+### UI
+- **Dark mode toggle**: Sun/moon button in the header switches between light and dark themes; preference is remembered across sessions
 
 ### AI Capabilities
 - **TF-IDF Similarity Matching**: Finds the best template for each query
@@ -92,6 +96,7 @@ The Email Advising System automates the process of responding to routine student
 ```
 ├── Backend/
 │   ├── api.py                    # FastAPI application & endpoints
+│   ├── requirements.txt          # Python dependencies
 │   ├── data/
 │   │   ├── knowledge_base.json   # Response templates
 │   │   ├── reference_corpus.json # Supporting documents
@@ -111,15 +116,17 @@ The Email Advising System automates the process of responding to routine student
 │   ├── app/
 │   │   ├── page.tsx          # Main application page
 │   │   ├── layout.tsx        # Root layout
-│   │   └── globals.css       # Global styles
+│   │   ├── providers.tsx     # Theme provider wrapper
+│   │   └── globals.css       # Global styles & CSS variables (light + dark)
 │   ├── components/
-│   │   ├── sidebar-nav.tsx   # Navigation sidebar
-│   │   ├── header-top.tsx    # Top header bar
-│   │   ├── emails-tab.tsx    # Email management view
-│   │   ├── analytics-tab.tsx # Analytics dashboard
-│   │   ├── settings-tab.tsx  # Settings panel
-│   │   ├── metrics-cards.tsx # Dashboard metrics
-│   │   └── ui/               # shadcn/ui components
+│   │   ├── sidebar-nav.tsx        # Navigation sidebar
+│   │   ├── header-top.tsx         # Top header bar (includes dark mode toggle)
+│   │   ├── emails-tab.tsx         # Email management view
+│   │   ├── manual-review-table.tsx # Emails awaiting advisor review
+│   │   ├── analytics-tab.tsx      # Analytics dashboard
+│   │   ├── settings-tab.tsx       # Settings panel
+│   │   ├── metrics-cards.tsx      # Dashboard metrics
+│   │   └── ui/                    # shadcn/ui components
 │   └── lib/
 │       └── utils.ts          # Utility functions
 │
@@ -144,13 +151,13 @@ The Email Advising System automates the process of responding to routine student
 
 2. **Create virtual environment:**
    ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   python -m venv venv
+   source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
 3. **Install dependencies:**
    ```bash
-   pip install fastapi uvicorn sqlalchemy google-auth google-auth-oauthlib google-api-python-client
+   pip install -r requirements.txt
    ```
 
 4. **Set up Gmail OAuth:**
@@ -230,18 +237,28 @@ The Email Advising System automates the process of responding to routine student
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/emails` | List all emails |
-| POST | `/emails/ingest` | Add new email manually |
+| POST | `/emails/ingest` | Ingest and score a new email |
+| POST | `/emails/sync` | Sync emails from Gmail inbox |
 | PATCH | `/emails/{id}` | Update email status/content |
 | DELETE | `/emails/{id}` | Delete an email |
 | POST | `/emails/{id}/send` | Send reply via Gmail |
-| GET | `/gmail/status` | Check Gmail connection |
-| GET | `/gmail/auth-url` | Get OAuth URL |
-| POST | `/gmail/disconnect` | Disconnect Gmail |
 | GET | `/metrics` | Get dashboard metrics |
+| GET | `/email-settings` | Get auto-send settings |
+| POST | `/email-settings` | Update auto-send settings |
+| GET | `/gmail/status` | Check Gmail connection status |
+| GET | `/gmail/auth-url` | Get OAuth authorization URL |
+| GET | `/gmail/oauth2callback` | OAuth redirect callback |
+| GET | `/gmail/fetch` | Fetch raw emails from Gmail |
+| POST | `/gmail/disconnect` | Disconnect Gmail |
 | GET | `/knowledge-base` | List KB articles |
 | POST | `/knowledge-base` | Add KB article |
 | PATCH | `/knowledge-base/{id}` | Update KB article |
 | DELETE | `/knowledge-base/{id}` | Delete KB article |
+| GET | `/reference-corpus` | List reference corpus documents |
+| POST | `/reference-corpus` | Add reference corpus document |
+| PATCH | `/reference-corpus/{id}` | Update reference corpus document |
+| DELETE | `/reference-corpus/{id}` | Delete reference corpus document |
+| POST | `/fetch-url-content` | Fetch and extract text from a URL |
 
 ---
 
