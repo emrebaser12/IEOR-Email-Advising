@@ -43,7 +43,7 @@ export default function Page() {
         <main className="flex-1 overflow-y-auto px-8 py-8">
           {/* Dashboard Tab */}
           {activeTab === "dashboard" && (
-            <div className="space-y-8">
+            <div className="space-y-8 animate-fade-in">
               <div>
                 <h1 className="text-3xl font-bold text-foreground">Dashboard</h1>
                 <p className="mt-2 text-muted-foreground">
@@ -58,13 +58,13 @@ export default function Page() {
           )}
 
           {/* Emails Tab */}
-          {activeTab === "emails" && <EmailsTab />}
+          {activeTab === "emails" && <div className="animate-fade-in"><EmailsTab /></div>}
 
           {/* Analytics Tab */}
-          {activeTab === "analytics" && <AnalyticsTab />}
+          {activeTab === "analytics" && <div className="animate-fade-in"><AnalyticsTab /></div>}
 
           {/* Settings Tab */}
-          {activeTab === "settings" && <SettingsTab />}
+          {activeTab === "settings" && <div className="animate-fade-in"><SettingsTab /></div>}
         </main>
       </div>
     </div>

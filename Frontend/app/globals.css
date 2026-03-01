@@ -10,7 +10,7 @@
   --card-foreground: #1e293b;
   --popover: #ffffff;
   --popover-foreground: #1e293b;
-  --primary: #3b82f6;
+  --primary: #2563eb;
   --primary-foreground: #ffffff;
   --secondary: #f1f5f9;
   --secondary-foreground: #475569;
@@ -52,7 +52,7 @@
   --card-foreground: #e5e5e5;
   --popover: #262626;
   --popover-foreground: #e5e5e5;
-  --primary: #3b82f6;
+  --primary: #2563eb;
   --primary-foreground: #ffffff;
   --secondary: #262626;
   --secondary-foreground: #e5e5e5;
@@ -143,11 +143,23 @@
   --shadow-x: var(--shadow-x);
 }
 
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;
   }
   body {
     @apply bg-background text-foreground;
+  }
+  button {
+    cursor: pointer;
   }
 }
