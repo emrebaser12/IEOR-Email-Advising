@@ -762,7 +762,7 @@ export default function SettingsTab() {
               </p>
             )}
 
-            <div className="flex flex-col gap-3 rounded-md bg-gray-50 px-3 py-3 md:flex-row md:items-center md:justify-between">
+            <div className="flex flex-col gap-3 rounded-md bg-muted px-3 py-3 md:flex-row md:items-center md:justify-between">
               <div>
                 <p className="text-sm font-medium">
                   {emailSettings.gmail_connected
@@ -1069,9 +1069,9 @@ export default function SettingsTab() {
               {/* Article List */}
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {kbArticles.map((article) => (
-                  <div key={article.id} className="border rounded-lg bg-gray-50">
+                  <div key={article.id} className="border rounded-lg bg-muted">
                     <div
-                      className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-100"
+                      className="flex items-center justify-between p-3 cursor-pointer hover:bg-muted/70"
                       onClick={() =>
                         setKbExpanded(
                           kbExpanded === article.id ? null : article.id
@@ -1235,7 +1235,7 @@ export default function SettingsTab() {
                                 {article.utterances.slice(0, 5).map((utt, idx) => (
                                   <span
                                     key={`${utt}-${idx}`}
-                                    className="text-xs bg-gray-200 text-gray-700 px-2 py-0.5 rounded"
+                                    className="text-xs bg-border text-foreground px-2 py-0.5 rounded"
                                   >
                                     {utt}
                                   </span>
@@ -1251,7 +1251,7 @@ export default function SettingsTab() {
                               <p className="text-xs font-medium text-muted-foreground">
                                 Response Preview:
                               </p>
-                              <p className="text-xs text-gray-600 mt-1 whitespace-pre-wrap line-clamp-3">
+                              <p className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap line-clamp-3">
                                 {article.response_template.slice(0, 200)}
                                 {article.response_template.length > 200 && "..."}
                               </p>
@@ -1320,7 +1320,7 @@ export default function SettingsTab() {
                   </div>
 
                   {/* URL Fetch Section */}
-                  <div className="bg-white rounded-md p-3 border">
+                  <div className="bg-card rounded-md p-3 border">
                     <label className="text-xs font-medium flex items-center gap-1">
                       <Globe className="h-3 w-3" /> Fetch from URL (optional)
                     </label>
@@ -1426,9 +1426,9 @@ export default function SettingsTab() {
               {/* Document List */}
               <div className="space-y-2 max-h-96 overflow-y-auto">
                 {rcDocs.map((doc) => (
-                  <div key={doc.id} className="border rounded-lg bg-gray-50">
+                  <div key={doc.id} className="border rounded-lg bg-muted">
                     <div
-                      className="flex items-center justify-between p-3 cursor-pointer hover:bg-gray-100"
+                      className="flex items-center justify-between p-3 cursor-pointer hover:bg-muted/70"
                       onClick={() =>
                         setRcExpanded(rcExpanded === doc.id ? null : doc.id)
                       }
@@ -1607,7 +1607,7 @@ export default function SettingsTab() {
                               <p className="text-xs font-medium text-muted-foreground">
                                 Content Preview:
                               </p>
-                              <p className="text-xs text-gray-600 mt-1 whitespace-pre-wrap line-clamp-3">
+                              <p className="text-xs text-muted-foreground mt-1 whitespace-pre-wrap line-clamp-3">
                                 {doc.content.slice(0, 300)}
                                 {doc.content.length > 300 && "..."}
                               </p>
