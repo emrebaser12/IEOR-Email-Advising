@@ -19,8 +19,8 @@ export default function SidebarNav({ activeTab, onTabChange }: SidebarNavProps) 
     <aside className="w-56 border-r border-sidebar-border h-screen flex flex-col sticky top-0" style={{ backgroundColor: 'var(--sidebar)' }}>
       {/* Logo/Title */}
       <div className="px-6 py-8 border-b border-sidebar-border">
-        <h1 className="text-2xl font-extrabold text-sidebar-foreground tracking-tight">Email Advising</h1>
-        <p className="text-xs text-sidebar-foreground/50 mt-1">Columbia IEOR 2025</p>
+        <h1 className="text-2xl font-extrabold text-white tracking-tight">Email Advising</h1>
+        <p className="text-xs text-white/50 mt-1">Columbia IEOR 2025</p>
       </div>
 
       {/* Navigation Items */}
@@ -33,10 +33,10 @@ export default function SidebarNav({ activeTab, onTabChange }: SidebarNavProps) 
               key={item.id}
               onClick={() => onTabChange(item.id)}
               className={cn(
-                "w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all text-left text-sm font-medium",
+                "w-full flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all text-left text-sm font-medium border-l-4",
                 isActive
-                  ? "bg-blue-600 text-white shadow-md"
-                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground",
+                  ? "bg-blue-600 text-white shadow-md border-l-white"
+                  : "text-sidebar-foreground/70 hover:bg-sidebar-accent hover:text-sidebar-foreground border-l-transparent",
               )}
             >
               <Icon className={cn("h-4 w-4 shrink-0", isActive ? "text-white" : "text-sidebar-foreground/50")} />

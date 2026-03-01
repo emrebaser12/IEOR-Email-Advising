@@ -63,7 +63,7 @@ export default function HeaderTop() {
     <header className="bg-card border-b border-border shadow-sm sticky top-0 z-40">
       <div className="px-8 py-5 flex items-center justify-between">
         {/* Current Date */}
-        <p className="text-sm text-muted-foreground">
+        <p className="text-sm text-muted-foreground" suppressHydrationWarning>
           {new Date().toLocaleDateString("en-US", {
             weekday: "long",
             year: "numeric",

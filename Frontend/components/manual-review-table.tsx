@@ -226,8 +226,10 @@ export default function ManualReviewTable({
             return (
               <tr
                 key={email.id}
-                className={`border-t border-border hover:bg-muted/40 ${
-                  isSelected ? "bg-blue-50" : ""
+                className={`border-t border-border transition-colors ${
+                  isSelected
+                    ? "bg-blue-100 hover:bg-blue-200 dark:bg-blue-900/30 dark:hover:bg-blue-900/50"
+                    : "hover:bg-muted/40"
                 }`}
               >
                 {onToggleSelect && (
