@@ -887,7 +887,7 @@ export default function EmailsTab() {
             className={`px-3 py-1.5 rounded-lg text-sm font-medium shadow-sm flex items-center gap-2 ${
               gmailConnected
                 ? "bg-green-600 text-white hover:bg-green-700 disabled:opacity-60"
-                : "bg-gray-400 text-white cursor-not-allowed"
+                : "bg-muted text-muted-foreground cursor-not-allowed"
             }`}
             title={gmailConnected ? "Fetch new emails from Gmail" : "Connect Gmail in Settings first"}
           >
@@ -905,7 +905,7 @@ export default function EmailsTab() {
           </button>
 
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <span className={`inline-block w-2 h-2 rounded-full ${gmailConnected ? "bg-green-500" : "bg-gray-400"}`} />
+            <span className={`inline-block w-2 h-2 rounded-full ${gmailConnected ? "bg-green-500" : "bg-muted-foreground"}`} />
             {gmailConnected ? "Gmail connected" : "Gmail not connected"}
           </div>
         </div>
@@ -919,7 +919,7 @@ export default function EmailsTab() {
               className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                 activeFilter === filter.id
                   ? "bg-blue-600 text-white shadow-sm"
-                  : "bg-gray-100 text-foreground hover:bg-gray-200"
+                  : "bg-muted text-foreground hover:bg-muted/70"
               }`}
               title={filter.description}
             >
@@ -967,7 +967,7 @@ export default function EmailsTab() {
               </button>
               <button
                 onClick={deselectAll}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-gray-200 text-foreground hover:bg-gray-300"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-sm font-medium bg-muted text-foreground hover:bg-muted/70"
               >
                 <X className="h-4 w-4" />
                 Clear Selection
@@ -1036,7 +1036,7 @@ export default function EmailsTab() {
                   onClick={() =>
                     allVisibleSelected ? deselectAll() : selectAllVisible(filteredReviewEmails)
                   }
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium bg-gray-100 text-foreground hover:bg-gray-200"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium bg-muted text-foreground hover:bg-muted/70"
                 >
                   {allVisibleSelected ? (
                     <CheckSquare className="h-4 w-4" />
@@ -1079,7 +1079,7 @@ export default function EmailsTab() {
                   onClick={() =>
                     allVisibleSelected ? deselectAll() : selectAllVisible(filteredPendingEmails)
                   }
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium bg-gray-100 text-foreground hover:bg-gray-200"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium bg-muted text-foreground hover:bg-muted/70"
                 >
                   {allVisibleSelected ? (
                     <CheckSquare className="h-4 w-4" />
@@ -1162,7 +1162,7 @@ export default function EmailsTab() {
                   onClick={() =>
                     allVisibleSelected ? deselectAll() : selectAllVisible(filteredSentEmails)
                   }
-                  className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium bg-gray-100 text-foreground hover:bg-gray-200"
+                  className="flex items-center gap-1.5 px-3 py-2 rounded-md text-sm font-medium bg-muted text-foreground hover:bg-muted/70"
                 >
                   {allVisibleSelected ? (
                     <CheckSquare className="h-4 w-4" />
@@ -1200,7 +1200,7 @@ export default function EmailsTab() {
           { label: "Sent", value: sentEmails.length, color: "text-emerald-600" },
           { label: "Personal", value: personalEmails.length, color: "text-rose-600" },
         ].map(({ label, value, color }) => (
-          <div key={label} className="bg-white rounded-lg border border-border px-4 py-3 flex flex-col gap-1">
+          <div key={label} className="bg-card rounded-lg border border-border px-4 py-3 flex flex-col gap-1">
             <p className="text-xs text-muted-foreground">{label}</p>
             <p className={`text-2xl font-bold ${color}`}>{value}</p>
           </div>
@@ -1317,7 +1317,7 @@ export default function EmailsTab() {
                 {canEditSelectedEmail && (
                   <button
                     onClick={resetToOriginal}
-                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-gray-100 text-gray-700 hover:bg-gray-200 border border-gray-300 transition-colors"
+                    className="flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-muted text-foreground hover:bg-muted/70 border border-border transition-colors"
                     title="Reset to original AI suggestion"
                   >
                     <RotateCcw className="h-3.5 w-3.5" />

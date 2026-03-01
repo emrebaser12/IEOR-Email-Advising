@@ -1,12 +1,17 @@
 import os
 import json
 import base64
+import ipaddress
+import socket
+import stat
+import time
 from pathlib import Path
 from datetime import datetime, date
 from enum import Enum
 from typing import List, Optional, Dict, Sequence, Any
 from datetime import timezone as dt_timezone, timedelta
 from zoneinfo import ZoneInfo
+from urllib.parse import urlparse
 
 import email
 from email.header import decode_header
@@ -16,7 +21,7 @@ from email.message import EmailMessage
 from fastapi import FastAPI, Query, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import RedirectResponse
-from pydantic import BaseModel, ConfigDict
+from pydantic import BaseModel, ConfigDict, Field
 
 from email_advising import (
     EmailAdvisor,
@@ -68,8 +73,77 @@ CLIENT_SECRETS_FILE = os.getenv(
 GMAIL_TOKEN_PATH = DATA_DIR / "gmail_token.json"
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
 
-# In-memory store for OAuth flows keyed by state
-oauth_flows: Dict[str, Flow] = {}
+# In-memory store for OAuth flows keyed by state: state -> (flow, created_at_unix)
+OAUTH_STATE_TTL = 600  # 10 minutes
+oauth_flows: Dict[str, tuple] = {}
+
+
+# =====================================================
+# SSRF protection for URL-fetching endpoints
+# =====================================================
+
+_PRIVATE_NETWORKS = [
+    ipaddress.ip_network("10.0.0.0/8"),
+    ipaddress.ip_network("172.16.0.0/12"),
+    ipaddress.ip_network("192.168.0.0/16"),
+    ipaddress.ip_network("169.254.0.0/16"),  # link-local + cloud metadata endpoints
+    ipaddress.ip_network("127.0.0.0/8"),
+    ipaddress.ip_network("0.0.0.0/8"),
+    ipaddress.ip_network("::1/128"),
+    ipaddress.ip_network("fc00::/7"),
+    ipaddress.ip_network("fe80::/10"),
+]
+
+_BLOCKED_HOSTNAMES = {"localhost", "metadata.google.internal"}
+
+
+def _is_safe_fetch_url(url: str) -> tuple[bool, str]:
+    """
+    Validate a URL before fetching to prevent SSRF attacks.
+    Returns (is_safe, reason). Blocks private IPs, loopback, and cloud metadata.
+    """
+    try:
+        parsed = urlparse(url)
+    except Exception:
+        return False, "Invalid URL"
+
+    if parsed.scheme not in ("http", "https"):
+        return False, "Only http and https URLs are allowed"
+
+    host = parsed.hostname
+    if not host:
+        return False, "No hostname in URL"
+
+    if host.lower() in _BLOCKED_HOSTNAMES:
+        return False, "Requests to internal hostnames are not allowed"
+
+    # If the host is a literal IP address, check it directly
+    try:
+        addr = ipaddress.ip_address(host)
+        for net in _PRIVATE_NETWORKS:
+            if addr in net:
+                return False, "Requests to private or internal IP addresses are not allowed"
+        return True, ""
+    except ValueError:
+        pass  # Not an IP literal — resolve it
+
+    # Resolve the hostname and check every returned address
+    try:
+        results = socket.getaddrinfo(host, None, proto=socket.IPPROTO_TCP)
+    except socket.gaierror:
+        return False, "Could not resolve hostname"
+
+    for result in results:
+        ip_str = result[4][0]
+        try:
+            addr = ipaddress.ip_address(ip_str)
+            for net in _PRIVATE_NETWORKS:
+                if addr in net:
+                    return False, "Requests to private or internal addresses are not allowed"
+        except ValueError:
+            continue
+
+    return True, ""
 
 # =====================================================
 # FastAPI app + CORS
@@ -207,22 +281,22 @@ def get_knowledge_base_articles():
 
 class KBArticleCreate(BaseModel):
     """Payload to create a new knowledge base article."""
-    id: str
-    subject: str
-    categories: List[str] = []
-    utterances: List[str] = []
-    response_template: str = ""
-    follow_up_questions: List[str] = []
+    id: str = Field(max_length=100)
+    subject: str = Field(max_length=500)
+    categories: List[str] = Field(default=[], max_length=20)
+    utterances: List[str] = Field(default=[], max_length=300)
+    response_template: str = Field(default="", max_length=20000)
+    follow_up_questions: List[str] = Field(default=[], max_length=20)
     metadata: Optional[Dict] = None
 
 
 class KBArticleUpdate(BaseModel):
     """Payload to update an existing knowledge base article."""
-    subject: Optional[str] = None
-    categories: Optional[List[str]] = None
-    utterances: Optional[List[str]] = None
-    response_template: Optional[str] = None
-    follow_up_questions: Optional[List[str]] = None
+    subject: Optional[str] = Field(default=None, max_length=500)
+    categories: Optional[List[str]] = Field(default=None, max_length=20)
+    utterances: Optional[List[str]] = Field(default=None, max_length=300)
+    response_template: Optional[str] = Field(default=None, max_length=20000)
+    follow_up_questions: Optional[List[str]] = Field(default=None, max_length=20)
     metadata: Optional[Dict] = None
 
 
@@ -339,19 +413,19 @@ def get_reference_corpus_documents():
 
 class RCDocumentCreate(BaseModel):
     """Payload to create a new reference corpus document."""
-    id: str
-    title: str
-    url: str = ""
-    tags: List[str] = []
-    content: str = ""
+    id: str = Field(max_length=100)
+    title: str = Field(max_length=500)
+    url: str = Field(default="", max_length=2000)
+    tags: List[str] = Field(default=[], max_length=50)
+    content: str = Field(default="", max_length=100000)
 
 
 class RCDocumentUpdate(BaseModel):
     """Payload to update an existing reference corpus document."""
-    title: Optional[str] = None
-    url: Optional[str] = None
-    tags: Optional[List[str]] = None
-    content: Optional[str] = None
+    title: Optional[str] = Field(default=None, max_length=500)
+    url: Optional[str] = Field(default=None, max_length=2000)
+    tags: Optional[List[str]] = Field(default=None, max_length=50)
+    content: Optional[str] = Field(default=None, max_length=100000)
 
 
 @app.post("/reference-corpus")
@@ -436,7 +510,7 @@ def delete_reference_corpus_document(doc_id: str):
 
 class FetchURLRequest(BaseModel):
     """Request to fetch content from a URL."""
-    url: str
+    url: str = Field(max_length=2000)
 
 
 class SendEmailRequest(BaseModel):
@@ -452,7 +526,11 @@ def fetch_url_content(req: FetchURLRequest):
     """
     import requests
     from bs4 import BeautifulSoup
-    
+
+    safe, reason = _is_safe_fetch_url(req.url)
+    if not safe:
+        raise HTTPException(status_code=400, detail=f"URL not allowed: {reason}")
+
     try:
         headers = {
             "User-Agent": "Mozilla/5.0 (compatible; EmailAdvisingBot/1.0)"
@@ -597,7 +675,7 @@ class EmailSettingsUpdate(BaseModel):
     smtp_port: Optional[int] = None
     use_tls: Optional[bool] = None
     auto_send_enabled: Optional[bool] = None
-    auto_send_threshold: Optional[float] = None
+    auto_send_threshold: Optional[float] = Field(default=None, ge=0.0, le=1.0)
 
 
 # ---------- SQLAlchemy ORM model (DB tables) ----------
@@ -650,6 +728,7 @@ def _migrate_db():
             conn.commit()
 
 
+
 _migrate_db()
 
 # =====================================================
@@ -700,6 +779,7 @@ def save_gmail_credentials(creds: Credentials, email_address: str) -> None:
     GMAIL_TOKEN_PATH.parent.mkdir(parents=True, exist_ok=True)
     with GMAIL_TOKEN_PATH.open("w") as f:
         json.dump(data, f)
+    GMAIL_TOKEN_PATH.chmod(0o600)  # owner read/write only — tokens are sensitive
 
 
 def get_or_create_settings(db: Session) -> EmailSettingsORM:
@@ -932,7 +1012,13 @@ def gmail_auth_url():
         prompt="consent",
     )
 
-    oauth_flows[state] = flow
+    # Purge any states older than TTL before inserting a new one
+    now = time.time()
+    expired = [s for s, (_, created) in oauth_flows.items() if now - created > OAUTH_STATE_TTL]
+    for s in expired:
+        oauth_flows.pop(s, None)
+
+    oauth_flows[state] = (flow, now)
     return {"auth_url": auth_url}
 
 
@@ -942,9 +1028,14 @@ def gmail_oauth2callback(request: Request, state: str, code: str):
     OAuth redirect URI that Google calls with ?state=...&code=...
     Exchanges code for tokens, stores them, and then redirects user back to the frontend.
     """
-    flow = oauth_flows.get(state)
-    if not flow:
+    flow_entry = oauth_flows.get(state)
+    if not flow_entry:
         raise HTTPException(status_code=400, detail="Invalid OAuth state")
+
+    flow, created_at = flow_entry
+    if time.time() - created_at > OAUTH_STATE_TTL:
+        oauth_flows.pop(state, None)
+        raise HTTPException(status_code=400, detail="OAuth state has expired, please try connecting again")
 
     # Complete the OAuth flow
     flow.fetch_token(code=code)
@@ -1076,7 +1167,7 @@ def ingest_email(email_in: EmailIn):
 
 
 @app.post("/emails/sync")
-def sync_emails(limit: int = 20):
+def sync_emails(limit: int = Query(default=20, ge=1, le=100)):
     """
     Use Gmail API (OAuth) to pull unread emails, run them through the advisor,
     store them in SQLite, and optionally auto-send replies.
@@ -1254,7 +1345,7 @@ def sync_emails(limit: int = 20):
 
 
 @app.get("/gmail/fetch")
-def gmail_fetch(limit: int = Query(default=20, description="Max emails to fetch")):
+def gmail_fetch(limit: int = Query(default=20, ge=1, le=100, description="Max emails to fetch")):
     """
     Fetch new emails from Gmail. GET endpoint for easy triggering.
     This is an alias for POST /emails/sync for convenience.

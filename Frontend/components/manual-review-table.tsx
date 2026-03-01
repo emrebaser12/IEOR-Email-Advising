@@ -92,10 +92,10 @@ function getWaitingTime(received_at: string): WaitingTimeInfo {
 }
 
 function SortIcon({ field, sortField, sortOrder }: { field: SortField; sortField: SortField | null; sortOrder: SortOrder }) {
-  if (sortField !== field) return <span className="ml-1 text-gray-400 text-xs">↕</span>;
+  if (sortField !== field) return <span className="ml-1 text-muted-foreground text-xs">↕</span>;
   if (sortOrder === "asc") return <span className="ml-1 text-blue-600 text-xs">↑</span>;
   if (sortOrder === "desc") return <span className="ml-1 text-blue-600 text-xs">↓</span>;
-  return <span className="ml-1 text-gray-400 text-xs">↕</span>;
+  return <span className="ml-1 text-muted-foreground text-xs">↕</span>;
 }
 
 export default function ManualReviewTable({
@@ -183,19 +183,19 @@ export default function ManualReviewTable({
   const thClass = "px-4 py-2 text-left cursor-pointer select-none hover:bg-muted/70 whitespace-nowrap";
 
   return (
-    <div className="overflow-x-auto overflow-y-auto max-h-80 rounded-lg border border-border bg-white">
+    <div className="overflow-x-auto overflow-y-auto max-h-80 rounded-lg border border-border bg-card">
       <table className="w-full text-sm">
         <thead className="bg-muted sticky top-0 z-10">
           <tr>
             {onToggleSelect && (
-              <th className="px-3 py-2 text-left w-[40px]">
+              <th className="px-3 py-2 text-left w-10">
                 <span className="sr-only">Select</span>
               </th>
             )}
             <th className={thClass} onClick={() => handleSort("student")}>
               Student <SortIcon field="student" sortField={sortField} sortOrder={sortOrder} />
             </th>
-            <th className={`${thClass} w-[80px]`} onClick={() => handleSort("uni")}>
+            <th className={`${thClass} w-20`} onClick={() => handleSort("uni")}>
               UNI <SortIcon field="uni" sortField={sortField} sortOrder={sortOrder} />
             </th>
             <th className={thClass} onClick={() => handleSort("subject")}>
@@ -213,7 +213,7 @@ export default function ManualReviewTable({
             <th className={thClass} onClick={() => handleSort("received")}>
               Received <SortIcon field="received" sortField={sortField} sortOrder={sortOrder} />
             </th>
-            <th className="px-4 py-2 text-left w-[240px]">Actions</th>
+            <th className="px-4 py-2 text-left w-60">Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -234,13 +234,13 @@ export default function ManualReviewTable({
                   <td className="px-3 py-2">
                     <button
                       onClick={() => onToggleSelect(email.id)}
-                      className="p-1 rounded hover:bg-gray-200"
+                      className="p-1 rounded hover:bg-muted"
                       aria-label={isSelected ? "Deselect" : "Select"}
                     >
                       {isSelected ? (
                         <CheckSquare className="h-4 w-4 text-blue-600" />
                       ) : (
-                        <Square className="h-4 w-4 text-gray-400" />
+                        <Square className="h-4 w-4 text-muted-foreground" />
                       )}
                     </button>
                   </td>
@@ -252,7 +252,7 @@ export default function ManualReviewTable({
                   </div>
                 </td>
 
-                <td className="px-4 py-2 w-[80px] whitespace-nowrap">
+                <td className="px-4 py-2 w-20 whitespace-nowrap">
                   {email.uni ?? "—"}
                 </td>
 
@@ -263,7 +263,7 @@ export default function ManualReviewTable({
                 </td>
 
                 {/* Assigned column */}
-                <td className="px-4 py-2 w-[140px]">
+                <td className="px-4 py-2 w-35">
                   <select
                     value={assigned}
                     onChange={(e) => onAssignPerson?.(email.id, e.target.value)}
@@ -313,10 +313,10 @@ export default function ManualReviewTable({
                   {formatReceivedEastern(email.received_at)}
                 </td>
 
-                <td className="px-4 py-2 space-x-2 w-[240px] whitespace-nowrap">
+                <td className="px-4 py-2 space-x-2 w-60 whitespace-nowrap">
                   <button
                     onClick={() => onSelect(email)}
-                    className="px-3 py-1 rounded-md text-xs font-medium bg-gray-200 text-foreground hover:bg-gray-300"
+                    className="px-3 py-1 rounded-md text-xs font-medium bg-muted text-foreground hover:bg-muted/70"
                   >
                     View
                   </button>

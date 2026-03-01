@@ -159,6 +159,7 @@ export default function AnalyticsTab() {
     };
   });
 
+
   // gradient-style colors for confidence buckets
   const getBucketColor = (range: string) => {
     if (range.startsWith("0")) {
