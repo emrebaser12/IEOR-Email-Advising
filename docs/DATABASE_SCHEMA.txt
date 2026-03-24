@@ -1,0 +1,159 @@
+DATABASE SCHEMA
+=====================================
+Last updated: 2026-03-24
+Relevant file: Backend/api.py (SQLAlchemy ORM models)
+Database file: Backend/emails.db (SQLite, gitignored)
+
+
+=====================================
+OVERVIEW
+=====================================
+
+The system uses SQLite stored at Backend/emails.db.
+SQLite is a single-file database — no separate database server needed.
+
+The database has two tables:
+  1. emails         — all student emails processed by the system
+  2. email_settings — advisor configuration (one row, updated in place)
+
+Tables are auto-created on first startup if they don't exist.
+Schema migrations (adding new columns) run automatically at startup.
+
+
+=====================================
+TABLE: emails
+=====================================
+
+Stores every email the system has seen, along with the AI-generated
+draft reply, confidence score, and current status.
+
+Column           Type        Nullable  Description
+─────────────────────────────────────────────────────────────────
+id               INTEGER     NO        Auto-increment primary key
+student_name     VARCHAR     YES       Student's name (from Gmail "From" header
+                                       or extracted from email body)
+uni              VARCHAR     YES       Student UNI extracted from email address
+                                       (e.g., abc1234 from abc1234@columbia.edu)
+email_address    VARCHAR     YES       Sender's full email address.
+                                       Used to send the reply. Must be present
+                                       for auto-send to work.
+subject          VARCHAR     NO        Email subject line
+body             TEXT        NO        Full plain-text body of the student's email
+confidence       FLOAT       NO        AI confidence score (0.0 – 1.0).
+                                       How certain the system is about the match.
+status           ENUM        NO        Current state. See Status Values below.
+suggested_reply  TEXT        NO        AI-generated draft reply (or personal
+                                       guardrail message if flagged).
+                                       Advisor can edit this before sending.
+received_at      DATETIME    NO        When the email was received.
+                                       Indexed for sorting. Stored as UTC.
+approved_at      DATETIME    YES       When the reply was sent (auto or manual).
+                                       NULL if not yet sent.
+assigned_to      VARCHAR     YES       Advisor assigned to review this email.
+                                       NULL if unassigned. Added via migration.
+
+--- Status Values (EmailStatus enum) ---
+
+  "review"    → Needs human review. Low confidence or ambiguous match.
+                Also used when placeholder values are missing from template.
+  "personal"  → Flagged as sensitive/personal content. Never auto-sent.
+  "auto"      → High confidence. Ready to send. May be pending if
+                auto_send_enabled is False.
+  "sent"      → Reply has been sent (auto or manually approved by advisor).
+
+--- Indexes ---
+
+  PRIMARY KEY on id
+  INDEX on received_at (for ordered listing)
+
+--- Notes ---
+
+  - No foreign keys — this is a simple flat table
+  - Duplicate detection: on Gmail sync, if subject + body already exist → skip
+  - The database is never cleaned up automatically. Old emails accumulate.
+    To reset: delete Backend/emails.db (it will be recreated on next start)
+
+
+=====================================
+TABLE: email_settings
+=====================================
+
+Stores the advisor's configuration. Always has exactly ONE row.
+Created with defaults on first startup.
+
+Column               Type     Default           Description
+────────────────────────────────────────────────────────────────────
+id                   INTEGER  (auto)            Primary key (always 1)
+email_address        VARCHAR  ""                Connected Gmail address.
+                                                Auto-updated when Gmail is connected.
+app_password         VARCHAR  ""                Legacy field. Not used with OAuth.
+                                                Kept for backwards compatibility.
+imap_server          VARCHAR  "imap.gmail.com"  Legacy. Not used with OAuth.
+imap_port            INTEGER  993               Legacy. Not used with OAuth.
+smtp_server          VARCHAR  "smtp.gmail.com"  Legacy. Not used with OAuth.
+smtp_port            INTEGER  587               Legacy. Not used with OAuth.
+use_tls              BOOLEAN  True              Legacy. Not used with OAuth.
+auto_send_enabled    BOOLEAN  False             If True, high-confidence emails
+                                                are sent automatically without
+                                                advisor approval.
+auto_send_threshold  FLOAT    0.9               Confidence cutoff for auto-send.
+                                                Emails at or above this score
+                                                get status="auto".
+last_synced_at       DATETIME NULL              Timestamp of last Gmail sync.
+                                                Updated after each sync call.
+
+--- Notes ---
+
+  The IMAP/SMTP fields are legacy from a pre-OAuth implementation.
+  They are stored in the DB for schema compatibility but the frontend
+  only uses auto_send_enabled, auto_send_threshold, and last_synced_at.
+
+  auto_send_threshold here is separate from the ConfidenceSettings in
+  models.py. This one is the user-configurable version stored in the DB.
+  The ConfidenceSettings defaults (0.95) are used when no DB settings exist.
+
+
+=====================================
+HOW TO INSPECT THE DATABASE
+=====================================
+
+Using the sqlite3 CLI:
+
+  cd Backend
+  sqlite3 emails.db
+
+  -- List all tables
+  .tables
+
+  -- See all emails
+  SELECT id, student_name, subject, confidence, status, received_at
+  FROM emails ORDER BY received_at DESC;
+
+  -- See settings
+  SELECT * FROM email_settings;
+
+  -- Count by status
+  SELECT status, COUNT(*) FROM emails GROUP BY status;
+
+  -- Exit
+  .quit
+
+Using DB Browser for SQLite (GUI):
+  Download from https://sqlitebrowser.org/
+  Open Backend/emails.db
+
+
+=====================================
+RESETTING THE DATABASE
+=====================================
+
+To clear all emails (keeps settings):
+  DELETE FROM emails;
+
+To fully reset (delete the file):
+  rm Backend/emails.db
+  (Tables are recreated automatically on next backend start)
+
+To reset just the settings:
+  DELETE FROM email_settings;
+  (A new row with defaults is created on next request)

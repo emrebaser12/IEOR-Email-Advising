@@ -1,0 +1,176 @@
+HOW THE KNOWLEDGE BASE IS STRUCTURED
+=====================================
+Last updated: 2026-03-24
+Relevant files: Backend/data/knowledge_base.json
+                Backend/email_advising/knowledge_base.py
+                Backend/email_advising/models.py
+
+
+=====================================
+OVERVIEW
+=====================================
+
+The knowledge base is a collection of "articles". Each article is a
+topic the advisor knows how to respond to (e.g., registration deadlines,
+appointment scheduling, course withdrawal).
+
+When a student email arrives, the system scores it against every article
+and picks the best match to generate a reply from.
+
+The knowledge base lives in: Backend/data/knowledge_base.json
+It is editable via the Settings tab in the UI (Settings > Knowledge Base).
+
+
+=====================================
+ARTICLE STRUCTURE
+=====================================
+
+Each article is a JSON object with these fields:
+
+--- id (required, string) ---
+Unique identifier. Use snake_case. Cannot change after creation without
+re-referencing any stored email records that matched it.
+Example: "registration_deadline", "course_withdrawal"
+
+--- subject (required, string) ---
+The email subject line used in the reply. Supports placeholders (see below).
+Example: "Course Registration Deadline Guidance"
+         "Re: {term} Registration"
+
+--- categories (list of strings) ---
+Topic labels for this article. Used as a weak signal in confidence scoring.
+Keep these short and specific.
+Example: ["registration", "deadlines"]
+         ["appointments", "advising"]
+
+--- utterances (list of strings) ---
+MOST IMPORTANT FIELD for matching accuracy.
+These are example phrasings of questions that belong to this article.
+The more utterances, the more ways the system can recognize this topic.
+
+Best practices:
+  - Include many varied phrasings
+  - Include both formal ("When is the registration deadline?") and
+    casual ("when can i still add classes?") versions
+  - Include "How do I..." variants
+  - Include partial phrasings ("Registration window closing?")
+  - Include common misspellings or abbreviations if relevant
+
+Example:
+  "When is the deadline to register for classes?"
+  "How late can I add a course?"
+  "Registration window closing?"
+  "When does registration close?"
+  "Last day to enroll?"
+
+--- response_template (required, string) ---
+The body of the reply email. Supports Python-style {placeholder} substitution.
+Newlines use \n in JSON.
+
+Available placeholders (auto-filled from student email or defaults):
+  {student_name}           - student's name ("there" if unknown)
+  {term}                   - academic term, e.g., "Fall 2025" ("the upcoming term" if unknown)
+  {registration_deadline}  - registration deadline date
+  {withdrawal_deadline}    - withdrawal deadline date
+  {financial_aid_phone}    - financial aid office phone
+  {financial_aid_email}    - financial aid office email
+
+Article-specific placeholders can also be defined in the metadata field.
+
+If a placeholder has no value, the system uses the default value defined in
+advisor.py > metadata_defaults. If no default exists either, the placeholder
+is left as {placeholder_name} and the email is routed to needs_review.
+
+--- follow_up_questions (list of strings) ---
+Questions the advisor might want to ask the student for more context.
+These are shown in the UI when an advisor is reviewing the draft.
+Example:
+  "Are you planning to take the course for credit or audit?"
+  "Do you have any registration holds on your account?"
+
+--- metadata (dict, optional) ---
+Article-specific placeholder values that override the global defaults.
+Use this when an article has unique data not shared with other articles.
+Example:
+  {
+    "office_hours": "Mon/Wed 2-4pm",
+    "room_number": "310 Mudd"
+  }
+Then use {office_hours} and {room_number} in the response_template.
+
+
+=====================================
+FULL EXAMPLE ARTICLE
+=====================================
+
+{
+  "id": "registration_deadline",
+  "subject": "Course Registration Deadline Guidance",
+  "categories": ["registration", "deadlines"],
+  "utterances": [
+    "When is the deadline to register for classes?",
+    "How late can I add a course?",
+    "Registration window closing?",
+    "Last day to enroll?",
+    "When does registration close?",
+    "Can I still enroll after add drop?"
+  ],
+  "response_template": "Hello {student_name},\n\nThanks for reaching out! The registration period for {term} closes on {registration_deadline}. You can continue to add classes until 11:59 p.m. on that date through the student portal.\n\nBest regards,\nAcademic Advising Team",
+  "follow_up_questions": [
+    "Are you planning to take the course for credit or audit?",
+    "Do you have any registration holds on your account?"
+  ],
+  "metadata": {}
+}
+
+
+=====================================
+HOW TO ADD A NEW ARTICLE
+=====================================
+
+Option A: Via the UI (recommended)
+  1. Go to Settings > Knowledge Base
+  2. Click "Add Article"
+  3. Fill in all fields
+  4. Save — the advisor rebuilds immediately, no restart needed
+
+Option B: Edit knowledge_base.json directly
+  1. Add a new JSON object to the array
+  2. Make sure the id is unique
+  3. Restart the backend (or it will auto-reload on file change)
+
+Tips for writing good utterances:
+  - Aim for 10–20+ utterances per article
+  - Think about what students actually type, not formal language
+  - Vary sentence length — short fragments AND full questions
+  - Include both "how do I" and "can I" and "when is" framings
+  - The system uses synonym expansion (e.g., "enroll" = "register"),
+    so you don't need to manually list every synonym
+
+
+=====================================
+HOW CHANGES TAKE EFFECT
+=====================================
+
+When you save a change via the UI:
+  1. knowledge_base.json is updated on disk
+  2. The in-memory knowledge base is replaced
+  3. The EmailAdvisor is rebuilt with the new articles
+  4. New emails immediately use the updated knowledge base
+
+When you edit knowledge_base.json directly:
+  - The backend checks the file's modification time on each request
+  - If the file changed, it auto-reloads (no restart needed)
+  - If you want immediate reload, restart the backend
+
+
+=====================================
+NOTES
+=====================================
+
+- IDs must be unique — duplicates cause a startup error
+- The knowledge base must have at least one article to start
+- Deleting an article does not delete past emails that matched it —
+  their article_id will just no longer resolve
+- Template placeholders that can't be filled force the email to
+  needs_review status, regardless of confidence score

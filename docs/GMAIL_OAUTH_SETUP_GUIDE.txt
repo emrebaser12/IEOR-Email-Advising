@@ -1,0 +1,175 @@
+GMAIL OAUTH SETUP GUIDE
+=====================================
+Last updated: 2026-03-24
+Relevant files: Backend/api.py (Gmail OAuth section)
+                Backend/data/google_client_secrets.json (you must create this)
+                Backend/data/gmail_token.json (auto-generated after auth)
+
+
+=====================================
+OVERVIEW
+=====================================
+
+The system uses Google OAuth 2.0 to connect to a Gmail account. This allows
+the system to read incoming emails and send replies on behalf of the advisor.
+
+OAuth is more secure than storing a Gmail password — Google issues a token
+that can be revoked at any time from your Google Account settings.
+
+The required OAuth scope is: https://www.googleapis.com/auth/gmail.modify
+This allows reading, sending, and marking emails as read. It does NOT allow
+deleting emails permanently.
+
+
+=====================================
+ONE-TIME SETUP: GOOGLE CLOUD CONSOLE
+=====================================
+
+You only need to do this once. After setup, advisors just click
+"Connect Gmail" in the Settings tab.
+
+--- Step 1: Create a Google Cloud Project ---
+
+1. Go to https://console.cloud.google.com/
+2. Click "Select a project" → "New Project"
+3. Name it something like "IEOR Email Advising"
+4. Click "Create"
+
+--- Step 2: Enable the Gmail API ---
+
+1. In the left sidebar: APIs & Services → Library
+2. Search for "Gmail API"
+3. Click it → "Enable"
+
+--- Step 3: Configure the OAuth Consent Screen ---
+
+1. APIs & Services → OAuth consent screen
+2. User Type: select "Internal" (if using a Google Workspace org account)
+   OR "External" (if using personal Gmail — requires adding test users)
+3. Fill in:
+   - App name: "IEOR Email Advising"
+   - User support email: your email
+   - Developer contact email: your email
+4. Click "Save and Continue"
+5. On the Scopes page: click "Add or Remove Scopes"
+   - Search for "Gmail API" → select ".../auth/gmail.modify"
+   - Click "Update" → "Save and Continue"
+6. If External: add the Gmail address you'll connect as a Test User
+7. Click "Save and Continue" → "Back to Dashboard"
+
+--- Step 4: Create OAuth Credentials ---
+
+1. APIs & Services → Credentials
+2. Click "Create Credentials" → "OAuth client ID"
+3. Application type: "Web application"
+4. Name: "IEOR Email Advising Local"
+5. Authorized redirect URIs: add exactly:
+   http://127.0.0.1:8000/gmail/oauth2callback
+6. Click "Create"
+7. A dialog appears with your Client ID and Client Secret
+8. Click "Download JSON" → save as: Backend/data/google_client_secrets.json
+
+IMPORTANT: Keep google_client_secrets.json secret. It is already in .gitignore.
+Do NOT commit it to git.
+
+
+=====================================
+CONNECTING GMAIL (ADVISOR FLOW)
+=====================================
+
+Once the backend is running with google_client_secrets.json in place:
+
+1. Open the frontend at http://localhost:3000
+2. Go to Settings tab
+3. Under "Gmail Connection", click "Connect Gmail"
+4. Your browser will open a Google sign-in page
+5. Sign in with the Gmail account you want to use for advising
+6. Grant permission for the app to access Gmail
+7. Google redirects back to the app (Settings tab)
+8. The Settings tab now shows "Connected" with the Gmail address
+
+What happens behind the scenes:
+  1. Frontend calls GET /gmail/auth-url
+  2. Backend creates an OAuth flow and returns a Google auth URL
+  3. User is redirected to Google, signs in, grants permissions
+  4. Google redirects to GET /gmail/oauth2callback?state=...&code=...
+  5. Backend exchanges the code for access + refresh tokens
+  6. Tokens saved to Backend/data/gmail_token.json (permissions: 600)
+  7. User redirected back to frontend Settings tab
+
+
+=====================================
+TOKEN MANAGEMENT
+=====================================
+
+File: Backend/data/gmail_token.json (GITIGNORED)
+
+Contains:
+  - access_token: short-lived token (usually 1 hour)
+  - refresh_token: long-lived token used to get new access tokens
+  - email_address: the connected Gmail address
+
+The backend automatically refreshes the access token when it expires
+using the refresh token. You should NOT need to re-authenticate unless:
+  - The refresh token is revoked (user revoked access in Google Account settings)
+  - The gmail_token.json file is deleted
+  - The OAuth client credentials change
+
+To disconnect Gmail:
+  - Click "Disconnect" in the Settings tab
+  - This deletes gmail_token.json from disk
+  - Or: go to https://myaccount.google.com/permissions and revoke access there
+
+
+=====================================
+ENVIRONMENT VARIABLES
+=====================================
+
+Two env vars control Gmail setup:
+
+  GOOGLE_OAUTH_CLIENT_FILE
+    Path to the Google client secrets JSON file.
+    Default: Backend/data/google_client_secrets.json
+
+  FRONTEND_URL
+    Where to redirect after OAuth completes.
+    Default: http://localhost:3000
+    Change this in production to your actual frontend URL.
+
+Set these in a .env file in the Backend/ directory (never commit .env to git):
+
+  GOOGLE_OAUTH_CLIENT_FILE=/path/to/google_client_secrets.json
+  FRONTEND_URL=http://localhost:3000
+
+
+=====================================
+TROUBLESHOOTING
+=====================================
+
+"Google OAuth client secrets file not found"
+  → google_client_secrets.json is missing from Backend/data/
+  → Download it again from Google Cloud Console → Credentials
+
+"Invalid OAuth state"
+  → The OAuth flow timed out (10-minute window)
+  → Click "Connect Gmail" again to start a fresh flow
+
+"redirect_uri_mismatch" error from Google
+  → The redirect URI in Google Cloud Console doesn't match exactly
+  → Make sure it's set to: http://127.0.0.1:8000/gmail/oauth2callback
+  → Note: 127.0.0.1 and localhost are NOT interchangeable in Google OAuth
+
+"Gmail is not connected" when syncing
+  → gmail_token.json is missing or invalid
+  → Go to Settings tab and click "Connect Gmail" again
+
+"Access blocked: IEOR Email Advising has not completed the Google verification process"
+  → Your OAuth consent screen is set to "External" and the Gmail account
+    is not added as a test user
+  → Go to Google Cloud Console → OAuth consent screen → Test Users → Add the address
+
+Emails not appearing after sync
+  → Only UNREAD emails are fetched
+  → Check that the Gmail inbox has unread messages
+  → Check that the email body is not empty (empty messages are skipped)
+  → Check for duplicates: if subject + body already exists in DB, it's skipped
