@@ -1,0 +1,182 @@
+UI TO BACKEND MAPPING
+=====================================
+Last updated: 2026-03-24
+Relevant files: Frontend/components/emails-tab.tsx
+                Frontend/components/manual-review-table.tsx
+                Frontend/components/auto-sent-table.tsx
+                Frontend/components/analytics-tab.tsx
+                Frontend/components/settings-tab.tsx
+                Backend/api.py
+
+
+=====================================
+WHAT EACH TAB SHOWS
+=====================================
+
+--- Emails Tab ---
+
+The main view. Has three sub-tabs:
+
+  "Needs Review"
+    Backend status values shown: "review" AND "personal"
+    These are emails the system could not auto-handle:
+      - "review": confidence too low, ambiguous match, or missing placeholders
+      - "personal": flagged as sensitive content
+    Advisor must read, edit if needed, and manually send.
+    API call: GET /emails → filter by status in ["review", "personal"]
+
+  "Pending Send"
+    Backend status value shown: "auto"
+    These are high-confidence emails the system WOULD auto-send,
+    but auto_send_enabled is turned off (or Gmail was not connected at the time).
+    Advisor can review and send, or just let them sit as approved drafts.
+    API call: GET /emails → filter by status = "auto"
+
+  "Sent"
+    Backend status value shown: "sent"
+    Read-only history. Shows all replies that have been sent.
+    approved_at timestamp is shown as the "sent at" time.
+    API call: GET /emails → filter by status = "sent"
+
+--- Analytics Tab ---
+
+Pulls from GET /metrics
+Shows aggregate counts and charts:
+  - Total emails received
+  - Auto-sent count (status = "sent" where auto-sent)
+  - Needs review count (status = "review" or "personal")
+  - Average confidence score
+  - Breakdown by topic/category (from matched article_id)
+
+--- Settings Tab ---
+
+Three sections:
+
+  Gmail Connection
+    Calls GET /gmail/status on load to show connected/disconnected.
+    "Connect Gmail" button → GET /gmail/auth-url → redirects browser to Google
+    "Disconnect" button → POST /gmail/disconnect → deletes gmail_token.json
+    "Sync Emails" button → POST /emails/sync → pulls unread Gmail messages
+
+  Auto-Send Settings
+    Calls GET /email-settings on load.
+    Toggle "Enable Auto-Send" → POST /email-settings { auto_send_enabled: true/false }
+    Slider "Confidence Threshold" → POST /email-settings { auto_send_threshold: 0.85 }
+
+  Knowledge Base
+    Calls GET /knowledge-base on load.
+    Add/edit/delete articles → POST/PATCH/DELETE /knowledge-base/{id}
+    Changes take effect immediately (advisor rebuilds in memory + saves to JSON)
+
+  Reference Corpus
+    Calls GET /reference-corpus on load.
+    Add/edit/delete documents → POST/PATCH/DELETE /reference-corpus/{id}
+    "Fetch from URL" button → POST /fetch-url-content → scrapes page text
+    Changes rebuild TF-IDF index immediately
+
+
+=====================================
+EMAIL STATUS LIFECYCLE IN THE UI
+=====================================
+
+New email arrives (via sync or ingest)
+  ↓
+  If personal → appears in "Needs Review" with personal badge
+  If review   → appears in "Needs Review" with confidence badge
+  If auto     → appears in "Pending Send"
+
+Advisor clicks "Send" on a Needs Review email
+  → POST /emails/{id}/send
+  → Backend sends via Gmail API
+  → status updated to "sent"
+  → Email disappears from "Needs Review", appears in "Sent"
+
+Advisor clicks "Send" on a Pending Send email
+  → Same as above
+  → Email disappears from "Pending Send", appears in "Sent"
+
+Auto-send fires (auto_send_enabled = True + high confidence)
+  → At ingest time, email is immediately sent
+  → Stored directly with status = "sent"
+  → Never appears in "Pending Send"
+
+
+=====================================
+CONFIDENCE BADGE IN THE UI
+=====================================
+
+File: Frontend/components/confidence-badge.tsx
+
+The badge color maps to confidence ranges:
+  Green  (high)    → confidence >= 0.80
+  Yellow (medium)  → confidence >= 0.55
+  Red    (low)     → confidence < 0.55
+
+Note: These are UI display thresholds only and do NOT affect routing.
+Routing thresholds are defined in the backend (review_threshold, auto_send_threshold).
+
+
+=====================================
+WHAT HAPPENS WHEN SETTINGS CHANGE
+=====================================
+
+Changing auto_send_threshold in the UI:
+  1. POST /email-settings { auto_send_threshold: 0.85 }
+  2. New value saved to email_settings table in DB
+  3. ALL subsequent email ingestions use the new threshold
+  4. Previously stored emails are NOT re-evaluated — only new arrivals
+
+Changing auto_send_enabled:
+  1. POST /email-settings { auto_send_enabled: true }
+  2. Saved to DB
+  3. Next sync or ingest will auto-send eligible emails
+  4. Emails already in "Pending Send" (status = "auto") are NOT automatically sent
+     — they stay pending until manually sent or until the next sync triggers them
+
+Editing a knowledge base article:
+  1. PUT /knowledge-base/{id} with updated fields
+  2. knowledge_base.json is updated on disk
+  3. In-memory KnowledgeBase is replaced
+  4. EmailAdvisor is rebuilt with new articles
+  5. New emails immediately use updated matching
+  6. Emails already stored keep their original confidence/suggested_reply
+
+Disconnecting Gmail:
+  1. POST /gmail/disconnect
+  2. gmail_token.json is deleted
+  3. Auto-send stops working (no credentials)
+  4. Sync stops working
+  5. Existing stored emails are unaffected
+
+
+=====================================
+API ENDPOINTS USED BY THE FRONTEND
+=====================================
+
+GET  /emails                     → Load all emails (filtered by status in UI)
+POST /emails/ingest              → Manually ingest a new email
+POST /emails/sync                → Sync from Gmail inbox
+PATCH /emails/{id}               → Edit suggested reply or status
+DELETE /emails/{id}              → Delete an email
+POST /emails/{id}/send           → Send a reply via Gmail
+
+GET  /metrics                    → Analytics data
+
+GET  /email-settings             → Load current settings
+POST /email-settings             → Update settings
+
+GET  /gmail/status               → Check Gmail connection
+GET  /gmail/auth-url             → Start OAuth flow
+POST /gmail/disconnect           → Disconnect Gmail
+
+GET  /knowledge-base             → List KB articles
+POST /knowledge-base             → Add article
+PATCH /knowledge-base/{id}       → Edit article
+DELETE /knowledge-base/{id}      → Delete article
+
+GET  /reference-corpus           → List reference documents
+POST /reference-corpus           → Add document
+PATCH /reference-corpus/{id}     → Edit document
+DELETE /reference-corpus/{id}    → Delete document
+
+POST /fetch-url-content          → Fetch and extract text from a URL

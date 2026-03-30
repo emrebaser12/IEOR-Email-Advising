@@ -1,0 +1,11 @@
+fastapi==0.133.0
+uvicorn==0.41.0
+sqlalchemy==2.0.47
+pydantic==2.12.5
+google-api-python-client==2.190.0
+google-auth==2.48.0
+google-auth-oauthlib==1.2.4
+google-auth-httplib2==0.3.0
+requests==2.32.5
+python-dotenv==1.2.1
+anthropic>=0.37.0

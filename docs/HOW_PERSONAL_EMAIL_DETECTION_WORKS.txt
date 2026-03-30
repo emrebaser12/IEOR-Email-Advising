@@ -1,0 +1,147 @@
+HOW PERSONAL EMAIL DETECTION WORKS
+=====================================
+Last updated: 2026-03-24
+Relevant file: Backend/email_advising/personal_guardrails.py
+
+
+=====================================
+WHAT IT DOES
+=====================================
+
+Before any confidence scoring or template matching happens, every incoming
+email is scanned for personal or sensitive content. If flagged, the email:
+
+  1. Gets status = "personal" (never "auto" or "review")
+  2. NEVER gets auto-sent, no matter how high the confidence score
+  3. Gets a special draft reply with mental health resources
+  4. Is shown in the UI under "Needs Review" with a personal flag
+
+This is a hard override — no confidence threshold can bypass it.
+
+
+=====================================
+WHAT TRIGGERS THE FLAG
+=====================================
+
+The detector checks for two types of matches:
+
+--- Keywords (word-boundary matched) ---
+
+Mental health:
+  anxiety, depression, depressed, stressed, overwhelmed, therapy,
+  counseling, counselor, suicidal, suicide, mental health, panic attack,
+  eating disorder
+
+Medical / health:
+  hospitalized, hospitalization, medical leave, illness, disability,
+  accommodation
+
+Financial hardship:
+  financial aid, hardship, can't afford, tuition help, financial hardship
+
+Family / personal emergencies:
+  family emergency, bereavement, death in family, grief, domestic violence,
+  restraining order, homelessness, homeless, abuse
+
+Discrimination / safety:
+  harassment, discrimination, title ix, assault, crisis
+
+Academic distress (personal framing):
+  dropping out, failing, academic probation, suspension
+
+--- Phrases (substring matched) ---
+
+  "i don't know what to do"
+  "i need help urgently"
+  "i'm struggling" / "i am struggling"
+  "i can't cope" / "i cant cope"
+  "please help me"
+  "i feel hopeless"
+  "i'm in crisis" / "i am in crisis"
+  "i have nowhere to turn"
+  "i feel like giving up"
+  "i can't take it anymore" / "i cant take it anymore"
+  "i need someone to talk to"
+  "i'm not okay" / "i am not okay"
+  "i don't feel safe" / "i dont feel safe"
+
+
+=====================================
+HOW MATCHING WORKS
+=====================================
+
+1. The email body is lowercased.
+2. Keywords use word-boundary regex (\b) so partial matches are avoided.
+   Example: "class" does NOT match "classification".
+3. Phrases are matched as literal substrings (case-insensitive).
+4. If ANY keyword or phrase matches → is_personal = True.
+5. All matched keywords and phrases are recorded for the advisor to see.
+
+This runs BEFORE confidence scoring and BEFORE template selection.
+Order of operations in api.py > ingest_email():
+  1. Run advisor.process_query() to get confidence + suggested reply
+  2. Run personal_detector.check() on the email body
+  3. If personal → override status and suggested reply
+  4. Store in database
+
+
+=====================================
+WHAT THE ADVISOR SEES
+=====================================
+
+When an email is flagged as personal, the suggested reply is replaced
+with a standard message:
+
+  "Hello [name],
+
+   Thank you for reaching out. Your message has been flagged for personal
+   attention from our advising team. An advisor will follow up with you
+   directly.
+
+   If you need immediate support, please contact:
+   • Columbia Counseling and Psychological Services (CPS): (212) 854-2878
+   • Columbia Health: (212) 854-2284
+
+   Best,
+   Academic Advising Team"
+
+The advisor should ALWAYS review this before sending and personalize
+the response based on what the student actually wrote.
+
+
+=====================================
+HOW TO CUSTOMIZE THE DETECTION
+=====================================
+
+The keyword and phrase lists are defined as constants in personal_guardrails.py:
+  DEFAULT_KEYWORDS  - list of individual words/terms
+  DEFAULT_PHRASES   - list of multi-word phrases
+
+To add a new keyword: add it to DEFAULT_KEYWORDS.
+To add a new phrase: add it to DEFAULT_PHRASES.
+Restart the backend after any changes.
+
+The PersonalEmailDetector class can also be instantiated with custom lists
+if needed for testing or specialized use cases.
+
+
+=====================================
+IMPORTANT NOTES
+=====================================
+
+- False positives are acceptable and expected. It's better to route an
+  email to human review unnecessarily than to auto-reply to a student
+  who is in distress.
+
+- The word "financial aid" is on the list — this means a routine question
+  like "Where do I find financial aid information?" WILL be flagged as personal.
+  This is intentional. If you want to reduce false positives for financial aid
+  questions, remove "financial aid" from the keywords and rely on the more
+  specific phrases like "financial hardship" instead.
+
+- "failing" and "dropping out" are on the list. A student asking "What
+  happens if I fail a class?" will be flagged. Again, this is conservative
+  by design — when in doubt, a human reviews it.
+
+- There is no "confidence" score for personal detection. It's binary:
+  any match → flagged.

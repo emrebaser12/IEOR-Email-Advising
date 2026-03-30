@@ -1,0 +1,184 @@
+[
+  {
+    "id": "registrar_registration_deadlines_fall",
+    "title": "Registrar Office – Registration Deadlines (Fall)",
+    "url": "https://registrar.columbia.edu/content/academic-calendar",
+    "content": "The University Registrar maintains the official academic calendar. The add/drop period for the fall semester typically ends in mid-September. After the add/drop deadline, students must consult their academic advisors if they want to add or drop a class. The deadline to drop a class (withdraw) for the fall semester is typically in early November. The calendar also lists late registration penalties and appeal instructions. Students should check SSOL for exact dates each semester.",
+    "tags": ["registration", "deadlines", "add", "drop", "fall", "withdraw"]
+  },
+  {
+    "id": "registrar_registration_deadlines_spring",
+    "title": "Registrar Office – Registration Deadlines (Spring)",
+    "url": "https://registrar.columbia.edu/content/academic-calendar",
+    "content": "The University Registrar maintains the official academic calendar. The add/drop period for the spring semester typically ends in late January or early February. After the add/drop deadline, students must consult their academic advisors if they want to add or drop a class. The deadline to drop a class (withdraw) for the spring semester is typically in late March. The calendar also lists late registration penalties and appeal instructions. Students should check SSOL for exact dates each semester.",
+    "tags": ["registration", "deadlines", "add", "drop", "spring", "withdraw"]
+  },
+  {
+    "id": "registrar_transcript_portal",
+    "title": "Registrar – Ordering Official Transcripts",
+    "url": "https://registrar.columbia.edu/content/transcripts",
+    "content": "Official transcript orders are free through Parchment. Students authenticate with their Columbia UNI and choose electronic or paper delivery. Processing takes one to two business days. Unofficial copies are available instantly in the academic records tile on SSOL. Students can access their unofficial transcript anytime through Student Services Online (SSOL) at ssol.columbia.edu.",
+    "tags": ["transcript", "records", "parchment", "ssol"]
+  },
+  {
+    "id": "advising_appointments",
+    "title": "Academic Advising – Appointment Scheduling",
+    "url": "https://ieor.columbia.edu/undergraduate-advising-resources",
+    "content": "The IEOR Undergraduate Advising & Resources page provides information about the IEOR academic advisors, Center for Career Education advisors, IEOR faculty advisors, and the program director. Kelly Katsigris is the Academic & Student Affairs coordinator for IEOR undergraduate students. Advising appointments are scheduled through her Calendly account. Standard meetings last 20 minutes over Zoom. When you schedule an appointment, you will have the option to share what you would like to discuss during your meeting so Kelly can prepare accordingly. Alternatively, if you have more general, non-IEOR academic questions, you should contact your academic advisor at the Center for Student Advising (CSA). If you have very specific IEOR questions, you can contact your faculty advisor. Both of these names can be found in Vergil.",
+    "tags": ["advising", "appointments", "kelly", "calendly", "ieor"]
+  },
+  {
+    "id": "records_course_withdrawal",
+    "title": "Records Office – Course Withdrawal",
+    "url": "https://vergil.columbia.edu/vergil/register",
+    "content": "To withdraw from a course after the add/drop window, students must download the Course Withdrawal form from the registrar website, gather instructor and advisor signatures, and submit the completed form to their advising Dean before the posted deadline. If a course is dropped after the add/drop deadline, a W grade will appear on the transcript. This page explains how W grades appear on transcripts and outlines potential impacts to financial aid and international student status. W grades do not affect GPA but are visible on the transcript.",
+    "tags": ["withdrawal", "records", "W grade", "drop"]
+  },
+  {
+    "id": "financial_aid_overview",
+    "title": "Financial Aid – Understanding Your Award",
+    "url": "https://cc-seas.financialaid.columbia.edu/admitted-students",
+    "content": "The Columbia Financial Aid Admitted Students page contains links for students to check their financial aid information, submit FAFSA information, review scholarship policies, schedule appointments with the financial aid advisors, and more. Contact options include calling the office at 212-854-3711 or emailing ugrad-finaid@columbia.edu for personalized guidance. Financial aid packages typically include grants, work-study, and loans. Students must reapply for aid each year by completing the FAFSA and CSS Profile.",
+    "tags": ["financial aid", "billing", "fafsa", "scholarship"]
+  },
+  {
+    "id": "undergraduate_minors",
+    "title": "Undergraduate Minors",
+    "url": "https://bulletin.columbia.edu/columbia-engineering/undergraduate-minors/",
+    "content": "The Undergraduate Minors page lists all available minors for Columbia Engineering students and explains the requirements for each. It also outlines how to declare a minor and who to contact for academic advising support. SEAS students can pursue minors both within engineering and in Columbia College departments. Most minors require 5-6 courses (15-18 credits). To declare a minor, students must complete the Major/Minor Declaration form and obtain approval from the minor department.",
+    "tags": ["undergraduate programs", "academics", "minors", "declaration"]
+  },
+  {
+    "id": "undergraduate_majors",
+    "title": "Undergraduate Majors",
+    "url": "https://www.engineering.columbia.edu/academics/programs/program-finder",
+    "content": "The Undergraduate Majors page helps students explore the range of engineering programs offered at Columbia. It provides descriptions for each major and includes a program finder tool to compare options, making it easier for students to consider new paths or switch majors based on their interests and career goals. SEAS offers majors in Applied Mathematics, Applied Physics, Biomedical Engineering, Chemical Engineering, Civil Engineering, Computer Science, Earth and Environmental Engineering, Electrical Engineering, Industrial Engineering, Mechanical Engineering, and Operations Research.",
+    "tags": ["undergraduate programs", "majors", "academic exploration", "seas"]
+  },
+  {
+    "id": "major_minor_declaration_form",
+    "title": "Major/Minor Declaration/Change Form",
+    "url": "https://www.cc-seas.columbia.edu/sites/dsa/files/forms/SEAS%20major%20declaration_0.pdf",
+    "content": "This is the official form required for all Columbia Engineering students to declare a major, declare a minor, add a second major/minor, or drop a major/minor. The process involves obtaining departmental advisor approval before submission to the Center for Student Advising (CSA). Sophomores must declare their major during fall semester. The deadline is typically in late October. Students should meet with their intended major's departmental advisor before completing the form.",
+    "tags": ["forms", "majors", "minors", "declaration", "change", "csa"]
+  },
+  {
+    "id": "ieor_undergraduate_curriculum_page",
+    "title": "IEOR Undergraduate Curriculum",
+    "url": "https://ieor.columbia.edu/content/undergraduate-curriculum",
+    "content": "This page provides the latest and most detailed information on the IEOR undergraduate curriculum, including requirements for the common IEOR core, specific requirements for all IEOR majors, and links to the approved lists of IEOR electives (technical and management). The IEOR core includes courses in optimization, stochastic models, and simulation. All IEOR majors require completion of the core plus concentration-specific electives. Students should consult this page and their advisor when planning their course schedule.",
+    "tags": ["majors", "requirements", "curriculum", "IEOR", "electives", "core"]
+  },
+  {
+    "id": "ieor_elective_list",
+    "title": "Approved IEOR Elective List",
+    "url": "https://ieor.columbia.edu/undergraduate/electives",
+    "content": "This is the official, up-to-date list of courses approved to count as Technical and Management electives for IEOR undergraduate majors. Students must consult this list to ensure their course selections satisfy degree requirements. Technical electives include advanced courses in optimization, machine learning, data science, and financial engineering. Management electives include courses from Columbia Business School and other departments covering topics like entrepreneurship, strategy, and organizational behavior. Courses not on the pre-approved list may be petitioned for approval using the Course Approval Request Form.",
+    "tags": ["electives", "requirements", "IEOR", "technical electives", "management electives"]
+  },
+  {
+    "id": "ieor_course_approval_request_form",
+    "title": "IEOR BS Course Approval Request Form (Petitioning Electives)",
+    "url": "https://docs.google.com/forms/d/e/1FAIpQLSdJboLrf_8r0hH938BeO3US7yP2sDx2FepJ95Lwa8x7GXES9w/viewform",
+    "content": "This form is required for undergraduate students to petition for a non-pre-approved course (including all doctoral level courses) to count toward their degree requirements, such as a technical or management elective. Submission requires faculty advisor approval and IEOR Department review. The petition process typically takes 1-2 weeks. Students should submit petitions before registering for the course if possible. Include a course syllabus and explanation of how the course relates to your IEOR concentration.",
+    "tags": ["forms", "electives", "petition", "approval", "IEOR"]
+  },
+  {
+    "id": "ieor_undergrad_advising_resources",
+    "title": "IEOR Undergraduate Advising and Resources Page",
+    "url": "https://ieor.columbia.edu/undergraduate-advising-resources",
+    "content": "This central resource page contains links to key documents and forms for IEOR undergraduate students, including the required program plan forms for each major that must be completed and signed for graduation approval. The page includes contact information for Kelly Katsigris (academic advisor), links to degree worksheets, graduation checklists, and information about research opportunities. Students should visit this page regularly for updates on deadlines, events, and policy changes.",
+    "tags": ["advising", "resources", "graduation", "program plan", "IEOR", "kelly"]
+  },
+  {
+    "id": "ms_express_application",
+    "title": "Columbia Engineering MS Express Application",
+    "url": "https://www.engineering.columbia.edu/admissions-aid/graduate-admissions/apply-now#accordion0",
+    "content": "This is the simplified application portal for current Columbia Engineering seniors and young alumni (graduated within the last three years) with a minimum 3.3 GPA to apply for Master of Science programs. It does not require an application fee. The MS Express program allows qualified students to fast-track their graduate application. No GRE is required for MS Express applicants. Deadlines are typically in late spring for fall admission. Students can apply to multiple MS programs through the portal.",
+    "tags": ["graduate school", "MS Express", "application", "alumni", "masters"]
+  },
+  {
+    "id": "uat_application",
+    "title": "Undergraduate Advanced Track (UAT) Application",
+    "url": "https://docs.google.com/forms/d/e/1FAIpQLSfECNwgImPJl_VmYomyNoiwx3TVj3TUZMDwmpDB7mRR5yDwbg/viewform",
+    "content": "The application for the IEOR Undergraduate Advanced Track is for high-achieving students interested in advanced coursework and research. Students typically apply upon completing their sophomore year. The UAT allows students to take graduate-level courses and conduct research with IEOR faculty. Requirements include a minimum 3.5 GPA in IEOR courses and completion of core prerequisites. UAT students complete a thesis or research project under faculty supervision.",
+    "tags": ["UAT", "advanced track", "application", "research", "IEOR", "thesis"]
+  },
+  {
+    "id": "uat_information",
+    "title": "IEOR Undergraduate Advanced Track (UAT) Information",
+    "url": "https://bulletin.columbia.edu/columbia-engineering/academic-departments-programs/industrial-engineering-operations-research/undergraduate-programs/undergraduate-advanced-track/",
+    "content": "Detailed information about the IEOR Undergraduate Advanced Track, including coursework requirements like IEOR E3700 (Research Seminar) and IEOR E3999 (Independent Study), as well as the list of approved Advanced Course credits. UAT students take at least 6 credits of graduate-level IEOR courses. The program prepares students for PhD programs and research careers. Benefits include priority registration for graduate courses, faculty mentorship, and research experience.",
+    "tags": ["UAT", "advanced track", "requirements", "curriculum", "IEOR", "E3700", "E3999"]
+  },
+  {
+    "id": "csa_major_declaration",
+    "title": "Center for Student Advising (CSA) – Major Declaration Page",
+    "url": "https://www.cc-seas.columbia.edu/csa/seas_majordec/declare.php",
+    "content": "This page on the CSA website provides the official steps, process, and deadlines for all Columbia Engineering sophomores to declare their major in the fall semester. The declaration deadline is typically in late October. Students must meet with their intended major's departmental advisor to discuss their plan of study before declaring. The CSA reviews all declarations and confirms enrollment in the major. Undeclared students after the deadline may face registration restrictions.",
+    "tags": ["majors", "declaration", "CSA", "sophomore", "deadline"]
+  },
+  {
+    "id": "ieor_undergrad_curriculum_page_comparison",
+    "title": "IEOR Department Undergraduate Curriculum Page (Major Differences)",
+    "url": "https://ieor.columbia.edu/content/undergraduate-curriculum",
+    "content": "This page provides a comparison and detailed requirements for the five IEOR undergraduate majors: Industrial Engineering (IE), Operations Research (OR), Operations Research: Analytics (OR:A), Operations Research: Engineering Management Systems (OR:EMS), and Operations Research: Financial Engineering (OR:FE). Each concentration has different elective requirements and focus areas. IE emphasizes manufacturing and systems engineering. OR is the most flexible track. OR:A focuses on data science and machine learning. OR:EMS covers supply chain and management. OR:FE prepares students for finance careers.",
+    "tags": ["majors", "curriculum", "IEOR", "requirements", "IE", "OR", "analytics", "financial engineering"]
+  },
+  {
+    "id": "ieor_research_overview",
+    "title": "IEOR Department Research Overview",
+    "url": "https://ieor.columbia.edu/content/research",
+    "content": "An overview of the diverse research areas and ongoing projects within the IEOR department, serving as a starting point for undergraduates seeking research or project opportunities and faculty contact information. Research areas include optimization and algorithms, financial engineering, healthcare operations, machine learning, supply chain management, and energy systems. Students interested in research should review faculty profiles and reach out to professors whose work aligns with their interests. IEOR E3999 (Independent Study) provides course credit for research.",
+    "tags": ["research", "opportunities", "IEOR", "faculty", "E3999"]
+  },
+  {
+    "id": "study_abroad_opportunities",
+    "title": "Center for Undergraduate Engagement – Study Abroad Programs",
+    "url": "https://global.undergrad.columbia.edu/studyabroad/search",
+    "content": "This page lists the Columbia-sponsored and approved study abroad programs. It offers information on program logistics, eligible course requirements, and the typical timeline for engineering students (often sophomore spring or junior year summer). SEAS students should plan study abroad carefully to ensure courses transfer for degree credit. Pre-approval of courses is required. Popular destinations for IEOR students include programs with strong operations research or business components. Students should meet with their CSA advisor at least one semester before departure.",
+    "tags": ["study abroad", "programs", "global", "requirements", "transfer credit"]
+  },
+  {
+    "id": "ieor_health_wellness",
+    "title": "IEOR Department Health and Wellness Resources",
+    "url": "https://ieor.columbia.edu/undergraduate-advising-resources",
+    "content": "A dedicated page providing links and contact information for Columbia Health Services, Engineering Wellness, and other mental health resources available to students who are experiencing academic or personal difficulties. Counseling and Psychological Services (CPS) offers free counseling to students. The Engineering Student Council also runs peer support programs. Students struggling with coursework should reach out to their advisor early. Academic accommodations are available through Disability Services for students with documented needs.",
+    "tags": ["health", "wellness", "support", "mental health", "counseling", "disability services"]
+  },
+  {
+    "id": "barnard_four_plus_one_pathways",
+    "title": "Barnard College 4+1 Pathways with Columbia Engineering",
+    "url": "https://www.engineering.columbia.edu/admissions-aid/graduate-admissions/apply-now#accordion2",
+    "content": "Information regarding the BA/MS pathways offered by Barnard College in conjunction with Columbia Engineering, including the 4+1 program in Industrial Engineering and Operations Research (IEOR). Prerequisites include Multivariable Calculus, Linear Algebra, Probability & Statistics, and Data Science or equivalent coursework. Application requirements include a minimum 3.5 GPA and application by junior year spring. The program allows Barnard students to earn both a BA and MS in five years by taking graduate courses during senior year.",
+    "tags": ["Barnard", "4+1", "graduate school", "pathways", "IEOR", "BA/MS"]
+  },
+  {
+    "id": "pass_fail_policy",
+    "title": "Pass/Fail Grading Option",
+    "url": "https://www.cc-seas.columbia.edu/content/passdfail-class",
+    "content": "Columbia Engineering students may elect to take certain courses on a pass/fail (P/F) basis. The deadline to elect P/F is typically several weeks into the semester (check the academic calendar). Core requirements and major requirements generally cannot be taken P/F. Students should consult with their advisor before electing P/F to understand implications for graduate school applications and GPA calculations. A grade of D or higher is required to pass. P/F courses do not count toward GPA.",
+    "tags": ["pass fail", "grading", "P/F", "policy"]
+  },
+  {
+    "id": "credit_overload",
+    "title": "Credit Overload Policy",
+    "url": "https://www.cc-seas.columbia.edu/content/go-over-points",
+    "content": "SEAS students may request to take more than 18 credits in a semester through the credit overload process. Overload requests require approval from the Center for Student Advising (CSA). Students must have a minimum 3.0 GPA and no incomplete grades. The maximum overload is typically 21-22 credits. Requests should be submitted before registration opens. Students should carefully consider their workload and extracurricular commitments before requesting an overload.",
+    "tags": ["credit overload", "registration", "credits", "CSA"]
+  },
+  {
+    "id": "internship_credit",
+    "title": "IEOR Internship/Fieldwork Credit (IEOR E3998)",
+    "url": "https://ieor.columbia.edu/undergraduate-advising-resources",
+    "content": "IEOR students can receive academic credit for internships through IEOR E3998 (Fieldwork/Internship). The internship must be at least 10 weeks and 30 hours per week. Students must have faculty sponsorship and submit a work plan at the start of the internship and a final report at the end. Credit is typically 0-3 points. Registration requires departmental approval. This course can count toward technical elective requirements with advisor approval.",
+    "tags": ["internship", "fieldwork", "E3998", "credit", "IEOR"]
+  },
+  {
+    "id": "cpt_opt_international",
+    "title": "CPT and OPT for International Students",
+    "url": "https://isso.columbia.edu/content/f-1-employment",
+    "content": "The International Students and Scholars Office (ISSO) administers work authorization for F-1 students. Curricular Practical Training (CPT) allows students to work off-campus in positions directly related to their major. CPT requires an internship course registration and ISSO approval. Optional Practical Training (OPT) provides 12 months of work authorization after graduation, with STEM majors (including IEOR) eligible for a 24-month extension. Students should begin the OPT application process 90 days before graduation.",
+    "tags": ["international students", "CPT", "OPT", "ISSO", "work authorization", "F-1"]
+  }
+]

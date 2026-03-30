@@ -1,0 +1,146 @@
+HOW METADATA EXTRACTION WORKS
+=====================================
+Last updated: 2026-03-24
+Relevant file: Backend/email_advising/metadata.py
+
+
+=====================================
+WHAT IT DOES
+=====================================
+
+When a student email is processed, the system tries to automatically pull
+structured facts from the free-form email text. These facts are then used
+to fill in template placeholders like {student_name} and {term} in the
+reply, making the response feel more personalized and specific.
+
+This runs as part of advisor.process_query() before the reply is composed.
+
+
+=====================================
+WHAT GETS EXTRACTED
+=====================================
+
+--- 1. Student Name ---
+
+Pattern: "My name is [Name]" or "This is [Name]"
+
+Examples that match:
+  "Hi, my name is Sarah Chen."     → student_name = "Sarah Chen"
+  "This is Marcus Reyes."          → student_name = "Marcus Reyes"
+
+Constraints:
+  - Name must start with a capital letter
+  - 1–3 words matched (first name only, or first + last, or first + middle + last)
+  - Minimum 2 characters
+
+If the student's name is already known (passed in from Gmail sender info),
+metadata extraction does not override it.
+
+--- 2. Academic Term ---
+
+Pattern: Season + 4-digit year (2000–2099)
+
+Examples that match:
+  "I'm trying to enroll for Fall 2025."  → term = "Fall 2025"
+  "spring 2026 registration"             → term = "Spring 2026"
+  "SUMMER 2025"                          → term = "Summer 2025"
+
+Seasons recognized: Spring, Summer, Fall, Winter (case-insensitive)
+
+--- 3. Registration Deadline ---
+
+A date that appears within 48 characters of registration-related keywords.
+
+Date formats recognized:
+  - "March 15" / "Mar 15" / "mar. 15th"
+  - "3/15" / "03/15/2025" / "3-15"
+
+Registration keywords (must appear near the date):
+  register, registration, enroll, enrollment, add
+
+Example:
+  "Can I still register after March 15?"
+  → registration_deadline = "March 15"
+
+  "The add/drop deadline is 3/15/2025."
+  → registration_deadline = "March 15, 2025"
+
+--- 4. Withdrawal Deadline ---
+
+Same date formats, but withdrawal-related keywords must appear near the date.
+
+Withdrawal keywords:
+  withdraw, withdrawal, drop, dropped, remove, removed
+
+Example:
+  "I want to drop by the Feb 28 deadline."
+  → withdrawal_deadline = "February 28"
+
+--- 5. Generic Deadline (fallback) ---
+
+If the word "deadline" appears near a date but no registration or withdrawal
+keywords are found, a generic "deadline" fact is recorded. This is used
+less commonly but helps capture edge cases.
+
+
+=====================================
+HOW IT WORKS INTERNALLY
+=====================================
+
+The MetadataExtractor uses regex patterns to scan the email text.
+
+For dates, it uses a "context window" of 48 characters before and after
+the date match. It looks at what words appear in that window to classify
+what type of deadline the date refers to.
+
+Example:
+  "I need to withdraw from my class before March 15."
+  Window around "March 15": "...withdraw from my class before March 15."
+  Contains "withdraw" → classified as withdrawal_deadline
+
+
+=====================================
+WHAT HAPPENS WITH EXTRACTED FACTS
+=====================================
+
+Extracted facts are passed to the template renderer as metadata overrides.
+They only fill in values that are NOT already known:
+  - If the student's name came from Gmail, it won't be overridden
+  - If two different terms are mentioned, the first one found wins
+
+After the reply is composed, the reasons list (shown to advisors in the UI)
+includes a note about each fact that was auto-extracted. For example:
+  "Detected academic term 'Fall 2025' from student email."
+  "Captured student name 'Sarah Chen' from greeting."
+
+If a placeholder value is still missing after extraction, the system falls
+back to the default value defined in advisor.py > metadata_defaults:
+  student_name           → "there"
+  term                   → "the upcoming term"
+  registration_deadline  → "the published registration deadline"
+  withdrawal_deadline    → "the posted withdrawal deadline"
+  financial_aid_phone    → "(555) 123-4567"
+  financial_aid_email    → "finaid@university.edu"
+
+Note: If default values are used, the advisor is notified via a reason:
+  "Default values used for: registration_deadline. Update metadata if
+   more specific details are available."
+
+These defaults should be updated in api.py to reflect real office info.
+
+
+=====================================
+LIMITATIONS
+=====================================
+
+- Name extraction only works with "My name is" or "This is" patterns.
+  Email signatures, greeting lines like "Hi, I'm Sarah" are NOT extracted.
+
+- Dates must be written in recognizable formats. Vague references like
+  "next Friday" or "end of the month" are not extracted.
+
+- Only the FIRST match of each type is kept. If the email mentions two
+  different terms, only the first is used.
+
+- The context window (48 chars) is narrow. If a date and its keyword
+  are far apart in the sentence, it may not be classified correctly.

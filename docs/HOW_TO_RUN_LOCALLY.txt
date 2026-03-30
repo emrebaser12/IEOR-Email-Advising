@@ -1,0 +1,150 @@
+HOW TO RUN THE SYSTEM LOCALLY
+=====================================
+Last updated: 2026-03-24
+
+
+=====================================
+PREREQUISITES
+=====================================
+
+  - Python 3.10+
+  - Node.js 18+
+  - npm
+  - A Google Cloud project with Gmail API enabled (see GMAIL_OAUTH_SETUP_GUIDE.txt)
+
+
+=====================================
+FIRST-TIME SETUP
+=====================================
+
+--- Backend ---
+
+1. Navigate to the Backend directory:
+   cd Backend
+
+2. Create a Python virtual environment:
+   python -m venv venv
+
+3. Activate it:
+   Mac/Linux:  source venv/bin/activate
+   Windows:    venv\Scripts\activate
+
+4. Install dependencies:
+   pip install -r requirements.txt
+
+5. Place your Google OAuth credentials file:
+   Backend/data/google_client_secrets.json
+   (Download from Google Cloud Console → Credentials → your OAuth client)
+
+--- Frontend ---
+
+1. Navigate to the Frontend directory:
+   cd Frontend
+
+2. Install dependencies:
+   npm install
+
+
+=====================================
+STARTING THE SYSTEM
+=====================================
+
+You need TWO terminal windows: one for backend, one for frontend.
+
+--- Terminal 1: Start the Backend ---
+
+  cd Backend
+  source venv/bin/activate        # Mac/Linux
+  uvicorn api:app --reload --port 8000
+
+  The backend starts at: http://localhost:8000
+  API docs (Swagger UI): http://localhost:8000/docs
+  --reload means it auto-restarts when you edit Python files
+
+--- Terminal 2: Start the Frontend ---
+
+  cd Frontend
+  npm run dev
+
+  The frontend starts at: http://localhost:3000
+  Open http://localhost:3000 in your browser
+
+
+=====================================
+FIRST RUN CHECKLIST
+=====================================
+
+1. Backend is running at :8000 with no errors
+2. Frontend is running at :3000 and loads in browser
+3. Go to Settings tab → Connect Gmail
+   (See GMAIL_OAUTH_SETUP_GUIDE.txt if this step fails)
+4. After connecting, click "Sync Emails" to pull from Gmail inbox
+5. Check the Emails tab — you should see new emails appear
+
+
+=====================================
+COMMON STARTUP ERRORS
+=====================================
+
+"ModuleNotFoundError: No module named 'fastapi'"
+  → You forgot to activate the virtual environment
+  → Run: source venv/bin/activate
+
+"FileNotFoundError: Knowledge base file not found"
+  → Backend/data/knowledge_base.json is missing
+  → Make sure you're running from the Backend/ directory
+  → Or the file was accidentally deleted — restore from git
+
+"CORS error" in browser console
+  → The frontend is not running on port 3000
+  → OR the backend is not running on port 8000
+  → Check both terminals for errors
+
+"Port 8000 already in use"
+  → Another process is using port 8000
+  → Kill it: lsof -ti:8000 | xargs kill
+  → Or use a different port: uvicorn api:app --port 8001
+     (then update NEXT_PUBLIC_API_URL in frontend if needed)
+
+"npm run dev fails with missing module"
+  → Run npm install again from the Frontend/ directory
+
+"TypeError: Failed to fetch" in browser
+  → Backend is not running
+  → Start the backend first, then refresh the frontend
+
+
+=====================================
+ENVIRONMENT VARIABLES
+=====================================
+
+Backend (create Backend/.env if needed):
+  GOOGLE_OAUTH_CLIENT_FILE=data/google_client_secrets.json
+  FRONTEND_URL=http://localhost:3000
+
+Frontend (create Frontend/.env.local if needed):
+  NEXT_PUBLIC_API_URL=http://localhost:8000
+
+These are optional — the defaults above are used if not set.
+Never commit .env files to git.
+
+
+=====================================
+USEFUL COMMANDS
+=====================================
+
+Check backend is running:
+  curl http://localhost:8000/gmail/status
+
+View API documentation:
+  Open http://localhost:8000/docs in browser
+
+Reset the email database (delete all stored emails):
+  rm Backend/emails.db
+  (backend will recreate it on next start)
+
+Watch backend logs:
+  The uvicorn process prints all requests to the terminal
+
+Rebuild frontend for production:
+  cd Frontend && npm run build && npm start
