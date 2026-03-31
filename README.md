@@ -357,7 +357,7 @@ pytest
 
 ## Acknowledgments
 
-This project was developed as part of **IEOR 3900** at **Columbia University** for the **Industrial Engineering and Operations Research (IEOR) department**.
+This project was developed as part of **IEOR 3900 and IEOR 4524** at **Columbia University** for the **Industrial Engineering and Operations Research (IEOR) department**.
 
 Special thanks to the IEOR advising team for their input on response templates and workflow requirements.
 
@@ -367,4 +367,4 @@ Special thanks to the IEOR advising team for their input on response templates a
 
 This project is provided as-is for educational and demonstration purposes.
 
-© 2025 Columbia IEOR
+© 2026 Columbia IEOR
