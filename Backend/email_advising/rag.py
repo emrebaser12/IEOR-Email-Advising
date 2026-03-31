@@ -39,13 +39,14 @@ def load_reference_corpus(path: Path | str | None = None) -> ReferenceCorpus:
 class TfidfRetriever:
     """Retrieve supporting references using TF-IDF similarity."""
 
-    def __init__(self, corpus: ReferenceCorpus, *, diversity: float = 0.7) -> None:
+    def __init__(self, corpus: ReferenceCorpus, *, diversity: float = 0.7, min_score: float = 0.20) -> None:
         if not corpus:
             raise ValueError("TfidfRetriever requires at least one reference document")
         if not (0.0 <= diversity <= 1.0):
             raise ValueError("diversity must be between 0 and 1")
         self.corpus = corpus
         self.diversity = diversity
+        self.min_score = min_score
         tokenized_documents: List[List[str]] = []
         self._documents: List[ReferenceDocument] = list(corpus.documents)
         for document in self._documents:
@@ -77,7 +78,7 @@ class TfidfRetriever:
             for idx, score in sorted(
                 enumerate(scores), key=lambda item: item[1], reverse=True
             )
-            if score > 0.0
+            if score >= self.min_score
         ]
         selected_indices: List[int] = []
         references: List[AdvisorReference] = []

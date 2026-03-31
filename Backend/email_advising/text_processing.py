@@ -7,6 +7,7 @@ from typing import Iterable, List, Sequence
 
 
 _STOPWORDS = {
+    # Common function words
     "a",
     "an",
     "and",
@@ -41,6 +42,16 @@ _STOPWORDS = {
     "with",
     "you",
     "your",
+    # Email greeting / sign-off boilerplate — carry no advising signal
+    "hi",
+    "hello",
+    "hey",
+    "dear",
+    "thanks",
+    "thank",
+    "regards",
+    "sincerely",
+    "cheers",
 }
 
 _TOKEN_SYNONYMS = {

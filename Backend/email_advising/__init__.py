@@ -1,6 +1,7 @@
 """Email Advising System package."""
 from .advisor import EmailAdvisor
 from .composers import ClaudeGenerativeComposer, LLMEmailComposer, TemplateEmailComposer
+from .embeddings import SentenceEmbedder
 from .knowledge_base import KnowledgeBase, KnowledgeArticle, load_knowledge_base
 from .models import (
     AdvisorReference,
@@ -31,6 +32,7 @@ __all__ = [
     "RankedMatch",
     "ReferenceCorpus",
     "ReferenceDocument",
+    "SentenceEmbedder",
     "TfidfRetriever",
     "TemplateEmailComposer",
     "create_claude_llm",

@@ -25,7 +25,7 @@
       "When does the registration window close for fall?",
       "How late can I enroll before the window closes?"
     ],
-    "response_template": "Hello {student_name},\n\nThanks for reaching out! The registration period for {term} closes on {registration_deadline}. You can continue to add classes until 11:59 p.m. on that date through the student portal. If you need to make changes afterward, please submit an Add/Drop form and obtain approval from your academic advisor.\n\nHere are a few tips to stay on track:\n\u2022 Double-check your degree audit to ensure the courses fit your academic plan.\n\u2022 Resolve any holds before the deadline so you do not lose access.\n\u2022 If you run into registration errors, send us a screenshot and we will be glad to help.\n\nLet us know if you have additional questions!\n\nBest regards,\nAcademic Advising Team",
+    "response_template": "Hello {student_name},\n\nThanks for reaching out! The registration period for {term} closes on {registration_deadline}. You can continue to add classes until 11:59 p.m. on that date through the student portal. If you need to make changes afterward, please submit an Add/Drop form and obtain approval from your academic advisor.\n\nHere are a few tips to stay on track:\n• Double-check your degree audit to ensure the courses fit your academic plan.\n• Resolve any holds before the deadline so you do not lose access.\n• If you run into registration errors, send us a screenshot and we will be glad to help.\n\nLet us know if you have additional questions!\n\nBest regards,\nAcademic Advising Team",
     "follow_up_questions": [
       "Are you planning to take the course for credit or audit?",
       "Do you have any registration holds on your account?"
@@ -66,7 +66,12 @@
       "What are my options for meeting with an advisor?",
       "Can I get a same-day advising appointment?",
       "Is there a virtual advising option?",
-      "I need general advising help, how do I book a time?"
+      "I need general advising help, how do I book a time?",
+      "Can I book a Zoom advising meeting if I am off campus?",
+      "Can I meet with my advisor virtually?",
+      "Is there an online advising option if I am remote?",
+      "How do I schedule a virtual advising appointment?",
+      "Can I do my advising meeting over Zoom?"
     ],
     "response_template": "Hello {student_name},\n\nWe would be glad to meet with you! Advising appointments can be scheduled online through the Navigate Student app or by visiting the advising portal on the university website. You will see available 30-minute meeting times for your assigned advisor over the next two weeks.\n\nIf you do not see a time that works for you, reply with a few windows of availability and we will follow up with alternatives. Virtual meetings via Zoom are also available upon request.\n\nTalk soon,\nAcademic Advising Team",
     "follow_up_questions": [
@@ -112,7 +117,7 @@
       "Can I withdraw from a course without penalty?",
       "I need to drop a course for personal reasons."
     ],
-    "response_template": "Hello {student_name},\n\nTo withdraw from a course after the add/drop period, please submit the Course Withdrawal form located in the Records and Registration section of the student portal. The form requires signatures from both you and the course instructor. Once approved, the Registrar will record a grade of 'W'.\n\nKey reminders:\n\u2022 The withdrawal deadline for {term} is {withdrawal_deadline}.\n\u2022 Withdrawing may impact your financial aid or progress toward graduation.\n\u2022 International students should consult with the Office of Global Engagement before submitting the form.\n\nPlease let us know if you would like to talk through the decision or explore alternative options.\n\nSincerely,\nAcademic Advising Team",
+    "response_template": "Hello {student_name},\n\nTo withdraw from a course after the add/drop period, please submit the Course Withdrawal form located in the Records and Registration section of the student portal. The form requires signatures from both you and the course instructor. Once approved, the Registrar will record a grade of 'W'.\n\nKey reminders:\n• The withdrawal deadline for {term} is {withdrawal_deadline}.\n• Withdrawing may impact your financial aid or progress toward graduation.\n• International students should consult with the Office of Global Engagement before submitting the form.\n\nPlease let us know if you would like to talk through the decision or explore alternative options.\n\nSincerely,\nAcademic Advising Team",
     "follow_up_questions": [
       "Have you spoken with your course instructor about the withdrawal?",
       "Would you like to review how this might impact your financial aid?"
@@ -131,14 +136,14 @@
       "How can I change my major?",
       "Where can I find the major change form?",
       "Have I fulfilled enough requirements to switch majors?",
-      "What\u2019s the process to switch my program?",
+      "What’s the process to switch my program?",
       "I want to add a second major..",
-      "I\u2019d like to switch to an IEOR major..",
+      "I’d like to switch to an IEOR major..",
       "How can I declare my major?",
       "Major declaration form submission..",
       "Change my major before junior year..",
-      "How do I what\u2019s the process to switch my program?",
-      "How do I i\u2019d like to switch to an IEOR major?",
+      "How do I what’s the process to switch my program?",
+      "How do I i’d like to switch to an IEOR major?",
       "How do I major declaration form submission?",
       "How do I change my major before junior year?",
       "I'm interested in switching into IEOR.",
@@ -154,11 +159,13 @@
       "I want to meet to discuss switching majors.",
       "What are the steps to change my major at Columbia Engineering?"
     ],
-    "response_template": "Hello {student_name},\n\nThanks for reaching out! To change or declare a major, you will first need to obtain permission by an advisor in your new department. Afterward, you will need to complete the Major/Minor Declaration/Change form, available here: {major_minor_declaration_form}. The form must be submitted to Kelly Katsigiris, the Academic & Student Affairs for IEOR undergraduate students. She will read and sign the form, and then she will send it to your CSA advisor. Before you submit the form, we highly recommend you review the program requirements in the Columbia Engineering Bulletin to ensure it\u2019s a good fit, and check to see if any of the courses you\u2019ve taken count towards the new major. We would be happy to meet to discuss this decision and help you create an updated academic plan. Let us know what you decide! Best regards, Academic Advising Team",
+    "response_template": "Hello {student_name},\n\nThanks for reaching out! To change or declare a major, you will first need to obtain permission by an advisor in your new department. Afterward, you will need to complete the Major/Minor Declaration/Change form, available here: {major_minor_declaration_form}. The form must be submitted to Kelly Katsigiris, the Academic & Student Affairs for IEOR undergraduate students. She will read and sign the form, and then she will send it to your CSA advisor. Before you submit the form, we highly recommend you review the program requirements in the Columbia Engineering Bulletin to ensure it’s a good fit, and check to see if any of the courses you’ve taken count towards the new major. We would be happy to meet to discuss this decision and help you create an updated academic plan. Let us know what you decide! Best regards, Academic Advising Team",
     "follow_up_questions": [
-      "Have you checked if the classes you\u2019ve taken count towards your new major?"
+      "Have you checked if the classes you’ve taken count towards your new major?"
     ],
-    "metadata": {}
+    "metadata": {
+      "major_minor_declaration_form": "https://www.cc-seas.columbia.edu/sites/dsa/files/forms/SEAS%20major%20declaration_0.pdf"
+    }
   },
   {
     "id": "change_minor",
@@ -194,9 +201,11 @@
     ],
     "response_template": "Hello {student_name},\n\nThanks for reaching out! To add or drop a minor, you will need to complete the Major/Minor Declaration/Change form, available here: {major_minor_declaration_form}. The form must be submitted to your academic advisor. We would be happy to meet to discuss this decision and help you create an updated academic plan. Let us know what you decide! Best regards, Academic Advising Team",
     "follow_up_questions": [
-      "Have you checked if the classes you\u2019ve taken count towards this minor?"
+      "Have you checked if the classes you’ve taken count towards this minor?"
     ],
-    "metadata": {}
+    "metadata": {
+      "major_minor_declaration_form": "https://www.cc-seas.columbia.edu/sites/dsa/files/forms/SEAS%20major%20declaration_0.pdf"
+    }
   },
   {
     "id": "major_requirements",
@@ -233,7 +242,9 @@
     "follow_up_questions": [
       ""
     ],
-    "metadata": {}
+    "metadata": {
+      "undergraduate_curriculum_page": "https://ieor.columbia.edu/content/undergraduate-curriculum"
+    }
   },
   {
     "id": "minor_requirements",
@@ -383,11 +394,13 @@
       "I want to talk about which electives to take.",
       "Can I meet with an advisor about electives?"
     ],
-    "response_template": "Hello {student_name},\n\nGreat question! Choosing the right electives is a key part of tailoring your degree to your interests. The approved lists for both management and technical electives can be found on the IEOR Department website in the Undergraduate Curriculum page. The official list is available at {link_to_elective_list}. \n\nHere's a quick guide:\n\u2022 **Technical Electives:** These are typically upper-level (3000-level and above) courses in IEOR or a related technical field (e.g. Computer Science, Math, Economics) designed to deepen your expertise. All IEOR majors are required to take at least six credits of IEOR technical electives, and the total number of technical credits required varies by major. \n\u2022 **Management Electives:** These courses cover topics like project management, finance, or marketing and are intended to provide you with valuable business context for your technical skills. The number of management credits required also varies by major. \n\nWe highly recommend cross-referencing the approved list with your program plan to confirm how many credits you need. \n\nBest regards,\nAcademic Advising Team",
+    "response_template": "Hello {student_name},\n\nGreat question! Choosing the right electives is a key part of tailoring your degree to your interests. The approved lists for both management and technical electives can be found on the IEOR Department website in the Undergraduate Curriculum page. The official list is available at {link_to_elective_list}. \n\nHere's a quick guide:\n• **Technical Electives:** These are typically upper-level (3000-level and above) courses in IEOR or a related technical field (e.g. Computer Science, Math, Economics) designed to deepen your expertise. All IEOR majors are required to take at least six credits of IEOR technical electives, and the total number of technical credits required varies by major. \n• **Management Electives:** These courses cover topics like project management, finance, or marketing and are intended to provide you with valuable business context for your technical skills. The number of management credits required also varies by major. \n\nWe highly recommend cross-referencing the approved list with your program plan to confirm how many credits you need. \n\nBest regards,\nAcademic Advising Team",
     "follow_up_questions": [
       "Would you like to meet to discuss which electives align best with your interests and career goals?"
     ],
-    "metadata": {}
+    "metadata": {
+      "link_to_elective_list": "https://ieor.columbia.edu/undergraduate/electives"
+    }
   },
   {
     "id": "petition_electives",
@@ -423,7 +436,9 @@
       "Would you like to meet to discuss your other electives and program plan?",
       "Have you met with your faculty advisor to discuss this course?"
     ],
-    "metadata": {}
+    "metadata": {
+      "ieor_course_approval_request_form": "https://docs.google.com/forms/d/e/1FAIpQLSdJboLrf_8r0hH938BeO3US7yP2sDx2FepJ95Lwa8x7GXES9w/viewform"
+    }
   },
   {
     "id": "double_counting_courses",
@@ -472,10 +487,10 @@
       "How do I apply for graduation?",
       "Am I on track to graduate?",
       "When is the graduation application deadline?",
-      "I\u2019d like to get my program plan approved..",
+      "I’d like to get my program plan approved..",
       "Where is the degree application form?",
       "Need help submitting graduation paperwork?",
-      "How do I i\u2019d like to get my program plan approved?",
+      "How do I i’d like to get my program plan approved?",
       "How do I apply to graduate this semester?",
       "I'm a senior and want to make sure I'm on track to graduate.",
       "What is the process for submitting my graduation application?",
@@ -493,11 +508,13 @@
       "What happens after I submit my graduation application?",
       "I need Kelly to sign my program plan."
     ],
-    "response_template": "Hello {student_name},\n\nCongratulations on reaching your final year! To be approved for graduation, you must first fill out the program plan for your major. These can be found on the IEOR Undergraduate Advising and Resources page, available here: {link_to_undergrad_advising}. Afterward, please send your finished plan to the head of IEOR Undergraduate Advising Kelly Katsigiris so she can sign off on your program plan. After you receive Kelly\u2019s signature, you can send the program plan to the Center for Student Advising to process. \n\nOnce all of this is cleared, you must submit the degree application form in Vergil. The deadline to apply for {term} graduation is {graduation_application_deadline}.\n\nPlease be sure to review your program plan and degree audit on Stellic to confirm that all requirements will be met by the end of the term. If you see any discrepancies or have questions about remaining requirements, please schedule a meeting with us as soon as possible for a final review.\n\nWe look forward to celebrating with you!\n\nSincerely,\nAcademic Advising Team",
+    "response_template": "Hello {student_name},\n\nCongratulations on reaching your final year! To be approved for graduation, you must first fill out the program plan for your major. These can be found on the IEOR Undergraduate Advising and Resources page, available here: {link_to_undergrad_advising}. Afterward, please send your finished plan to the head of IEOR Undergraduate Advising Kelly Katsigiris so she can sign off on your program plan. After you receive Kelly’s signature, you can send the program plan to the Center for Student Advising to process. \n\nOnce all of this is cleared, you must submit the degree application form in Vergil. The deadline to apply for {term} graduation is {graduation_application_deadline}.\n\nPlease be sure to review your program plan and degree audit on Stellic to confirm that all requirements will be met by the end of the term. If you see any discrepancies or have questions about remaining requirements, please schedule a meeting with us as soon as possible for a final review.\n\nWe look forward to celebrating with you!\n\nSincerely,\nAcademic Advising Team",
     "follow_up_questions": [
       "Have you filled out your program plan?"
     ],
-    "metadata": {}
+    "metadata": {
+      "link_to_undergrad_advising": "https://ieor.columbia.edu/undergraduate-advising-resources"
+    }
   },
   {
     "id": "ms_express",
@@ -529,11 +546,13 @@
       "How do I apply for an accelerated master's at Columbia?",
       "I want to continue to a master's program after undergrad."
     ],
-    "response_template": "Hello {student_name},\n\nWe\u2019re excited to hear that you are considering a graduate education at Columbia Engineering! MS Express is a simplified process of applying to Columbia Engineering's Master of Science programs available to currently enrolled seniors at Columbia Engineering and young alumni (students who graduated from Columbia Engineering within the last three years). Columbia Engineering undergraduates and young alumni may apply to any engineering MS program using the express application. A minimum cumulative 3.3 GPA is required. \n\nYou can apply through MS Express here: {MS_express_link}. The application requires official transcripts, a personal statement, a resume or CV, and contact information for three references. There is no application fee. \n\nWe would be happy to meet with you if you have further questions about how your undergraduate courses might count towards an MS degree. \n\nBest regards, \nAcademic Advising Team",
+    "response_template": "Hello {student_name},\n\nWe’re excited to hear that you are considering a graduate education at Columbia Engineering! MS Express is a simplified process of applying to Columbia Engineering's Master of Science programs available to currently enrolled seniors at Columbia Engineering and young alumni (students who graduated from Columbia Engineering within the last three years). Columbia Engineering undergraduates and young alumni may apply to any engineering MS program using the express application. A minimum cumulative 3.3 GPA is required. \n\nYou can apply through MS Express here: {MS_express_link}. The application requires official transcripts, a personal statement, a resume or CV, and contact information for three references. There is no application fee. \n\nWe would be happy to meet with you if you have further questions about how your undergraduate courses might count towards an MS degree. \n\nBest regards, \nAcademic Advising Team",
     "follow_up_questions": [
       "Would you like to meet to discuss which undergraduate classes might count towards an MS degree?"
     ],
-    "metadata": {}
+    "metadata": {
+      "MS_express_link": "https://www.engineering.columbia.edu/admissions-aid/graduate-admissions/apply-now#accordion0"
+    }
   },
   {
     "id": "advanced_track",
@@ -568,7 +587,10 @@
     "follow_up_questions": [
       "Would you like to meet to discuss how the Undergraduate Advanced Track might further your career and academic goals?"
     ],
-    "metadata": {}
+    "metadata": {
+      "link_to_uat_app": "https://docs.google.com/forms/d/e/1FAIpQLSfECNwgImPJl_VmYomyNoiwx3TVj3TUZMDwmpDB7mRR5yDwbg/viewform",
+      "link_to_uat": "https://bulletin.columbia.edu/columbia-engineering/academic-departments-programs/industrial-engineering-operations-research/undergraduate-programs/undergraduate-advanced-track/"
+    }
   },
   {
     "id": "major_declaration",
@@ -605,7 +627,10 @@
     "follow_up_questions": [
       "Which IEOR majors are you considering?"
     ],
-    "metadata": {}
+    "metadata": {
+      "link_to_csa_declaration": "https://www.cc-seas.columbia.edu/csa/seas_majordec/declare.php",
+      "link_to_undergrad_curriculum": "https://ieor.columbia.edu/content/undergraduate-curriculum"
+    }
   },
   {
     "id": "research_opportunities",
@@ -642,7 +667,9 @@
       "Which research areas within IEOR interest you most?",
       "Are you looking for research for credit or a volunteer/paid position?"
     ],
-    "metadata": {}
+    "metadata": {
+      "link_to_research": "https://ieor.columbia.edu/content/research"
+    }
   },
   {
     "id": "study_abroad",
@@ -677,12 +704,14 @@
       "I want to meet to discuss study abroad options.",
       "How do I apply to study abroad from Columbia Engineering?"
     ],
-    "response_template": "Hello {student_name},\n\nWe\u2019re happy to hear that you are considering studying abroad! Columbia Engineering undergraduates typically study abroad during the spring semester of their sophomore year. Alternatively, you might choose to study abroad during the summer through a Columbia-sponsored program. During certain study abroad programs, students are able to fulfill some of their engineering prerequisite requirements and/or humanities core requirements. For more information about available programs, please visit the Programs page on the Center for Undergraduate Engagement website, available here: {study_abroad_opportunities}.\n\nWe would be happy to meet with you to discuss which programs might be best suited for your academic and professional interests, as well as to talk about which requirements can be fulfilled abroad.\n\nWarm regards,\nAcademic Advising Team",
+    "response_template": "Hello {student_name},\n\nWe’re happy to hear that you are considering studying abroad! Columbia Engineering undergraduates typically study abroad during the spring semester of their sophomore year. Alternatively, you might choose to study abroad during the summer through a Columbia-sponsored program. During certain study abroad programs, students are able to fulfill some of their engineering prerequisite requirements and/or humanities core requirements. For more information about available programs, please visit the Programs page on the Center for Undergraduate Engagement website, available here: {study_abroad_opportunities}.\n\nWe would be happy to meet with you to discuss which programs might be best suited for your academic and professional interests, as well as to talk about which requirements can be fulfilled abroad.\n\nWarm regards,\nAcademic Advising Team",
     "follow_up_questions": [
       "Are there specific programs that you are considering?",
       "Which requirements would you prefer to complete at an outside institution?"
     ],
-    "metadata": {}
+    "metadata": {
+      "study_abroad_opportunities": "https://global.undergrad.columbia.edu/studyabroad/search"
+    }
   },
   {
     "id": "struggling_in_classes",
@@ -694,13 +723,13 @@
     "utterances": [
       "I am struggling in my classes..",
       "I am having a hard time in my classes this semester..",
-      "I\u2019m worried about my grades in my classes this semester..",
-      "I\u2019m worried about my GPA..",
+      "I’m worried about my grades in my classes this semester..",
+      "I’m worried about my GPA..",
       "I need help in my classes..",
       "Can I talk to someone about academic stress?",
       "Need tutoring or support resources?",
-      "How do I i\u2019m worried about my grades in my classes this semester?",
-      "How do I i\u2019m worried about my GPA?",
+      "How do I i’m worried about my grades in my classes this semester?",
+      "How do I i’m worried about my GPA?",
       "I'm failing one of my classes.",
       "My grades are really suffering this semester.",
       "I'm overwhelmed and don't know what to do academically.",
@@ -722,7 +751,9 @@
       "Which specific courses are you finding most challenging?",
       "Would you like us to schedule a meeting to discuss your options?"
     ],
-    "metadata": {}
+    "metadata": {
+      "link_to_health_wellness": "https://ieor.columbia.edu/undergraduate-advising-resources"
+    }
   },
   {
     "id": "barnard_four_plus_one",
@@ -756,12 +787,14 @@
       "How competitive is the Barnard 4+1 application?",
       "I want to earn both a BA from Barnard and an MS from Columbia."
     ],
-    "response_template": "Hello {student_name},\n\nWe\u2019re happy to hear that you are considering Columbia Engineering for your graduate education! Barnard College offers several pathways in conjunction with Columbia Engineering, including a BA/MS in Industrial Engineering and Operations Research. For all of the 4+1 pathways, students must maintain a GPA at or above 3.5 and apply by February 15 of their junior year. Applications for the Engineering 4+1 Pathways are submitted directly to Columbia Engineering. No standardized test scores are required for 4+1 applicants.\n\nFor the BS/MS in Industrial Engineering and Operations Research, students must complete the following prerequisites by the end of their fall semester of their junior year: Multivariable Calculus for Engineering and Applied Science (or Calculus III), Linear Algebra, Introduction to Probability & Statistics, and Foundations of Data Science. The majors with requirements that most closely track with these prerequisites are Economics & Math and Economics & Statistics. Other majors may apply to the pathway but students should discuss their plans with the Barnard faculty lead to assess their readiness for masters level engineering classes and the strength of their application. Successful applicants have extensive quantitative course work through their major or minor. \n\nFor more information, please visit the 4+1 Pathways page on the Barnard website, available here: {barnard_four_plus_one}. We would be happy to meet with you to discuss how your undergraduate coursework might translate to the MS degree.\n\nBest regards,\nAcademic Advising Team",
+    "response_template": "Hello {student_name},\n\nWe’re happy to hear that you are considering Columbia Engineering for your graduate education! Barnard College offers several pathways in conjunction with Columbia Engineering, including a BA/MS in Industrial Engineering and Operations Research. For all of the 4+1 pathways, students must maintain a GPA at or above 3.5 and apply by February 15 of their junior year. Applications for the Engineering 4+1 Pathways are submitted directly to Columbia Engineering. No standardized test scores are required for 4+1 applicants.\n\nFor the BS/MS in Industrial Engineering and Operations Research, students must complete the following prerequisites by the end of their fall semester of their junior year: Multivariable Calculus for Engineering and Applied Science (or Calculus III), Linear Algebra, Introduction to Probability & Statistics, and Foundations of Data Science. The majors with requirements that most closely track with these prerequisites are Economics & Math and Economics & Statistics. Other majors may apply to the pathway but students should discuss their plans with the Barnard faculty lead to assess their readiness for masters level engineering classes and the strength of their application. Successful applicants have extensive quantitative course work through their major or minor. \n\nFor more information, please visit the 4+1 Pathways page on the Barnard website, available here: {barnard_four_plus_one}. We would be happy to meet with you to discuss how your undergraduate coursework might translate to the MS degree.\n\nBest regards,\nAcademic Advising Team",
     "follow_up_questions": [
       "Are there specific programs that you are considering?",
       "Have you compiled all of your application materials?"
     ],
-    "metadata": {}
+    "metadata": {
+      "barnard_four_plus_one": "https://www.engineering.columbia.edu/admissions-aid/graduate-admissions/apply-now#accordion2"
+    }
   },
   {
     "id": "three_plus_two_program",
@@ -802,6 +835,8 @@
       "Have you completed the prerequisite math and science courses?",
       "Which engineering major are you considering at Columbia?"
     ],
-    "metadata": {}
+    "metadata": {
+      "combined_plan_link": "https://www.engineering.columbia.edu/admissions-aid/graduate-admissions/combined-plan"
+    }
   }
 ]

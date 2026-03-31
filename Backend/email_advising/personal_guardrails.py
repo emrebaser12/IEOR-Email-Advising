@@ -38,10 +38,16 @@ class GuardrailResult:
 DEFAULT_KEYWORDS: List[str] = [
     # Mental health
     "anxiety",
+    "anxious",
     "depression",
     "depressed",
+    "stress",
     "stressed",
+    "stressing",
     "overwhelmed",
+    "burnout",
+    "burnt out",
+    "burned out",
     "therapy",
     "counseling",
     "counselor",

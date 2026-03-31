@@ -25,6 +25,7 @@ from pydantic import BaseModel, ConfigDict, Field
 
 from email_advising import (
     EmailAdvisor,
+    SentenceEmbedder,
     TfidfRetriever,
     KnowledgeArticle,
     KnowledgeBase,
@@ -169,6 +170,16 @@ knowledge_base = load_knowledge_base()
 reference_corpus = load_reference_corpus()
 retriever = TfidfRetriever(reference_corpus)
 
+# Initialize sentence embedding model for semantic confidence scoring.
+# Falls back gracefully if sentence-transformers is not installed.
+embedder: Optional[SentenceEmbedder] = None
+try:
+    embedder = SentenceEmbedder()
+    # Trigger model download / load eagerly so the first request isn't slow.
+    embedder._load()
+except Exception:
+    pass
+
 # Initialize email composer: try Claude, fallback to template-only
 composer = None
 try:
@@ -183,7 +194,7 @@ except ValueError:
     # ANTHROPIC_API_KEY not set; fall back to template-only
     pass
 
-advisor = EmailAdvisor(knowledge_base, retriever=retriever, composer=composer)
+advisor = EmailAdvisor(knowledge_base, retriever=retriever, composer=composer, embedding_model=embedder)
 personal_detector = PersonalEmailDetector()
 
 
@@ -251,7 +262,7 @@ def reload_retriever():
 def rebuild_advisor():
     """Recreate the EmailAdvisor with the latest knowledge base + corpus."""
     global advisor
-    advisor = EmailAdvisor(knowledge_base, retriever=retriever)
+    advisor = EmailAdvisor(knowledge_base, retriever=retriever, embedding_model=embedder)
 
 
 def replace_knowledge_base(articles: List[KnowledgeArticle]):
