@@ -2,25 +2,29 @@
 
 An intelligent email management system built for the Columbia IEOR department to help academic advisors respond to student inquiries quickly, consistently, and accurately.
 
-**Developed for:** IEOR 3900 - Columbia University  
+**Developed for:** IEOR 3900 - Columbia University
 **Team:** Emre Baser, Lara Jones, Mayyada Shair, Yasemin Yuksel, Samuel Velez-Hurtado
-**Year:** 2025
+**Year:** 2026
 
 ---
 
 ## Overview
 
-The Email Advising System automates the process of responding to routine student emails. It uses a knowledge base of pre-approved response templates, matches incoming emails to the most relevant template using TF-IDF similarity scoring, and either auto-sends high-confidence responses or routes lower-confidence ones to advisors for review.
+The Email Advising System automates the process of responding to routine student emails. When an email arrives, it is matched against a knowledge base of pre-approved response templates using semantic embedding similarity. High-confidence matches are either auto-sent or drafted for quick advisor approval; low-confidence or ambiguous emails are routed to the advisor review queue with a pre-filled draft.
 
 ### How It Works
 
-1. **Email Ingestion** - Emails arrive via Gmail OAuth integration or manual entry
-2. **AI Matching** - The system analyzes the email content and matches it against knowledge base templates
-3. **Confidence Scoring** - Each match receives a confidence score (0-100%)
-4. **Routing Decision**:
-   - **High confidence (≥ threshold)** → Auto-approved for sending
-   - **Low confidence (< threshold)** → Flagged for human review
-5. **Response** - Advisors can review, edit, and send replies directly through the dashboard
+1. **Email Ingestion** — Emails arrive via Gmail OAuth integration or manual entry
+2. **Sensitive Content Check** — Personal or sensitive emails (mental health, emergencies, financial hardship) are immediately flagged and never auto-sent
+3. **Semantic Matching** — The email is encoded by a sentence embedding model and compared against every known utterance in the knowledge base
+4. **Confidence Scoring** — Confidence equals the best cosine similarity between any sentence in the email and any utterance in an article
+5. **LLM Response Generation** — Claude generates a polished, context-aware reply using the matched template as a base
+6. **Routing Decision**:
+   - **≥ 95% confidence** → Auto-sent (if auto-send is enabled)
+   - **55–95% confidence** → Best-match draft surfaced for advisor review
+   - **Ambiguous** (top two articles within 8% of each other) → Draft surfaced for review
+   - **< 55% confidence** → Generic fallback response, routed to advisor
+7. **Response** — Advisors can review, edit, and send replies directly through the dashboard
 
 ---
 
@@ -39,7 +43,7 @@ The Email Advising System automates the process of responding to routine student
 - **Draft editing**: Modify AI suggestions before sending
 - **Draft saving**: Save work-in-progress to localStorage
 - **Waiting time indicators**: Visual urgency badges based on how long emails have been waiting
-- **Personal email detection**: Automatically flags non-advising emails (e.g. personal messages) so they are not auto-replied to
+- **Personal email detection**: Automatically flags sensitive emails (mental health, emergencies, financial hardship) so they are never auto-replied to
 
 ### Gmail Integration
 - OAuth 2.0 authentication (no password storage)
@@ -56,7 +60,7 @@ The Email Advising System automates the process of responding to routine student
 ### Settings
 - **Gmail Connection**: Connect/disconnect Gmail via OAuth
 - **Auto-send Toggle**: Enable/disable automatic sending
-- **Confidence Threshold**: Adjustable slider (50-100%) for auto-send cutoff
+- **Confidence Threshold**: Adjustable slider (50–100%) for auto-send cutoff
 - **Advisor Profile**: Customize name, email, department
 - **Knowledge Base Management**: Add, edit, delete response templates
 - **Reference Corpus Management**: Add, edit, delete supporting documents
@@ -64,12 +68,54 @@ The Email Advising System automates the process of responding to routine student
 ### UI
 - **Dark mode toggle**: Sun/moon button in the header switches between light and dark themes; preference is remembered across sessions
 
-### AI Capabilities
-- **TF-IDF Similarity Matching**: Finds the best template for each query
-- **Synonym Expansion**: Understands variations (e.g., "drop" = "withdraw")
-- **Metadata Extraction**: Auto-detects student names, terms, deadlines from email text
-- **Ambiguity Detection**: Flags emails that match multiple templates similarly
-- **Confidence Calibration**: Combines multiple signals for accurate scoring
+---
+
+## AI Pipeline
+
+### 1. Sensitive Content Guardrail
+
+Before any matching occurs, incoming emails are scanned for sensitive keywords and phrases. Matches on categories like mental health (`stress`, `anxiety`, `burnout`, `depression`), medical leave, financial hardship, family emergencies, discrimination, or academic distress immediately set the email to `needs_review` and suppress auto-send, regardless of confidence score.
+
+### 2. Semantic Confidence Scoring
+
+The core matching engine uses `multi-qa-MiniLM-L6-cos-v1` (sentence-transformers), a model trained on question-answer pairs that understands semantic intent rather than just token overlap.
+
+**At startup:** every utterance across all knowledge base articles is encoded into a vector and cached in memory.
+
+**At query time:**
+1. The email body is split into segments on sentence boundaries (`.!?`) and paragraph breaks (`\n\n`). This isolates the actual question from the greeting and sign-off so they don't dilute the match.
+2. Each segment is encoded by the embedding model.
+3. For each KB article, confidence = the maximum cosine similarity across all (segment, utterance) pairs.
+4. Articles are ranked by confidence.
+
+This approach correctly handles paraphrases — "How late can I add a course this term?" and "What is the deadline to register for classes?" score high against the same article even though they share almost no words.
+
+**Routing thresholds:**
+
+| Confidence | Action |
+|---|---|
+| ≥ 95% | Auto-send (if enabled) |
+| 55–95% | Best-match draft → needs review |
+| Top two articles within 8% | Best-match draft → needs review (ambiguous) |
+| < 55% | Generic fallback → needs review |
+
+### 3. LLM Response Generation
+
+Once the best-match article is identified, Claude (`claude-sonnet-4-6`) generates the outgoing reply. The LLM receives:
+- The student's original email
+- The matched knowledge base template as a starting point
+- Supporting reference documents retrieved from the reference corpus
+- Metadata extracted from the email (student name, term, deadlines)
+
+Claude rewrites the template into a natural, personalized response while staying faithful to the approved content. If the Anthropic API key is not configured, the system falls back to rendering the template directly with placeholder substitution.
+
+### 4. Reference Retrieval (RAG)
+
+Supporting documents (e.g., links to the IEOR curriculum page, withdrawal form, advising resources) are retrieved using TF-IDF similarity between the query and the reference corpus. A minimum relevance threshold filters out loosely-matching documents so only genuinely relevant references appear in the response. Up to 3 references are included.
+
+### 5. Metadata Extraction
+
+Key facts are extracted from the email body automatically — student name, academic term, registration deadlines — and injected into the response template as context. This allows responses to be personalized without advisor intervention.
 
 ---
 
@@ -87,7 +133,9 @@ The Email Advising System automates the process of responding to routine student
 - **Framework**: FastAPI (Python)
 - **Database**: SQLite with SQLAlchemy ORM
 - **Email**: Gmail API with OAuth 2.0
-- **AI/ML**: Custom TF-IDF implementation (no external ML dependencies)
+- **Embeddings**: `sentence-transformers` — `multi-qa-MiniLM-L6-cos-v1`
+- **LLM**: Anthropic Claude (`claude-sonnet-4-6`) via `anthropic` SDK
+- **Security**: SSRF protection on URL-fetching endpoints
 
 ---
 
@@ -95,40 +143,39 @@ The Email Advising System automates the process of responding to routine student
 
 ```
 ├── Backend/
-│   ├── api.py                    # FastAPI application & endpoints
+│   ├── api.py                    # FastAPI application & all endpoints
 │   ├── requirements.txt          # Python dependencies
 │   ├── data/
-│   │   ├── knowledge_base.json   # Response templates
-│   │   ├── reference_corpus.json # Supporting documents
+│   │   ├── knowledge_base.json   # Response templates and utterances
+│   │   ├── reference_corpus.json # Supporting reference documents
 │   │   └── gmail_token.json      # OAuth credentials (gitignored)
-│   ├── email_advising/           # Core AI package
-│   │   ├── advisor.py            # Main matching engine
-│   │   ├── similarity.py         # TF-IDF implementation
-│   │   ├── composers.py          # Email composition strategies
-│   │   ├── knowledge_base.py     # KB loader
-│   │   ├── rag.py                # Retrieval-augmented generation
-│   │   ├── metadata.py           # Auto-extraction utilities
-│   │   └── text_processing.py    # Tokenization & normalization
-│   └── tests/
-│       └── test_advisor.py       # Unit tests
+│   └── email_advising/           # Core AI package
+│       ├── advisor.py            # Matching engine and routing logic
+│       ├── embeddings.py         # SentenceEmbedder wrapper
+│       ├── composers.py          # Template and Claude response generation
+│       ├── rag.py                # TF-IDF reference retrieval
+│       ├── knowledge_base.py     # KB loader
+│       ├── metadata.py           # Auto-extraction of names/dates
+│       ├── personal_guardrails.py# Sensitive content detection
+│       └── text_processing.py    # Tokenization, stopwords, normalization
 │
 ├── Frontend/
 │   ├── app/
-│   │   ├── page.tsx          # Main application page
-│   │   ├── layout.tsx        # Root layout
-│   │   ├── providers.tsx     # Theme provider wrapper
-│   │   └── globals.css       # Global styles & CSS variables (light + dark)
+│   │   ├── page.tsx              # Main application page
+│   │   ├── layout.tsx            # Root layout
+│   │   ├── providers.tsx         # Theme provider wrapper
+│   │   └── globals.css           # Global styles (light + dark)
 │   ├── components/
-│   │   ├── sidebar-nav.tsx        # Navigation sidebar
-│   │   ├── header-top.tsx         # Top header bar (includes dark mode toggle)
-│   │   ├── emails-tab.tsx         # Email management view
+│   │   ├── sidebar-nav.tsx       # Navigation sidebar
+│   │   ├── header-top.tsx        # Top header bar with dark mode toggle
+│   │   ├── emails-tab.tsx        # Email management view
 │   │   ├── manual-review-table.tsx # Emails awaiting advisor review
-│   │   ├── analytics-tab.tsx      # Analytics dashboard
-│   │   ├── settings-tab.tsx       # Settings panel
-│   │   ├── metrics-cards.tsx      # Dashboard metrics
-│   │   └── ui/                    # shadcn/ui components
+│   │   ├── analytics-tab.tsx     # Analytics dashboard
+│   │   ├── settings-tab.tsx      # Settings panel
+│   │   ├── metrics-cards.tsx     # Dashboard metrics
+│   │   └── sample-emails.ts      # Sample emails for testing
 │   └── lib/
-│       └── utils.ts          # Utility functions
+│       └── utils.ts              # Utility functions
 │
 └── README.md
 ```
@@ -141,6 +188,7 @@ The Email Advising System automates the process of responding to routine student
 - Python 3.9+
 - Node.js 18+
 - Google Cloud Console project (for Gmail API)
+- Anthropic API key (for Claude LLM — optional, falls back to templates)
 
 ### Backend Setup
 
@@ -159,15 +207,22 @@ The Email Advising System automates the process of responding to routine student
    ```bash
    pip install -r requirements.txt
    ```
+   On first run, `sentence-transformers` will download the `multi-qa-MiniLM-L6-cos-v1` model (~90 MB). This happens once and is cached locally.
 
-4. **Set up Gmail OAuth:**
+4. **Set environment variables** (create a `.env` file in `Backend/`):
+   ```
+   ANTHROPIC_API_KEY=your_api_key_here
+   GOOGLE_OAUTH_CLIENT_FILE=data/google_client_secrets.json
+   FRONTEND_URL=http://localhost:3000
+   ```
+
+5. **Set up Gmail OAuth** (optional — required for Gmail sync/send):
    - Go to [Google Cloud Console](https://console.cloud.google.com/)
-   - Create a new project or select existing
-   - Enable Gmail API
+   - Create or select a project, enable the Gmail API
    - Create OAuth 2.0 credentials (Desktop app)
-   - Download `client_secrets.json` and place in `Backend/data/google_client_secrets.json`
+   - Download and save as `Backend/data/google_client_secrets.json`
 
-5. **Run the server:**
+6. **Run the server:**
    ```bash
    uvicorn api:app --reload --port 8000
    ```
@@ -189,8 +244,7 @@ The Email Advising System automates the process of responding to routine student
    npm run dev
    ```
 
-4. **Open browser:**
-   Navigate to `http://localhost:3000`
+4. Open `http://localhost:3000`
 
 ---
 
@@ -200,35 +254,35 @@ The Email Advising System automates the process of responding to routine student
 
 1. Go to **Settings** tab
 2. Click **Connect Gmail**
-3. Complete Google OAuth flow
+3. Complete the Google OAuth flow
 4. Gmail is now connected for syncing and sending
 
 ### Processing Emails
 
 1. Click **Sync from Gmail** to pull new emails, or use **+ Add Sample** for testing
-2. Emails appear in **Needs Review** (low confidence) or **Pending Send** (high confidence)
-3. Click any email to view details and AI-suggested response
-4. Edit the response if needed
-5. Click **Send** to deliver via Gmail
+2. Emails appear in **Needs Review** (low/ambiguous confidence) or **Pending Send** (high confidence)
+3. Click any email to view the original message and the AI-generated response
+4. Edit the response if needed, then click **Send**
 
 ### Adjusting Automation
 
 1. Go to **Settings** tab
-2. Adjust the **confidence threshold** slider
+2. Adjust the **confidence threshold** slider (default: 90%)
 3. Toggle **Auto-send** on/off
-4. Higher threshold = more human review, lower threshold = more automation
+4. Higher threshold = more human review; lower threshold = more automation
 
-### Managing Knowledge Base
+### Managing the Knowledge Base
 
-1. Go to **Settings** tab
-2. Scroll to **Knowledge Base** section
-3. Add new templates with:
-   - Unique ID
-   - Subject line
-   - Categories (comma-separated)
-   - Sample utterances (what students might say)
-   - Response template (with `{placeholders}`)
-   - Follow-up questions
+1. Go to **Settings** tab → **Knowledge Base** section
+2. Add new articles with:
+   - **ID**: unique identifier
+   - **Subject**: email subject line
+   - **Categories**: topic tags (comma-separated)
+   - **Utterances**: example questions students might ask — the more varied and realistic, the better the matching
+   - **Response template**: reply text with `{placeholder}` variables
+   - **Follow-up questions**: optional clarifying questions
+
+> **Tip:** Confidence scores are directly limited by utterance coverage. If a particular question type scores low, adding utterances that match how students actually phrase it is the most effective fix.
 
 ---
 
@@ -268,15 +322,19 @@ The Email Advising System automates the process of responding to routine student
 
 | Variable | Description | Default |
 |----------|-------------|---------|
-| `GOOGLE_OAUTH_CLIENT_FILE` | Path to OAuth credentials | `data/google_client_secrets.json` |
+| `ANTHROPIC_API_KEY` | Anthropic API key for Claude LLM | None (falls back to templates) |
+| `GOOGLE_OAUTH_CLIENT_FILE` | Path to Google OAuth credentials | `data/google_client_secrets.json` |
 | `FRONTEND_URL` | Frontend URL for OAuth redirect | `http://localhost:3000` |
 
-### Confidence Threshold
+### Confidence Thresholds
 
-The confidence threshold determines the auto-send cutoff:
-- **Default**: 90%
-- **Range**: 50% - 100%
-- **Stored in**: localStorage (frontend) + database (backend)
+| Threshold | Default | Description |
+|---|---|---|
+| `auto_send_threshold` | 95% | Minimum confidence to auto-send |
+| `review_threshold` | 55% | Below this, email gets a generic fallback |
+| `ambiguity_gap` | 8% | If top two articles are within this gap, route to review |
+
+The auto-send threshold is also adjustable at runtime via the Settings slider.
 
 ---
 
@@ -292,9 +350,8 @@ pytest
 - Article ranking accuracy
 - Auto-send threshold behavior
 - Manual review routing
-- Synonym expansion
-- Metadata extraction
 - Ambiguous query handling
+- Metadata extraction
 
 ---
 
