@@ -3,7 +3,7 @@
 An intelligent email management system built for the Columbia IEOR department to help academic advisors respond to student inquiries quickly, consistently, and accurately.
 
 **Developed for:** IEOR 3900 and IEOR 4524 - Columbia University
-**Team:** Emre Baser, Lara Jones, Mayyada Shair, Yasemin Yuksel, Samuel Velez-Hurtado
+**Team:** Emre Baser, Lara Jones, Mayyada Shair, Yasemin Yuksel
 **Year:** 2026
 
 ---
