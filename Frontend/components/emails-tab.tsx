@@ -7,6 +7,7 @@ import AutoSentTable from "@/components/auto-sent-table";
 import { SAMPLE_EMAILS } from "@/components/sample-emails";
 import { CheckSquare, Square, Trash2, Send, Save, X, RotateCcw, Clock, AlertTriangle, RefreshCw, Mail, CheckCircle } from "lucide-react";
 import { ADVISORS, BACKEND_URL } from "@/lib/constants";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from "@/components/ui/dialog";
 
 // Filter types
 type FilterType = 
@@ -227,6 +228,9 @@ export default function EmailsTab() {
   // Assigned persons (localStorage)
   const [assignedPersons, setAssignedPersons] = useState<Record<number, string>>({});
 
+  // Forward confirmation dialog
+  const [forwardPending, setForwardPending] = useState<{ emailId: number; person: string } | null>(null);
+
   // Advisor toggle filter (single-select; null = show all)
   const [advisorFilter, setAdvisorFilter] = useState<string | null>(null);
 
@@ -267,17 +271,57 @@ export default function EmailsTab() {
   }, [savedDrafts]);
 
   // --- Assign a person to an email (persisted to backend) ---
-  async function handleAssignPerson(emailId: number, person: string) {
+  async function doAssign(emailId: number, person: string) {
     setAssignedPersons((prev) => ({ ...prev, [emailId]: person }));
     try {
-      await fetch(`${BACKEND_URL}/emails/${emailId}`, {
+      const res = await fetch(`${BACKEND_URL}/emails/${emailId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ assigned_to: person || null }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        showToast(data.detail || "Failed to save assignment", "error");
+      }
     } catch (err) {
       console.error("Failed to save advisor assignment:", err);
+      showToast("Failed to save assignment", "error");
     }
+  }
+
+  function handleAssignPerson(emailId: number, person: string) {
+    if (person) {
+      setForwardPending({ emailId, person });
+    } else {
+      doAssign(emailId, "");
+    }
+  }
+
+  async function handleForwardConfirm() {
+    if (!forwardPending) return;
+    const { emailId, person } = forwardPending;
+    setForwardPending(null);
+    await doAssign(emailId, person);
+    try {
+      const res = await fetch(`${BACKEND_URL}/emails/${emailId}/forward`, { method: "POST" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        showToast(data.detail || "Forward failed — is Gmail connected?", "error");
+      } else {
+        const data = await res.json().catch(() => ({}));
+        showToast(data.message || "Email forwarded", "success");
+      }
+    } catch (err) {
+      console.error("Failed to forward email:", err);
+      showToast("Assignment saved, but forward failed", "error");
+    }
+  }
+
+  function handleForwardDecline() {
+    if (!forwardPending) return;
+    const { emailId, person } = forwardPending;
+    setForwardPending(null);
+    doAssign(emailId, person);
   }
 
   // --- Toggle an advisor filter pill on/off (single-select) ---
@@ -401,11 +445,15 @@ export default function EmailsTab() {
         received_at: new Date().toISOString(),
       };
 
-      await fetch(`${BACKEND_URL}/emails/ingest`, {
+      const ingestRes = await fetch(`${BACKEND_URL}/emails/ingest`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(sampleEmail),
       });
+      if (!ingestRes.ok) {
+        const data = await ingestRes.json().catch(() => ({}));
+        throw new Error(data.detail || "Failed to create sample email");
+      }
 
       await Promise.all([fetchEmails(), fetchMetrics()]);
       showToast("Sample email created", "success");
@@ -424,11 +472,15 @@ export default function EmailsTab() {
 
       // First update the reply if changed
       if (newReply !== undefined) {
-        await fetch(`${BACKEND_URL}/emails/${emailId}`, {
+        const patchRes = await fetch(`${BACKEND_URL}/emails/${emailId}`, {
           method: "PATCH",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ suggested_reply: newReply }),
         });
+        if (!patchRes.ok) {
+          const data = await patchRes.json().catch(() => ({}));
+          throw new Error(data.detail || "Failed to save reply edits");
+        }
       }
 
       // Then send the reply via Gmail
@@ -470,11 +522,15 @@ export default function EmailsTab() {
         body.suggested_reply = newReply;
       }
 
-      await fetch(`${BACKEND_URL}/emails/${emailId}`, {
+      const approveRes = await fetch(`${BACKEND_URL}/emails/${emailId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
+      if (!approveRes.ok) {
+        const data = await approveRes.json().catch(() => ({}));
+        throw new Error(data.detail || "Failed to approve email");
+      }
 
       // Remove from saved drafts after approval
       setSavedDrafts((prev) => {
@@ -485,59 +541,71 @@ export default function EmailsTab() {
 
       await Promise.all([fetchEmails(), fetchMetrics()]);
       showToast("Email approved", "success");
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError("Could not update email status");
+      showToast(err.message || "Could not update email status", "error");
     }
   }
 
   // --- Advisor actions: move email to trash (soft delete) ---
   async function handleDelete(emailId: number) {
     try {
-      await fetch(`${BACKEND_URL}/emails/${emailId}`, {
+      const res = await fetch(`${BACKEND_URL}/emails/${emailId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "trash" }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.detail || "Failed to move email to trash");
+      }
 
       setSavedDrafts((prev) => { const u = { ...prev }; delete u[emailId]; return u; });
       setSelectedIds((prev) => { const u = new Set(prev); u.delete(emailId); return u; });
 
       await Promise.all([fetchEmails(), fetchMetrics()]);
       showToast("Email moved to Trash", "success");
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      setError("Could not delete email");
+      showToast(err.message || "Could not delete email", "error");
     }
   }
 
   // --- Restore email from trash ---
   async function handleRestore(emailId: number) {
     try {
-      await fetch(`${BACKEND_URL}/emails/${emailId}`, {
+      const res = await fetch(`${BACKEND_URL}/emails/${emailId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ status: "review" }),
       });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.detail || "Failed to restore email");
+      }
       await Promise.all([fetchEmails(), fetchMetrics()]);
       showToast("Email restored to Needs Review", "success");
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      showToast("Could not restore email", "error");
+      showToast(err.message || "Could not restore email", "error");
     }
   }
 
   // --- Permanently delete email (from trash only) ---
   async function handlePermanentDelete(emailId: number) {
     try {
-      await fetch(`${BACKEND_URL}/emails/${emailId}`, { method: "DELETE" });
+      const res = await fetch(`${BACKEND_URL}/emails/${emailId}`, { method: "DELETE" });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(data.detail || "Failed to permanently delete email");
+      }
       setSavedDrafts((prev) => { const u = { ...prev }; delete u[emailId]; return u; });
       setSelectedIds((prev) => { const u = new Set(prev); u.delete(emailId); return u; });
       await Promise.all([fetchEmails(), fetchMetrics()]);
       showToast("Email permanently deleted", "success");
-    } catch (err) {
+    } catch (err: any) {
       console.error(err);
-      showToast("Could not permanently delete email", "error");
+      showToast(err.message || "Could not permanently delete email", "error");
     }
   }
 
@@ -1555,6 +1623,31 @@ export default function EmailsTab() {
           </div>
         </div>
       )}
+      {/* Forward confirmation dialog */}
+      <Dialog open={!!forwardPending} onOpenChange={(open) => { if (!open) handleForwardDecline(); }}>
+        <DialogContent showCloseButton={false}>
+          <DialogHeader>
+            <DialogTitle>Forward this email?</DialogTitle>
+            <DialogDescription>
+              {forwardPending?.person} will be assigned and a copy of this email will be forwarded to <strong>lj2574@columbia.edu</strong>.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <button
+              onClick={handleForwardDecline}
+              className="px-4 py-2 rounded-lg text-sm font-medium border border-border text-foreground hover:bg-muted/40"
+            >
+              No, just assign
+            </button>
+            <button
+              onClick={handleForwardConfirm}
+              className="px-4 py-2 rounded-lg text-sm font-medium bg-blue-600 text-white hover:bg-blue-700"
+            >
+              Yes, forward
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }
