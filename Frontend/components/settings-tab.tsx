@@ -669,16 +669,18 @@ export default function SettingsTab() {
         if (typeof window !== "undefined") {
           window.localStorage.setItem(SETTINGS_LAST_SAVED_KEY, timestamp);
         }
+        setSettingsSaved(true);
+        setTimeout(() => setSettingsSaved(false), 2000);
       } else {
         const text = await res.text();
         console.error("Failed to update /email-settings:", text);
+        setEmailSettingsError("Failed to save settings. Please try again.");
       }
     } catch (err) {
       console.error("Error calling /email-settings:", err);
+      setEmailSettingsError("Failed to save settings. Please try again.");
     } finally {
       setSavingEmailSettings(false);
-      setSettingsSaved(true);
-      setTimeout(() => setSettingsSaved(false), 2000);
     }
   }
 

@@ -75,6 +75,7 @@ CLIENT_SECRETS_FILE = os.getenv(
 )
 GMAIL_TOKEN_PATH = DATA_DIR / "gmail_token.json"
 FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000")
+BACKEND_PUBLIC_URL = os.getenv("BACKEND_PUBLIC_URL", "http://128.59.149.172.nip.io:8000")
 
 # In-memory store for OAuth flows keyed by state: state -> (flow, created_at_unix)
 OAUTH_STATE_TTL = 600  # 10 minutes
@@ -154,7 +155,14 @@ def _is_safe_fetch_url(url: str) -> tuple[bool, str]:
 
 app = FastAPI(title="Email Advising System API")
 
-_cors_origins = ["http://localhost:3000", "http://127.0.0.1:3000"]
+_cors_origins = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:3001",
+    "http://127.0.0.1:3001",
+    "http://128.59.149.172:3000",
+    "http://128.59.149.172:3001",
+]
 if FRONTEND_URL and FRONTEND_URL not in _cors_origins:
     _cors_origins.append(FRONTEND_URL)
 
@@ -197,7 +205,11 @@ except ValueError:
     # OPENAI_API_KEY not set; fall back to template-only
     pass
 
-advisor = EmailAdvisor(knowledge_base, retriever=retriever, composer=composer, embedding_model=embedder)
+try:
+    advisor = EmailAdvisor(knowledge_base, retriever=retriever, composer=composer, embedding_model=embedder)
+except Exception as _emb_err:
+    print(f"Warning: Could not initialize embeddings ({_emb_err}). Falling back to keyword matching only.")
+    advisor = EmailAdvisor(knowledge_base, retriever=retriever, composer=composer, embedding_model=None)
 personal_detector = PersonalEmailDetector()
 
 
@@ -265,7 +277,11 @@ def reload_retriever():
 def rebuild_advisor():
     """Recreate the EmailAdvisor with the latest knowledge base + corpus."""
     global advisor
-    advisor = EmailAdvisor(knowledge_base, retriever=retriever, embedding_model=embedder)
+    try:
+        advisor = EmailAdvisor(knowledge_base, retriever=retriever, embedding_model=embedder)
+    except Exception as _emb_err:
+        print(f"Warning: Could not initialize embeddings ({_emb_err}). Falling back to keyword matching only.")
+        advisor = EmailAdvisor(knowledge_base, retriever=retriever, embedding_model=None)
 
 
 def replace_knowledge_base(articles: List[KnowledgeArticle]):
@@ -632,6 +648,7 @@ class EmailStatus(str, Enum):
     review = "review"      # needs manual review
     sent = "sent"          # reply has been sent
     personal = "personal"  # flagged as personal / sensitive — never auto-send
+    trash = "trash"        # soft-deleted; recoverable from Trash tab
 
 
 # ---------- Pydantic models (API schemas) ----------
@@ -1054,7 +1071,7 @@ def gmail_auth_url():
     flow = Flow.from_client_secrets_file(
         CLIENT_SECRETS_FILE,
         scopes=SCOPES,
-        redirect_uri="http://127.0.0.1:8000/gmail/oauth2callback",
+        redirect_uri=f"{BACKEND_PUBLIC_URL}/gmail/oauth2callback",
     )
 
     # NOTE: include_granted_scopes removed – it was causing the 400 error.
@@ -1495,6 +1512,66 @@ def send_email_reply(email_id: int, payload: Optional[SendEmailRequest] = None):
 
 
 # =====================================================
+# Forward email to advisor
+# =====================================================
+
+ADVISOR_EMAILS = {
+    "Winsor":   "lj2574@columbia.edu",
+    "Kelly":    "lj2574@columbia.edu",
+    "Sabrina":  "lj2574@columbia.edu",
+    "Samantha": "lj2574@columbia.edu",
+    "Christine":"lj2574@columbia.edu",
+    "Jean":     "lj2574@columbia.edu",
+}
+FORWARD_FALLBACK = "lj2574@columbia.edu"
+
+
+@app.post("/emails/{email_id}/forward")
+def forward_email_to_advisor(email_id: int):
+    """
+    Forward the original email to the assigned advisor's email address.
+    """
+    db = SessionLocal()
+    try:
+        email_obj = db.query(EmailORM).filter(EmailORM.id == email_id).first()
+        if email_obj is None:
+            raise HTTPException(status_code=404, detail="Email not found")
+
+        creds, gmail_address = load_gmail_credentials()
+        if not creds or not creds.valid:
+            raise HTTPException(
+                status_code=400,
+                detail="Gmail is not connected. Please connect Gmail in Settings.",
+            )
+
+        advisor_name = email_obj.assigned_to or ""
+        to_addr = ADVISOR_EMAILS.get(advisor_name, FORWARD_FALLBACK)
+
+        forward_body = (
+            f"This email has been assigned to {advisor_name or 'an advisor'} and forwarded for your review.\n\n"
+            f"--- Original Message ---\n"
+            f"From: {email_obj.email_address or email_obj.uni or 'Unknown'}\n"
+            f"Subject: {email_obj.subject}\n\n"
+            f"{email_obj.body}"
+        )
+
+        try:
+            send_email_via_gmail_api(
+                creds=creds,
+                from_addr=gmail_address,
+                to_addr=to_addr,
+                subject=f"[Forwarded] {email_obj.subject}",
+                body=forward_body,
+            )
+        except Exception as exc:
+            raise HTTPException(status_code=500, detail=f"Failed to forward email: {str(exc)}")
+
+        return {"ok": True, "message": f"Email forwarded to {to_addr}"}
+    finally:
+        db.close()
+
+
+# =====================================================
 # Gmail disconnect
 # =====================================================
 
@@ -1538,6 +1615,8 @@ def list_emails(
         query = db.query(EmailORM)
         if status is not None:
             query = query.filter(EmailORM.status == status)
+        else:
+            query = query.filter(EmailORM.status != EmailStatus.trash)
         query = query.order_by(EmailORM.received_at.desc())
         emails = query.all()
         return [orm_to_schema(e) for e in emails]
@@ -1641,8 +1720,8 @@ def metrics():
     """
     db = SessionLocal()
     try:
-        # Total emails
-        total = db.query(func.count(EmailORM.id)).scalar() or 0
+        # Total emails (excluding trash)
+        total = db.query(func.count(EmailORM.id)).filter(EmailORM.status != EmailStatus.trash).scalar() or 0
 
         # =====================================================
         # FIXED: Calculate "emails today" based on Eastern Time calendar day
@@ -1660,6 +1739,7 @@ def metrics():
         emails_today = (
             db.query(func.count(EmailORM.id))
             .filter(EmailORM.received_at >= start_of_today_utc)
+            .filter(EmailORM.status != EmailStatus.trash)
             .scalar()
             or 0
         )
@@ -1684,8 +1764,8 @@ def metrics():
             or 0
         )
 
-        # Average confidence for ALL emails
-        avg_conf = db.query(func.avg(EmailORM.confidence)).scalar()
+        # Average confidence for ALL non-trash emails
+        avg_conf = db.query(func.avg(EmailORM.confidence)).filter(EmailORM.status != EmailStatus.trash).scalar()
         if avg_conf is None:
             avg_conf = 0.0
 

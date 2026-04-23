@@ -90,39 +90,43 @@ class EmailAdvisor:
         for article in self.knowledge_base:
             self._known_metadata_keys.update(article.metadata.keys())
 
-        # Pre-compute utterance embeddings once at startup
+        # Pre-compute utterance embeddings (or TF-IDF index) once at startup
         self._utterance_embeddings: Optional[np.ndarray] = None
         self._utterance_article_indices: List[int] = []
-        if self.embedding_model is not None:
-            all_utterances: List[str] = []
-            for idx, article in enumerate(self.knowledge_base):
-                for utterance in article.utterances:
-                    all_utterances.append(utterance)
-                    self._utterance_article_indices.append(idx)
-            if all_utterances:
-                self._utterance_embeddings = self.embedding_model.encode(all_utterances)
+        self._utterance_tfidf = None  # fallback when embedding_model is None
+
+        all_utterances: List[str] = []
+        for idx, article in enumerate(self.knowledge_base):
+            for utterance in article.utterances:
+                all_utterances.append(utterance)
+                self._utterance_article_indices.append(idx)
+
+        if self.embedding_model is not None and all_utterances:
+            self._utterance_embeddings = self.embedding_model.encode(all_utterances)
+        elif all_utterances:
+            from .similarity import TfIdfVectorizer
+            from .text_processing import tokenize
+            self._utterance_tfidf = TfIdfVectorizer([tokenize(u) for u in all_utterances])
 
     def rank_articles(self, query: str) -> List[RankedMatch]:
-        """Rank knowledge base articles by relevance.
-
-        Confidence is the best cosine similarity between any query segment and
-        any utterance in the article, as scored by the sentence embedding model.
-        Segments are split on sentence boundaries and paragraph breaks so that
-        greetings and sign-offs do not dilute the actual question.
-        """
-        segments = [s.strip() for s in re.split(r"[.!?]+|\n\n+", query) if s.strip()]
-        if not segments:
-            segments = [query]
-
-        segment_embeddings = self.embedding_model.encode(segments)
-
+        """Rank knowledge base articles by relevance using embeddings or TF-IDF fallback."""
         num_articles = len(self.knowledge_base.articles)
         confidence_scores: List[float] = [0.0] * num_articles
 
-        for seg_emb in segment_embeddings:
-            utt_sims = self.embedding_model.similarities(seg_emb, self._utterance_embeddings)
+        if self.embedding_model is not None and self._utterance_embeddings is not None:
+            segments = [s.strip() for s in re.split(r"[.!?]+|\n\n+", query) if s.strip()] or [query]
+            segment_embeddings = self.embedding_model.encode(segments)
+            for seg_emb in segment_embeddings:
+                utt_sims = self.embedding_model.similarities(seg_emb, self._utterance_embeddings)
+                for utter_idx, art_idx in enumerate(self._utterance_article_indices):
+                    sim = float(utt_sims[utter_idx])
+                    if sim > confidence_scores[art_idx]:
+                        confidence_scores[art_idx] = sim
+        elif self._utterance_tfidf is not None:
+            from .text_processing import tokenize
+            utt_sims = self._utterance_tfidf.similarities(tokenize(query))
             for utter_idx, art_idx in enumerate(self._utterance_article_indices):
-                sim = float(utt_sims[utter_idx])
+                sim = utt_sims[utter_idx]
                 if sim > confidence_scores[art_idx]:
                     confidence_scores[art_idx] = sim
 
