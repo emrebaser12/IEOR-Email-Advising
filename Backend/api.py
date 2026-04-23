@@ -1239,7 +1239,7 @@ def ingest_email(email_in: EmailIn):
             uni=email_in.uni,
             email_address=email_in.email_address,
             subject=email_in.subject,
-            body=email_in.body,
+            body=latest_body,
             confidence=confidence,
             status=status,
             suggested_reply=suggested_reply,
