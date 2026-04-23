@@ -105,14 +105,12 @@ function getWaitingTime(received_at: string): WaitingTimeInfo {
     label = hours > 0 ? `${diffDays}d ${hours}h` : `${diffDays}d`;
   }
 
-  // Determine urgency level
+  // Determine urgency level: yellow after 2 days, red after 5 days
   let urgency: "low" | "medium" | "high" | "critical";
-  if (diffHours < 4) {
+  if (diffDays < 2) {
     urgency = "low";
-  } else if (diffHours < 12) {
+  } else if (diffDays < 5) {
     urgency = "medium";
-  } else if (diffHours < 24) {
-    urgency = "high";
   } else {
     urgency = "critical";
   }
@@ -1445,8 +1443,6 @@ export default function EmailsTab() {
                             ? "bg-green-100 text-green-800"
                             : waitTime.urgency === "medium"
                             ? "bg-yellow-100 text-yellow-800"
-                            : waitTime.urgency === "high"
-                            ? "bg-orange-100 text-orange-800"
                             : "bg-red-100 text-red-800"
                         }`}
                       >
