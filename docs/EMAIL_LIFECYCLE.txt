@@ -1,0 +1,187 @@
+EMAIL LIFECYCLE
+=====================================
+Last updated: 2026-03-24
+Relevant files: Backend/api.py (ingest_email, sync_emails endpoints)
+                Backend/email_advising/advisor.py
+                Backend/email_advising/personal_guardrails.py
+
+
+=====================================
+OVERVIEW
+=====================================
+
+Every email goes through the same pipeline regardless of whether it
+arrives via Gmail sync or manual ingestion. Here is the full path
+from arrival to send.
+
+
+=====================================
+STEP-BY-STEP LIFECYCLE
+=====================================
+
+STEP 1: EMAIL ARRIVES
+─────────────────────
+Two ways an email enters the system:
+
+  A. Gmail Sync (POST /emails/sync)
+     - System pulls unread Gmail messages via the Gmail API
+     - Decodes raw email bytes → extracts subject, sender, body
+     - Extracts UNI from sender address (e.g., abc1234@columbia.edu → abc1234)
+     - Deduplication check: if subject + body already exists in DB → skip
+     - Marks Gmail message as read
+
+  B. Manual Ingest (POST /emails/ingest)
+     - Frontend or script sends a JSON payload directly
+     - Used for testing or one-off ingestion
+
+STEP 2: PERSONAL GUARDRAIL CHECK
+─────────────────────────────────
+File: personal_guardrails.py
+
+The email body is scanned for sensitive keywords and phrases BEFORE any
+AI scoring. See HOW_PERSONAL_EMAIL_DETECTION_WORKS.txt for full details.
+
+  If personal content is detected:
+    → status = "personal"
+    → suggested_reply = standard "flagged for personal attention" message
+    → SKIP steps 3 and 4
+    → GO TO step 5 (store in DB)
+
+STEP 3: ADVISOR SCORING
+─────────────────────────
+File: email_advising/advisor.py
+
+If NOT personal:
+  1. MetadataExtractor pulls student name, term, deadlines from the email text
+  2. All KB articles are scored against the email (TF-IDF + Jaccard similarity)
+  3. Best match selected; confidence score computed (0.0 – 1.0)
+  4. Routing decision made:
+       confidence < review_threshold (0.55)  → needs_review (no match)
+       top 2 matches within ambiguity_gap    → needs_review (ambiguous)
+       confidence >= review_threshold        → proceed to compose reply
+
+  5. Reply template is filled in with metadata placeholders
+  6. Reference documents are retrieved via RAG and appended to reply
+  7. Returns: confidence, suggested_reply, decision, reasons
+
+  See HOW_CONFIDENCE_SCORING_WORKS.txt for full scoring details.
+
+STEP 4: STATUS ASSIGNMENT
+──────────────────────────
+File: api.py > ingest_email()
+
+The email's status is set based on the advisor result:
+
+  "personal"  → personal guardrail was triggered (set in step 2)
+  "auto"      → confidence >= auto_send_threshold (default 0.95)
+                AND advisor decision was not needs_review
+  "review"    → everything else (low confidence, ambiguous, missing placeholders)
+
+STEP 5: STORED IN DATABASE
+────────────────────────────
+File: api.py (SQLite via SQLAlchemy)
+
+The email is saved to the emails table with all fields:
+  student_name, uni, email_address, subject, body,
+  confidence, status, suggested_reply, received_at
+
+Status at this point:
+  "personal" → never auto-sent
+  "review"   → waiting for advisor
+  "auto"     → will be auto-sent IF settings allow it (see step 6)
+
+STEP 6: AUTO-SEND (if applicable)
+───────────────────────────────────
+File: api.py > ingest_email()
+
+Conditions for auto-send:
+  1. status == "auto"
+  2. settings.auto_send_enabled == True (toggle in Settings tab)
+  3. email_address (sender) is known
+  4. Gmail credentials are valid and connected
+
+If ALL conditions are met:
+  → Email is sent via Gmail API
+  → status updated to "sent"
+  → approved_at timestamp recorded
+
+If auto_send_enabled is False OR Gmail is not connected:
+  → Email stays as "auto" (pending send — shown in "Pending Send" tab in UI)
+  → Advisor can manually send it from the UI
+
+If the auto-send attempt fails (network error, etc.):
+  → Status stays as "auto" (not "sent")
+  → Error is logged but does not crash the system
+
+STEP 7: ADVISOR REVIEW (for review/personal/auto emails)
+──────────────────────────────────────────────────────────
+In the UI, advisors can:
+
+  "Needs Review" tab → emails with status "review" or "personal"
+    - Read the original email
+    - Read the suggested reply draft
+    - Edit the reply text
+    - Approve and send (calls POST /emails/{id}/send)
+    - Reject / delete the email
+
+  "Pending Send" tab → emails with status "auto" (not yet sent)
+    - These were high-confidence but auto_send_enabled was off
+    - Advisor can review and send, or edit first
+
+  "Sent" tab → emails with status "sent"
+    - Read-only history of sent replies
+
+STEP 8: SEND VIA GMAIL API
+────────────────────────────
+File: api.py > send_email_via_gmail_api()
+
+When an advisor clicks "Send":
+  1. Gmail OAuth credentials are loaded from gmail_token.json
+  2. Email is composed as a multipart message (plain text + HTML)
+  3. Sent via Gmail API (users.messages.send)
+  4. Email record updated: status = "sent", approved_at = now()
+
+
+=====================================
+STATUS VALUES SUMMARY
+=====================================
+
+  "review"    → Needs human review. Low confidence or ambiguous match.
+  "personal"  → Flagged as sensitive. Always needs human review.
+  "auto"      → High confidence match. Ready to send (or pending if auto-send is off).
+  "sent"      → Reply has been sent (either auto or manually by advisor).
+
+
+=====================================
+FLOW DIAGRAM
+=====================================
+
+  Email arrives (Gmail sync or manual ingest)
+       │
+       ▼
+  Personal guardrail check
+       │
+       ├─ IS personal ──→ status="personal" → store → await advisor
+       │
+       └─ NOT personal
+            │
+            ▼
+       Advisor scoring (confidence 0–1)
+            │
+            ├─ confidence < 0.55 ──→ status="review" → store → await advisor
+            │
+            ├─ ambiguous (top 2 close) → status="review" → store → await advisor
+            │
+            └─ confidence >= 0.55
+                 │
+                 ├─ confidence < 0.95 → status="review" → store → await advisor
+                 │
+                 └─ confidence >= 0.95
+                      │
+                      └─ status="auto"
+                           │
+                           ├─ auto_send_enabled=True + Gmail connected
+                           │    └─ send immediately → status="sent"
+                           │
+                           └─ auto_send_enabled=False or no Gmail
+                                └─ store as "auto" → advisor sends manually

@@ -1,0 +1,194 @@
+IEOR EMAIL ADVISING - FILE INVENTORY
+=====================================
+Purpose: Track all files, what they do, and whether they're needed.
+Last updated: 2026-03-24
+
+=====================================
+ROOT
+=====================================
+
+.gitignore          - Excludes venv, node_modules, .next, .env, .db, .DS_Store from git
+README.md           - Project overview and setup instructions
+FILE_INVENTORY.txt  - This file
+
+
+=====================================
+BACKEND/
+=====================================
+
+Technology: Python, FastAPI, SQLAlchemy, Google Gmail API
+Entry point: uvicorn api:app --reload --port 8000
+
+--- Core ---
+
+api.py              - Main FastAPI app. Defines all REST endpoints (emails, metrics,
+                      settings, Gmail auth, knowledge base, reference corpus).
+                      This is the backend's single entry point.
+
+requirements.txt    - Python dependencies. Pin versions here.
+                      Key packages: fastapi, uvicorn, sqlalchemy, pydantic,
+                      google-api-python-client, python-dotenv
+
+--- email_advising/ package ---
+
+__init__.py         - Package init (empty or minimal)
+__main__.py         - CLI entry point (python -m email_advising)
+cli.py              - Command-line interface utilities
+advisor.py          - Core routing engine. Matches incoming emails to knowledge base
+                      entries and decides auto-send vs. manual review.
+composers.py        - Builds draft reply text from templates/KB entries
+knowledge_base.py   - Loads and manages the knowledge base (knowledge_base.json)
+metadata.py         - Auto-extracts student metadata from email text
+                      (names, deadlines, course codes, etc.)
+models.py           - Pydantic data models shared across the package
+personal_guardrails.py - Detects personal/sensitive emails that should NOT be
+                         auto-replied (e.g., mental health, emergencies)
+rag.py              - Retrieval-augmented generation logic for finding relevant KB entries
+similarity.py       - TF-IDF similarity scoring between incoming emails and KB
+text_processing.py  - Tokenization, normalization, stopword removal
+
+--- data/ ---
+
+knowledge_base.json   - Advisor response templates for common student questions.
+                        Editable via the UI (Settings > Knowledge Base).
+reference_corpus.json - Supporting reference documents used to improve RAG matching.
+                        Editable via the UI (Settings > Reference Corpus).
+gmail_token.json      - Google OAuth token (GITIGNORED - do not commit)
+emails.db             - SQLite database storing all email records (GITIGNORED)
+
+--- tests/ ---
+
+test_advisor.py     - Unit tests for advisor.py routing logic. Only test file currently.
+
+--- venv/ ---
+
+venv/               - Python virtual environment (GITIGNORED). Run:
+                      python -m venv venv && pip install -r requirements.txt
+
+
+=====================================
+FRONTEND/
+=====================================
+
+Technology: Next.js 14+, React 19, TypeScript, Tailwind CSS v4, shadcn/ui
+Entry point: npm run dev (port 3000)
+
+--- Config ---
+
+package.json        - Node dependencies and scripts (dev, build, start, lint)
+package-lock.json   - Lockfile. Do not edit manually.
+tsconfig.json       - TypeScript config. Path alias @/* maps to root.
+next-env.d.ts       - Auto-generated Next.js type definitions. Do not edit.
+components.json     - shadcn/ui configuration (component style, paths, etc.)
+.next/              - Build output (GITIGNORED)
+node_modules/       - Installed packages (GITIGNORED)
+
+--- app/ (Next.js App Router pages) ---
+
+app/layout.tsx      - Root layout. Wraps all pages with Providers and global font.
+app/page.tsx        - Main page. Renders the full application shell (sidebar + tabs).
+app/providers.tsx   - Wraps the app in ThemeProvider for dark/light mode.
+app/globals.css     - Global CSS. Defines CSS variables for light/dark themes,
+                      Tailwind base styles, and custom animations.
+
+--- components/ (feature components) ---
+
+sidebar-nav.tsx        - Left sidebar with tab navigation (Emails, Analytics, Settings)
+header-top.tsx         - Top bar with app title and dark mode toggle
+emails-tab.tsx         - Main email view. Has three sub-views:
+                           Needs Review | Pending Send | Sent
+manual-review-table.tsx - Table of emails flagged for advisor review.
+                          Shows confidence score, subject, suggested reply, actions.
+auto-sent-table.tsx    - Table of auto-sent and pending-send emails.
+analytics-tab.tsx      - Analytics dashboard with charts and metrics
+metrics-cards.tsx      - Summary metric cards (total, auto-sent, reviewed, etc.)
+settings-tab.tsx       - Settings panel (Gmail auth, auto-send threshold,
+                         knowledge base editor, reference corpus editor)
+confidence-badge.tsx   - Colored badge showing confidence % (high/medium/low)
+draft-badge.tsx        - Badge indicating draft status
+theme-provider.tsx     - next-themes ThemeProvider wrapper
+sample-emails.ts       - Hardcoded sample email data for UI development/testing
+
+--- components/ui/ (shadcn/ui component library - 51 components) ---
+
+These are mostly auto-generated by shadcn. Only modify if customizing behavior.
+Commonly used ones:
+
+button.tsx          - Button component (variants: default, outline, ghost, etc.)
+badge.tsx           - Small label badge
+card.tsx            - Card container with header/content/footer
+table.tsx           - Data table primitives
+dialog.tsx          - Modal dialog
+sheet.tsx           - Slide-in panel (used for mobile nav or detail views)
+tabs.tsx            - Tab navigation primitives
+input.tsx           - Text input
+textarea.tsx        - Multi-line text input
+select.tsx          - Dropdown select
+switch.tsx          - Toggle switch
+label.tsx           - Form label
+separator.tsx       - Horizontal/vertical divider
+tooltip.tsx         - Hover tooltip
+dropdown-menu.tsx   - Dropdown menu
+popover.tsx         - Floating popover
+alert.tsx           - Alert/notification box
+progress.tsx        - Progress bar
+skeleton.tsx        - Loading skeleton placeholder
+spinner.tsx         - Loading spinner
+scroll-area.tsx     - Custom scrollbar container
+chart.tsx           - Recharts wrapper for analytics charts
+calendar.tsx        - Date picker calendar
+form.tsx            - react-hook-form integration
+command.tsx         - Command palette (search + actions)
+sidebar.tsx         - Sidebar layout primitive (used by sidebar-nav.tsx)
+accordion.tsx       - Expandable accordion
+breadcrumb.tsx      - Breadcrumb nav
+carousel.tsx        - Image/content carousel
+checkbox.tsx        - Checkbox input
+context-menu.tsx    - Right-click context menu
+drawer.tsx          - Bottom/side drawer
+empty.tsx           - Empty state placeholder
+hover-card.tsx      - Hover info card
+input-otp.tsx       - OTP input
+item.tsx            - Generic list item
+kbd.tsx             - Keyboard shortcut display
+menubar.tsx         - Top menubar
+navigation-menu.tsx - Navigation menu primitive
+pagination.tsx      - Page navigation
+radio-group.tsx     - Radio button group
+resizable.tsx       - Resizable panels
+toggle.tsx          - Toggle button
+aspect-ratio.tsx    - Fixed aspect ratio container
+alert-dialog.tsx    - Confirmation dialog (destructive actions)
+button-group.tsx    - Grouped button row
+field.tsx           - Form field wrapper
+
+--- hooks/ ---
+
+use-mobile.ts       - Returns true if viewport is mobile-sized. Used for responsive layout.
+use-toast.ts        - Toast notification hook (wraps sonner)
+
+--- lib/ ---
+
+utils.ts            - cn() helper (merges Tailwind classes with clsx + tailwind-merge)
+constants.ts        - App-wide constants (API base URL, threshold defaults, etc.)
+
+
+=====================================
+NOTES
+=====================================
+
+Files that are safe to delete:
+- sample-emails.ts (if you switch fully to real API data)
+- Any unused shadcn/ui components in components/ui/ (check imports before deleting)
+
+Files NOT to delete:
+- api.py (entire backend lives here)
+- advisor.py, rag.py, similarity.py (core AI logic)
+- knowledge_base.json, reference_corpus.json (production data)
+- emails-tab.tsx, settings-tab.tsx (main UI views)
+- utils.ts, constants.ts (used everywhere)
+
+Secrets / never commit:
+- Backend/gmail_token.json
+- Backend/emails.db
+- Any .env files
