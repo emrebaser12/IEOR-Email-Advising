@@ -1,4 +1,5 @@
 import os
+import re
 import json
 import base64
 import ipaddress
@@ -888,6 +889,45 @@ def extract_text_from_email(msg: email.message.Message) -> str:
             return ""
 
 
+_QUOTED_PATTERNS = re.compile(
+    r"""
+    # "On <date>, <name> wrote:" style reply headers
+    ^\s*On\s+.+wrote:\s*$
+    |
+    # Outlook-style "From: ... Sent: ... To: ... Subject: ..." block
+    ^\s*From:\s+.+
+    |
+    # Gmail/Outlook divider lines
+    ^\s*-{3,}.*Original\s+Message.*-{3,}\s*$
+    |
+    # Forwarded message header
+    ^\s*-{3,}\s*Forwarded\s+message\s*-{3,}\s*$
+    """,
+    re.VERBOSE | re.IGNORECASE | re.MULTILINE,
+)
+
+
+def parse_email_chain(body: str) -> tuple[str, str]:
+    """Split an email body into (latest_message, prior_chain).
+
+    Returns the text the sender just wrote and everything quoted below it.
+    If there is no quoted content, prior_chain is an empty string.
+    """
+    lines = body.splitlines()
+    cutoff = len(lines)
+    for i, line in enumerate(lines):
+        stripped = line.strip()
+        if stripped.startswith(">"):
+            cutoff = i
+            break
+        if _QUOTED_PATTERNS.match(line):
+            cutoff = i
+            break
+    latest = "\n".join(lines[:cutoff]).strip()
+    prior = "\n".join(lines[cutoff:]).strip()
+    return latest, prior
+
+
 def send_email_via_gmail_api(
     creds: Credentials,
     from_addr: str,
@@ -1149,11 +1189,13 @@ def ingest_email(email_in: EmailIn):
     """
     received_at = email_in.received_at or datetime.utcnow()
 
-    # Run advisor on the body (what the student actually wrote)
-    result = advisor.process_query(
-        email_in.body,
-        {"student_name": email_in.student_name},
-    )
+    # Split chain: use only the latest message for semantic ranking/metadata,
+    # but pass the prior chain to the composer for LLM context.
+    latest_body, prior_chain = parse_email_chain(email_in.body)
+    query_metadata: dict = {"student_name": email_in.student_name}
+    if prior_chain:
+        query_metadata["_conversation_history"] = prior_chain
+    result = advisor.process_query(latest_body, query_metadata)
 
     confidence = float(result.confidence or 0.0)
     suggested_reply = result.body
@@ -1292,7 +1334,8 @@ def sync_emails(limit: int = Query(default=20, ge=1, le=100)):
 
             from_name, from_addr = parseaddr(msg.get("From", ""))
 
-            body = extract_text_from_email(msg)
+            latest_body, prior_chain = parse_email_chain(extract_text_from_email(msg))
+            body = latest_body
             if not body.strip():
                 # Mark as read but skip storing empty messages
                 service.users().messages().modify(
@@ -1317,10 +1360,10 @@ def sync_emails(limit: int = Query(default=20, ge=1, le=100)):
                 ).execute()
                 continue
 
-            result = advisor.process_query(
-                body,
-                {"student_name": from_name},
-            )
+            sync_metadata: dict = {"student_name": from_name}
+            if prior_chain:
+                sync_metadata["_conversation_history"] = prior_chain
+            result = advisor.process_query(body, sync_metadata)
             confidence = float(result.confidence or 0.0)
             suggested_reply = result.body
 

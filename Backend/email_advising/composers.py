@@ -104,16 +104,18 @@ class LLMGenerativeComposer(EmailComposer):
         metadata: Dict[str, str],
         references: Sequence[AdvisorReference],
     ) -> str:
+        metadata = dict(metadata)
+        conversation_history = metadata.pop("_conversation_history", None)
+
         reference_lines = []
         for index, reference in enumerate(references, start=1):
             url_part = reference.url or "internal resource"
             snippet = reference.snippet or ""
             reference_lines.append(f"[{index}] {reference.title} ({url_part}) - {snippet}")
         reference_block = "\n".join(reference_lines) if reference_lines else "No reference documents matched."
-        
+
         metadata_lines = "\n".join(f"- {key}: {value}" for key, value in metadata.items()) or "(no additional metadata provided)"
-        
-        # Build knowledge base context from the article
+
         kb_context = f"""
 Knowledge Base Article:
 - Category: {", ".join(article.categories)}
@@ -122,12 +124,20 @@ Knowledge Base Article:
 - Key details to mention:
 {article.response_template}
 """
-        
+
+        history_section = ""
+        if conversation_history:
+            history_section = f"""
+Previous conversation (for context only — do NOT reply to this, use it to avoid repeating information already given):
+{conversation_history}
+
+"""
+
         prompt = textwrap.dedent(
             f"""
-            You are an experienced academic advisor. A student has asked a question, and you have relevant knowledge base information to craft a response.
-
-            Student's Question:
+            You are an experienced academic advisor. A student has sent a message, and you have relevant knowledge base information to craft a response.
+            {history_section}
+            Student's latest message (reply to this):
             {query}
 
             Relevant Knowledge Base Article:
@@ -139,7 +149,7 @@ Knowledge Base Article:
             Supporting References (cite these using [number] notation in your response):
             {reference_block}
 
-            Write a {self.style} email response. Be helpful, warm, and specific. Include relevant details from the knowledge base article. Do not include a references or links section — links will be shown separately in the UI.
+            Write a {self.style} email response addressing only the student's latest message above. Be helpful, warm, and specific. Include relevant details from the knowledge base article. Do not include a references or links section — links will be shown separately in the UI.
 
             Always end the body with exactly this sign-off on its own lines, preceded by a blank line:
 
@@ -221,12 +231,24 @@ class LLMEmailComposer(EmailComposer):
             snippet = reference.snippet or ""
             reference_lines.append(f"[{index}] {reference.title} ({url_part}) - {snippet}")
         reference_block = "\n".join(reference_lines) if reference_lines else "No reference documents matched."
+        metadata = dict(metadata)
+        conversation_history = metadata.pop("_conversation_history", None)
+
         metadata_lines = "\n".join(f"- {key}: {value}" for key, value in metadata.items()) or "(no additional metadata provided)"
+
+        history_section = ""
+        if conversation_history:
+            history_section = f"""
+Previous conversation (for context only — do NOT reply to this, use it to avoid repeating information already given):
+{conversation_history}
+
+"""
+
         prompt = textwrap.dedent(
             f"""
             You are an experienced academic advisor. Compose a {self.style} email reply using the guidance below.
-
-            Student question:
+            {history_section}
+            Student's latest message (reply to this):
             {query}
 
             Base template (use this as structured guidance, but improve tone and clarity):
