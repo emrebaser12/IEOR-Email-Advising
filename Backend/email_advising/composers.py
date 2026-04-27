@@ -49,9 +49,9 @@ class TemplateEmailComposer(EmailComposer):
 
     @staticmethod
     def _format_links(references: Sequence[AdvisorReference]) -> str:
-        lines = ["Useful resources:"]
-        for ref in references:
-            lines.append(f"• {ref.title}: {ref.url}")
+        lines = ["Resources:"]
+        for index, ref in enumerate(references, start=1):
+            lines.append(f"[{index}] {ref.title}: {ref.url}")
         return "\n".join(lines)
 
 
