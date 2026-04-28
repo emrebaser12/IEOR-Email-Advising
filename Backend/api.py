@@ -1589,14 +1589,15 @@ def send_email_reply(email_id: int, payload: Optional[SendEmailRequest] = None):
 # =====================================================
 
 ADVISOR_EMAILS = {
-    "Winsor":   "lj2574@columbia.edu",
-    "Kelly":    "lj2574@columbia.edu",
-    "Sabrina":  "lj2574@columbia.edu",
-    "Samantha": "lj2574@columbia.edu",
-    "Christine":"lj2574@columbia.edu",
-    "Jean":     "lj2574@columbia.edu",
+    "Winsor":   "wy2396@columbia.edu",
+    "Kelly":    "kk3813@columbia.edu",
+    "Sabrina":  "sl5163@columbia.edu",
+    "Samantha": "sas2538@columbia.edu",
+    "Christine":"cc5201@columbia.edu",
+    "Jean":     "jf2827@columbia.edu",
+    "Monique":  "dh3347@columbia.edu",
 }
-FORWARD_FALLBACK = "lj2574@columbia.edu"
+FORWARD_FALLBACK = "rr3542@columbia.edu"
 
 
 @app.post("/emails/{email_id}/forward")
