@@ -1,0 +1,1229 @@
+[
+  {
+    "id": "defer_admission",
+    "subject": "Deferring Admission Offers",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can we defer admission offers?",
+      "Can I defer my admission?",
+      "Is deferral possible?",
+      "I want to defer my admission to next year."
+    ],
+    "response_template": "Hello {student_name},\n\nThere is no option to defer admission offers. However, candidates who have applied and were admitted to a Columbia Engineering graduate program, but did not attend, may reactivate their applications for one of the two terms following their original application. Candidates who do not request reactivation for one of the two terms following their original application are required to submit a new application. Please be aware that candidates who reactivate their applications are essentially reapplying for admission. Applicants who were not previously admitted cannot use the reactivation application process to apply again.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "waitlist_notification",
+    "subject": "Waitlist Decision Timeline",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "When will I know if I am off the waitlist?",
+      "How long will it take to hear back from the waitlist?",
+      "I am on the waitlist, when will I get a decision?"
+    ],
+    "response_template": "Hello {student_name},\n\nWe are unable to provide an exact date of when your application decision will be available, nor can we expedite the application review process. Applications are reviewed by a small admissions committee. Be assured, you will be notified of the result of your application review as soon as possible.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "admission_results_delay",
+    "subject": "Delayed Admission Results",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "I still have not received my admission results.",
+      "Why haven't I heard back about my application?",
+      "My admission decision is taking a long time."
+    ],
+    "response_template": "Hello {student_name},\n\nWe apologize for the delay. However, we have received a high volume of applications this year and are doing our best to get through them all. We ask that you remain patient with us during this busy time. We hope to get decisions out soon.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "application_availability",
+    "subject": "When Applications Open",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "When are applications available?",
+      "When does the application open?",
+      "When can I start my application?"
+    ],
+    "response_template": "Hello {student_name},\n\nApplications for Fall admissions are available in September.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "fall_application_deadline",
+    "subject": "Fall Admissions Application Deadline",
+    "categories": ["admissions", "graduate", "deadlines"],
+    "utterances": [
+      "When is the application deadline for Fall admissions?",
+      "What is the Fall application deadline?",
+      "When is the deadline to apply for Fall?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe application deadline for Fall admissions is January 15 for MSFE and February 15 for MSE, MSOR, MSIE, and MSBA programs. The PhD deadline is December 15.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "spring_application_deadline",
+    "subject": "Spring Admissions Application Deadline",
+    "categories": ["admissions", "graduate", "deadlines"],
+    "utterances": [
+      "When is the application deadline for Spring admissions?",
+      "What is the Spring application deadline?",
+      "When is the deadline to apply for Spring?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe application deadline for Spring admissions is October 1st.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "spring_msor_decisions",
+    "subject": "Spring MSOR Decision Timeline",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "When are Spring decisions made for Spring MSOR admissions?",
+      "When will I hear back for Spring MSOR?",
+      "What is the decision timeline for Spring MSOR?"
+    ],
+    "response_template": "Hello {student_name},\n\nSpring MSOR admissions decisions are typically released in early to mid November.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "apply_after_deadline",
+    "subject": "Applying After the Deadline",
+    "categories": ["admissions", "graduate", "deadlines"],
+    "utterances": [
+      "Can I apply for programs after the deadline?",
+      "Is it too late to apply?",
+      "Can I submit a late application?"
+    ],
+    "response_template": "Hello {student_name},\n\nYou may submit an application after the deadline, but the materials may not be reviewed if the class is full. We encourage all of our candidates to apply in a timely manner.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "admission_deposit_extension",
+    "subject": "Admission Deposit Extension",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can I get an extension for my admission deposit?",
+      "I need more time to pay my deposit.",
+      "Can the deposit deadline be extended?"
+    ],
+    "response_template": "Hello {student_name},\n\nPlease find the deposit extension request URL below:\nhttps://apply.engineering.columbia.edu/register/fa21-deadline-extension-request\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "priority_deadline",
+    "subject": "Priority Application Deadline",
+    "categories": ["admissions", "graduate", "deadlines"],
+    "utterances": [
+      "Do you have a priority deadline?",
+      "What is the priority deadline?",
+      "Is there an early deadline?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe priority deadline for MSOR, MSIE, MSBA, and MSE programs is January 15th.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "evaluate_candidacy",
+    "subject": "Pre-Application Candidacy Evaluation",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can you look at my resume and transcript ahead of time?",
+      "Can someone review my application before I submit?",
+      "Can I get feedback on my candidacy before applying?",
+      "Am I admissible?",
+      "Can someone on your team evaluate my candidacy prior to applying?"
+    ],
+    "response_template": "Hello {student_name},\n\nUnfortunately, we cannot evaluate your candidacy prior to submission of a complete application. If you are interested in admission, we encourage you to submit a complete application along with the required documents.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "additional_documents",
+    "subject": "Submitting Additional Application Documents",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can I submit additional documents to my application?",
+      "How do I add materials to my application?",
+      "I have extra documents I want to include."
+    ],
+    "response_template": "Hello {student_name},\n\nYou are welcome to include any additional documents in the same PDF file as your personal statement.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "apply_multiple_programs",
+    "subject": "Applying to Multiple Programs",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can I apply to more than one M.S. degree?",
+      "Can I apply to two programs at the same time?",
+      "Can I apply to two programs during a given application cycle?"
+    ],
+    "response_template": "Hello {student_name},\n\nYou may only apply to one program in Columbia Engineering. However, you may apply to more than one program in the same application cycle as long as the other program is not in Columbia Engineering. The Columbia Engineering School has a strict policy in regards to applying to only one program within the school. Since our MS programs (MSOR, MSIE, MSBA, MS&E, MSFE) are all in the Engineering School, you may only apply to one of our MS programs per cycle.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "three_year_degree",
+    "subject": "Applying with a 3-Year Undergraduate Degree",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can I apply if my undergraduate degree is only 3 years?",
+      "I have a 3-year degree, can I still apply?",
+      "Is a 3-year bachelor's degree accepted?"
+    ],
+    "response_template": "Hello {student_name},\n\nYou are welcome to apply to our programs with only 3 years of undergraduate experience. However, we recommend having a 4-year degree in order to cover all the prerequisites for the program. While there are no official prerequisites for our programs, we do ask that our students have a background in multivariable calculus, linear algebra, and probability & statistics. It would also help if you have some knowledge of computer languages C++, Python, and Matlab. Overall, we place the highest priority on quantitative skills, followed by programming experience, and internship/work experience.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "part_time_programs",
+    "subject": "Part-Time Program Options",
+    "categories": ["admissions", "graduate", "programs"],
+    "utterances": [
+      "Do you have part time programs?",
+      "Can I study part time?",
+      "Is part-time enrollment available?"
+    ],
+    "response_template": "Hello {student_name},\n\nAll programs can be taken full time. Only MSOR can be taken part-time.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "required_majors",
+    "subject": "Required Undergraduate Majors for MS Admissions",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Do you require certain majors for MS admissions?",
+      "What undergraduate major do I need to apply?",
+      "Can I apply with a non-engineering background?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe basic requirement for admission as a graduate student is the bachelor's degree from an institution of acceptable standing. Ordinarily, the applicant will have majored in the field in which graduate study is intended, but in certain programs preparation in a related field of engineering or science is acceptable. The applicant will be admitted only if the undergraduate record shows promise of productive and effective graduate work.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "quantitative_background",
+    "subject": "Quantitative Background for Admissions",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Do I need a quantitative background for admissions?",
+      "What math background is required?",
+      "How strong does my quantitative background need to be?"
+    ],
+    "response_template": "Hello {student_name},\n\nIt would be helpful to take graduate level courses in probability, stochastic calculus, and optimization (based on linear algebra). Online courses offered directly by universities are fine as long as there are concrete performance metrics (grades) given. MOOCs (Edx and Coursera) are less ideal.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "admission_statistics",
+    "subject": "Admission Rate and Statistics",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "How many students apply and are admitted?",
+      "What is your acceptance rate?",
+      "How competitive is the program?"
+    ],
+    "response_template": "Hello {student_name},\n\nIn regards to admission rate, our enrollment numbers vary from year to year. We have a 10–15% acceptance rate across all five of our IEOR programs.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "low_gpa",
+    "subject": "Applying with a Low GPA",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "What if I have a low GPA?",
+      "Can I still apply with a GPA below 3.5?",
+      "What is the minimum GPA for admission?"
+    ],
+    "response_template": "Hello {student_name},\n\nPlease be advised that Columbia Engineering School's minimum requirement is a 3.0 GPA. Most of our admitted students generally earn a 3.5 GPA or higher, and typically score at least 150 on the quantitative portion of the GRE.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "transfer_students",
+    "subject": "Transfer Student Admissions",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Do you accept transfer students?",
+      "Can I transfer into the IEOR graduate program?",
+      "I want to transfer from another school."
+    ],
+    "response_template": "Hello {student_name},\n\nUnfortunately, we do not accept transfer students. You are welcome to apply to the program when the application becomes available. Please see our website for admissions information.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "phd_transfer",
+    "subject": "Transferring from Another PhD Program",
+    "categories": ["admissions", "graduate", "phd"],
+    "utterances": [
+      "Can I transfer from a different PhD program?",
+      "I am in a PhD program at another school, can I transfer to Columbia IEOR?",
+      "Can I transfer my PhD credits to Columbia?"
+    ],
+    "response_template": "Hello {student_name},\n\nUnfortunately, we do not permit direct transfers from other universities nor other departments within Columbia. Therefore, if you are interested in pursuing your PhD in our IEOR department, we strongly urge you to apply through the standard application process.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "reactivate_application",
+    "subject": "Reactivating a Previous Application",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "How do I reactivate an application?",
+      "I was admitted before but didn't attend. Can I reactivate?",
+      "What is the reactivation process?"
+    ],
+    "response_template": "Hello {student_name},\n\nStudents will need to fill out the reactivation form here: https://apply.engineering.columbia.edu/register/reactivation_form. Please reach out to seasgradmit@columbia.edu for more information regarding reactivation.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "grad_prerequisites",
+    "subject": "Prerequisites for Graduate Programs",
+    "categories": ["admissions", "graduate", "requirements"],
+    "utterances": [
+      "Are there prerequisites for your programs?",
+      "What courses do I need before applying?",
+      "What background is required for the MS programs?"
+    ],
+    "response_template": "Hello {student_name},\n\nThere are no official mandatory prerequisites for our programs. However, we do ask that our students have a background in multivariable calculus, linear algebra, and probability & statistics. It would also help if you have some knowledge of computer languages C++, Python, and Matlab. We place the highest priority on quantitative skills, followed by math grades, programming experience, and internship/work experience.\n\nFor our MSOR & MSIE programs, we highly recommend that students have completed:\n• 1 course on multivariate calculus\n• 1 course on linear algebra\n• 1 additional math course (e.g., differential equations, discrete math, real analysis)\n• 1 course on probability (or a joint course in probability and statistics)\n\nProgramming experience is preferred and admitted students without sufficient experience will be required to take a programming-based course.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ms_phd_track_vs_msor",
+    "subject": "Difference Between MS/PhD Track and MSOR",
+    "categories": ["admissions", "graduate", "programs", "phd"],
+    "utterances": [
+      "What is the difference between the Operations Research MS/PhD track and the MSOR?",
+      "Should I apply for the MS/PhD track or the MSOR?",
+      "What is the MS/PhD track?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe MS/PhD track is for students who do not already have a master's degree before applying. MS/PhD track students do not need to reapply — track students are considered PhD students, but you earn your MS while you're here and you begin your PhD courses from the start. If you already have an MS, you would apply for the PhD only.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "gmat",
+    "subject": "GMAT Test Requirement",
+    "categories": ["admissions", "graduate", "test_scores"],
+    "utterances": [
+      "Do you take the GMAT?",
+      "Is the GMAT accepted?",
+      "Can I submit GMAT scores instead of GRE?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe GMAT exam is not a requirement for the application, though it may be included as supplementary material. If you would like to submit the scores as additional material, you should submit the score report with your personal statement file.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "gre_code",
+    "subject": "GRE Score Submission Code",
+    "categories": ["admissions", "graduate", "test_scores"],
+    "utterances": [
+      "What is the code to submit GRE scores?",
+      "What is Columbia's GRE institution code?",
+      "How do I send my GRE scores to Columbia?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe Columbia University GRE institution code is 2111. It is not necessary to enter the department code.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "gre_scores_timing",
+    "subject": "GRE Score Submission Timing",
+    "categories": ["admissions", "graduate", "test_scores", "deadlines"],
+    "utterances": [
+      "When can I send in my GRE scores?",
+      "Can I submit GRE scores after the deadline?",
+      "I am taking the GRE close to the deadline."
+    ],
+    "response_template": "Hello {student_name},\n\nAs long as you take the GRE before the deadline and are thus able to self-report your scores in the online application, we can receive the official score report from ETS after the deadline has passed. You will be able to update your score after submission, but you cannot update your GRE score once your application is under review.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "expired_gre",
+    "subject": "Expired GRE Scores",
+    "categories": ["admissions", "graduate", "test_scores"],
+    "utterances": [
+      "What if my GRE scores expired?",
+      "My GRE scores are about to expire.",
+      "Will you accept expired GRE scores?"
+    ],
+    "response_template": "Hello {student_name},\n\nAs long as you submit a complete application prior to the GRE test expiration date, we will consider your scores.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "average_gre",
+    "subject": "Average GRE Score of Admitted Students",
+    "categories": ["admissions", "graduate", "test_scores"],
+    "utterances": [
+      "What is your average GRE score?",
+      "What GRE score do I need to get in?",
+      "What GRE scores do admitted students have?"
+    ],
+    "response_template": "Hello {student_name},\n\nMost of our admitted students score about 150 on the quantitative section of the GRE and 100 on the TOEFL. However, please note that this is contingent on the strength of the applicant pool which varies from year to year.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "minimum_gre",
+    "subject": "Minimum GRE Score",
+    "categories": ["admissions", "graduate", "test_scores"],
+    "utterances": [
+      "What is your minimum GRE score?",
+      "Is there a GRE cutoff?",
+      "What is the lowest GRE score you accept?"
+    ],
+    "response_template": "Hello {student_name},\n\nThere is no minimum GRE score, but most admitted applicants have scores of 150 (650 on the old version) or higher on the Quantitative section of the test, and 2.5 or higher on the Analytical Writing section of the test.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "gre_required",
+    "subject": "GRE Test Requirement",
+    "categories": ["admissions", "graduate", "test_scores"],
+    "utterances": [
+      "Is the GRE test required?",
+      "Do I have to take the GRE?",
+      "Can I apply without GRE scores?"
+    ],
+    "response_template": "Hello {student_name},\n\nFor future admission cycles, we recommend preparing the GRE exam as it has historically been a hard requirement.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "toefl_required",
+    "subject": "TOEFL/English Language Test Requirement",
+    "categories": ["admissions", "graduate", "test_scores"],
+    "utterances": [
+      "Do I need to submit TOEFL scores?",
+      "Is the TOEFL required?",
+      "Do international students need an English test?",
+      "Can I waive the English language test requirement?"
+    ],
+    "response_template": "Hello {student_name},\n\nApplicants who earned their undergraduate degree in a country other than Australia, Canada, Ireland, New Zealand, Singapore, the UK, and the United States of America must submit an official score from either the TOEFL, IELTS, PTE Academic test, or Duolingo English Test with their application.\n\nOne can waive the English language test requirement if they have completed or will complete the entirety of their undergraduate or graduate degree in an English-speaking country.\n\nOnly one English language test is required.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "toefl_minimum",
+    "subject": "Minimum TOEFL/IELTS/PTE Score",
+    "categories": ["admissions", "graduate", "test_scores"],
+    "utterances": [
+      "What is the minimum TOEFL score required?",
+      "What is the minimum IELTS score?",
+      "What English test score do I need?"
+    ],
+    "response_template": "Hello {student_name},\n\nThere are no minimum test score requirements to apply for admission consideration. However, admitted students may be advised to address English proficiency needs if they scored:\n• 99 or lower on the TOEFL internet-based test\n• 599 or lower on the TOEFL paper-based test\n• 6.5 or lower on the IELTS\n• 68 or lower on the PTE Academic\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "reuse_recommendations",
+    "subject": "Reusing Previous Recommendation Letters",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can I reuse my recommendation from last year?",
+      "Can I use the same recommendation letters as my previous application?",
+      "Do I need new recommendation letters if I reapply?"
+    ],
+    "response_template": "Hello {student_name},\n\nYes, you can reuse your recommendations from last year. However, we suggest that you submit at least one new one seeing as your application last year was unsuccessful. You will need to send an email to seasgradmit@columbia.edu regarding this request and they will help facilitate the process.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "recommendation_letters",
+    "subject": "Recommendation Letter Requirements",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "What letters of recommendation should I provide?",
+      "How many recommendation letters do I need?",
+      "Who should write my recommendation letters?",
+      "Should my recommendation letters come from academic or professional references?"
+    ],
+    "response_template": "Hello {student_name},\n\nWe require three letters of recommendation. All applicants are required to submit at least 2 academic references, unless the applicant received a bachelor's degree more than 5 years prior to the date of the application. Applicants who received a bachelor's degree more than 5 years prior are strongly encouraged, but not required, to submit an academic reference. It is up to you whom you choose to write the remaining letters.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "more_recommendation_letters",
+    "subject": "Submitting More Than Three Recommendation Letters",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can I submit more than three letters of recommendation?",
+      "Can I send extra recommendation letters?",
+      "I have four recommenders, can I submit all of them?"
+    ],
+    "response_template": "Hello {student_name},\n\nYou can have more than three letters of recommendation. However, we cannot guarantee that we will review more than 3 letters.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "recommendation_personal_emails",
+    "subject": "Recommendation Letters from Personal Email Addresses",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can my recommendation letters come from personal emails?",
+      "My recommender doesn't have an institutional email.",
+      "Can a recommender use a Gmail address?"
+    ],
+    "response_template": "Hello {student_name},\n\nWe strongly recommend that recommenders send their recommendations using their institutional email address. If this is not possible, please have them include an explanation in their letter.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "recommendation_deadline",
+    "subject": "Recommendation Letter Deadline",
+    "categories": ["admissions", "graduate", "deadlines"],
+    "utterances": [
+      "What is the deadline for recommendation letters?",
+      "Can recommendation letters arrive after the deadline?",
+      "When do my recommenders need to submit their letters?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe deadline for the arrival of recommendation letters is the same as the deadline for the submission of the application. However, it is acceptable for your recommendations to arrive just a few days (e.g., a week or two) after this deadline. Be aware that your application may not receive full consideration until all recommendations have been received. If the recommendations are not received within two weeks of the deadline, the Admissions Committee will likely make a decision on your application.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "change_references",
+    "subject": "Changing Recommendation Providers",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can I change my references?",
+      "I want to switch one of my recommenders.",
+      "How do I replace a recommendation provider?"
+    ],
+    "response_template": "Hello {student_name},\n\nIf you would like to change your recommendation provider, you can add a fourth person to your recommendation provider list. If you have already submitted your application and cannot make changes yourself, you would need to contact the Office of Graduate Student Affairs at seasgradmit@columbia.edu to make the change.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "submit_transcripts",
+    "subject": "How to Submit Official Transcripts",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "How do I submit my official transcripts?",
+      "Where do I send my transcripts?",
+      "What is the transcript submission process?"
+    ],
+    "response_template": "Hello {student_name},\n\nAdmitted students who plan to enroll must submit official transcripts to Columbia Engineering. Certified and secure online official transcripts must be submitted directly to Columbia from your prior academic institution's Registrar Office to finaldocs@columbia.edu.\n\n• US institutions: submit electronic transcripts directly from your school to finaldocs@columbia.edu.\n• Chinese institutions: contact CHESICC to arrange submission of verification reports to finaldocs@columbia.edu.\n• Other international institutions: submit electronic transcripts if available; otherwise, order a Course-by-Course Evaluation through World Education Services (WES) to finaldocs@columbia.edu.\n\nWe recommend sending your most updated transcript when you submit your application.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "transcript_schools",
+    "subject": "Which Schools to Submit Transcripts From",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "What schools do I need to submit transcripts from?",
+      "Do I need transcripts from every school I attended?",
+      "Which transcripts are required?"
+    ],
+    "response_template": "Hello {student_name},\n\nFor the application, you will be required to submit official transcript copies from every post-secondary institution attended. Transcripts from all higher education level institutions are required. Please submit your most updated transcript copies when you submit your application.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "transcript_translation",
+    "subject": "Transcript Translation Requirements",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Do transcripts need to be translated?",
+      "My transcripts are in another language.",
+      "Do I need to translate my foreign transcripts?"
+    ],
+    "response_template": "Hello {student_name},\n\nWhen filling out your application, you will have the option to upload both the translated and the original official transcripts. You will need to provide at least the translated version.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "international_gpa",
+    "subject": "International GPA Conversion",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "I am an international student with a different grading scale. How do I determine my GPA?",
+      "How do I convert my grades to the US scale?",
+      "My country uses a different GPA system."
+    ],
+    "response_template": "Hello {student_name},\n\nMany translation or evaluation services can convert your grades to the U.S. scale. We recommend you use a NACES accredited evaluator to accurately determine what your GPA would be on a U.S. grading scale.\n\nIf your calculated GPA is over 4.0, just enter that value (for example, 8.7/10). For international students, we look more closely at your transcript to judge your academic performance than your overall GPA.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "transcript_mail_address",
+    "subject": "Mailing Address for Official Transcripts",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "What is the address to mail official transcripts?",
+      "Where do I mail my transcripts?",
+      "What is the mailing address for the admissions office?"
+    ],
+    "response_template": "Hello {student_name},\n\nPlease mail your official transcripts after you receive your offer of admission to:\n\nAttention: Admissions Assistant\nOffice of Graduate Student Affairs\n500 W. 120th Street, MC 4708\nSuite 530 Mudd\nNew York, NY 10027\n\nPlease contact the Office of Graduate Student Affairs at seasgradmit@columbia.edu to confirm receipt of your sealed transcript.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "personal_statement_format",
+    "subject": "Personal Statement Format",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Is there a specific format for the Personal Statement?",
+      "How long should my personal statement be?",
+      "What are the formatting requirements for the personal statement?"
+    ],
+    "response_template": "Hello {student_name},\n\nTypically the personal statement is 1–2 pages. Personal statements should have 1-inch margins and a 12-point font. Font style must be professional — Times New Roman is the most commonly used font. There is no minimum or maximum length, although the committee does appreciate brevity. The statement serves as both a writing sample and an opportunity for you to explain why you are applying and anything that may be unclear elsewhere in your application.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "msba_special",
+    "subject": "What Makes the MSBA Program Special",
+    "categories": ["programs", "graduate"],
+    "utterances": [
+      "What makes the Columbia MS in Business Analytics program special?",
+      "Tell me about the MSBA program.",
+      "Why should I choose the MSBA?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe Columbia MSBA program is a graduate program offered in partnership between Columbia Engineering and Columbia Business Schools. This practitioner-oriented professional MS program is led by faculty from three world-renowned areas: the IEOR Department, the Columbia Business Marketing Division, and the Columbia Business Decision Risk and Operations Division.\n\nFrom a curriculum perspective, the MSBA program focuses on real-world applications to various industries, grounded by a rigorous foundation in Engineering and Business. Business Analytics is about using data science tools for solving operational and marketing problems. Students learn the data science tools and use them in conjunction with models to make better business decisions. Students are also engaged in a year-long capstone projects course, where they consult and collaborate with key industry partners.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "mse_special",
+    "subject": "What Makes the MS&E Program Special",
+    "categories": ["programs", "graduate"],
+    "utterances": [
+      "What makes the Columbia MS in Management Sciences and Engineering program special?",
+      "Tell me about the MS&E program.",
+      "What is the Operations Consulting Course?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe Operations Consulting Course is what sets the MS&E program apart from other programs. This is a year-long course (2 semesters: fall and spring) where you work with a team of students on a scope of work with one of our partnering employers. The projects span a variety of industries including luxury goods, pharmaceuticals, finance, tourism, start-ups, consulting, and more. These are real companies, mostly regional but some global.\n\nThis course enables you to apply what you are learning from your coursework in a real-world way. You earn credits for this course, and many times partnering companies hire students for summer internships and full-time opportunities, though this is not a requirement.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "msba_vs_others",
+    "subject": "Difference Between MSBA, SPS Analytics, and MS Data Science",
+    "categories": ["programs", "graduate"],
+    "utterances": [
+      "What is the difference between Columbia MSBA, SPS MS in Applied Analytics, and Columbia MS in Data Science?",
+      "How is the MSBA different from other analytics programs at Columbia?",
+      "Should I apply to MSBA or the data science program?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe key differentiator of the MSBA program is that it is a partnership of Columbia Engineering and Columbia Business Schools. Students take core and elective courses taught by faculty from both schools and have access to resources from both. The MSBA program focuses on real-world applications to various industries, grounded by a rigorous foundation in Engineering and Business. Modeling is key — Business Analytics is about using data science tools for solving operational and marketing problems, in conjunction with models to make better business decisions.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "joint_ms_mba",
+    "subject": "Joint MS and MBA Degree Program",
+    "categories": ["programs", "graduate"],
+    "utterances": [
+      "What is the joint M.S. and M.B.A. degree?",
+      "Can I get both an MS and MBA?",
+      "How does the joint MS/MBA program work?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe IEOR department and the Graduate School of Business offer a joint M.S./M.B.A. master's program in Industrial Engineering. Prospective students must submit separate applications to Columbia Engineering and the Graduate School of Business and be admitted to both schools. This joint program is coordinated so that both degrees can be obtained after five terms of full-time study (30 points in two terms while registered in Columbia Engineering and 45 points in three terms while registered in the Graduate School of Business).\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ms_funding",
+    "subject": "Funding for MS Students",
+    "categories": ["admissions", "graduate", "funding"],
+    "utterances": [
+      "Do you provide funding for MS students?",
+      "Is there financial aid for MS students?",
+      "Can I get a scholarship or fellowship?"
+    ],
+    "response_template": "Hello {student_name},\n\nUnfortunately, our MS students are not funded. We do provide the opportunity to apply to course assistantships (CA positions) to gain some financial support, though this does not cover the entire tuition.\n\nFor budget planning, please see: https://ieor.columbia.edu/admissions/tuition-and-fees\n\nFor additional funding opportunities, please see Interschool Fellowship information at: https://www.sfs.columbia.edu/financial-aid/graduate-institutional-aid#application\n\nFor additional funding inquiries, please contact Student Financial Services: sfs@columbia.edu.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "multiple_degrees_simultaneously",
+    "subject": "Pursuing Multiple Degrees at the Same Time",
+    "categories": ["admissions", "graduate", "programs"],
+    "utterances": [
+      "Can I enroll in multiple degrees at the same time?",
+      "Can I pursue two master's degrees simultaneously?",
+      "Is it possible to do two programs at once?"
+    ],
+    "response_template": "Hello {student_name},\n\nIt is possible but not recommended to pursue more than one degree simultaneously. Please note that some of our programs require full-time study, so it may not be possible to pursue another master's degree in conjunction with ours.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "stem_programs_grad",
+    "subject": "STEM Designation for Graduate Programs",
+    "categories": ["programs", "graduate"],
+    "utterances": [
+      "Are your programs STEM?",
+      "Are the MS programs STEM certified?",
+      "Can I get OPT extension with your program?"
+    ],
+    "response_template": "Hello {student_name},\n\nAll 5 of our MS programs are STEM-certified and eligible for F-1 STEM OPT extension.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "visa_i20",
+    "subject": "Visa and I-20 Questions",
+    "categories": ["admissions", "graduate", "visa"],
+    "utterances": [
+      "Can I ask about VISA and I-20?",
+      "How do I get my I-20?",
+      "Who handles visa questions?"
+    ],
+    "response_template": "Hello {student_name},\n\nFor information regarding the I-20 form and other visa matters, please contact the ISSO office at http://www.columbia.edu/cu/isso/isso.html. To change contact information or solicit information regarding admissions, please contact the Office of Graduate Student Affairs at seasgradmit@columbia.edu. You may also find more information here: https://www.gradengineering.columbia.edu/applying-your-visa.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "application_fee_waiver",
+    "subject": "Application Fee Waiver",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can I have an application fee waiver?",
+      "Is the application fee waived for anyone?",
+      "How do I apply for a fee waiver?"
+    ],
+    "response_template": "Hello {student_name},\n\nEligible students are welcome to apply for an application fee waiver. Fee waivers may be available for students who meet certain criteria including U.S. citizens or permanent residents currently enrolled in a U.S. school with financial need, U.S. military personnel/veterans, and students who participate in special programs.\n\nTo apply:\n1. Create an online application account and complete the program selection page.\n2. Complete and submit the Application Fee Waiver Request Form with the required documentation.\n\nGenerally speaking, the application fee is not waived for international students, and if payment cannot be made by credit card, it must be made by check or money order drawn on a U.S. bank.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "contact_by_phone",
+    "subject": "Contacting the Department by Phone",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can we call someone?",
+      "Can I call the admissions office?",
+      "What is the phone number for admissions?"
+    ],
+    "response_template": "Hello {student_name},\n\nDue to the high volume of students, we recommend you ask all of your questions via email.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "campus_tours",
+    "subject": "Campus Tours",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Do you have campus tours?",
+      "Can I visit the campus?",
+      "How do I schedule a campus visit?"
+    ],
+    "response_template": "Hello {student_name},\n\nFor campus and/or department visits, please contact the Office of Graduate Student Affairs: http://gradengineering.columbia.edu/visit\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "info_sessions_grad",
+    "subject": "Graduate Admissions Information Sessions",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Do you have graduate info sessions?",
+      "Are there admissions information sessions?",
+      "How can I learn more about the programs before applying?"
+    ],
+    "response_template": "Hello {student_name},\n\nPlease refer to the following link to register for IEOR graduate admissions information sessions: http://ieor.columbia.edu/visiting-ieor\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "research_opportunities_grad",
+    "subject": "Graduate Research Opportunities",
+    "categories": ["research", "graduate"],
+    "utterances": [
+      "Do you have research opportunities for graduate students?",
+      "Can MS students do research?",
+      "How do I get involved in research as a graduate student?"
+    ],
+    "response_template": "Hello {student_name},\n\nResearch opportunities are at the discretion of the individual faculty. We suggest you reach out to faculty who are working on projects that align with your interests independently to see if you can work together. Please note that funded research is limited to our doctoral students.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "phd_ie_vs_or",
+    "subject": "Difference Between IE and OR PhD Programs",
+    "categories": ["programs", "graduate", "phd"],
+    "utterances": [
+      "What is the difference between IE and OR for your PhD program?",
+      "Should I apply for the IE or OR PhD?",
+      "How are the IE and OR PhD programs different?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe basic core requirements are the same for both programs and students in either program can pursue their research of choice. The decision is made by the applicant based on which degree they would like to graduate with.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "additional_materials_after_submission",
+    "subject": "Adding Materials After Application Submission",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Can I add new materials after submitting my application?",
+      "I want to add something to my application after I submitted it.",
+      "How do I upload supplemental materials?"
+    ],
+    "response_template": "Hello {student_name},\n\nIf you have new or additional materials you would like to include with your application, you may upload them as a \"Supplemental Material\" in your Status Portal. Examples of supplemental materials include awards, certificates, school papers, etc. If you would like to provide updated or new test scores, please use the Updated Test Score form — this form should only be used if you have received new scores since submitting your application.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ms_program_duration",
+    "subject": "How Long MS Programs Take to Complete",
+    "categories": ["programs", "graduate"],
+    "utterances": [
+      "How long does it take to complete the MS program?",
+      "How many semesters is the MS program?",
+      "Can I finish the MS in two semesters?"
+    ],
+    "response_template": "Hello {student_name},\n\nStudents typically complete our programs in 3 semesters. Our MSBA, MSFE, and MS&E programs are 36 points. For our 30-point MS programs in Operations Research and Industrial Engineering, students can complete the program in 2 semesters by taking 15 points (usually 5 courses) per semester.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "class_profile",
+    "subject": "Graduate Program Class Profile",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "What is the class profile?",
+      "What kind of students are in the program?",
+      "What type of students do you look for?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe Columbia IEOR graduate programs look for candidates with a background in engineering, mathematics, computer science, statistics, economics, finance, or other similar quantitative fields.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "expired_test_scores",
+    "subject": "Expired Test Scores",
+    "categories": ["admissions", "graduate", "test_scores"],
+    "utterances": [
+      "Can I submit expired test scores?",
+      "My test scores have expired.",
+      "Will you accept scores that are no longer valid?"
+    ],
+    "response_template": "Hello {student_name},\n\nExpired test scores are not accepted. All standardized test scores need to remain valid through the start of your first semester. If your scores will expire prior to this, we strongly encourage you to retake the exam.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "interview_process",
+    "subject": "Application Interview Process",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Is there an interview process?",
+      "Will I need to do an interview?",
+      "What does the video interview involve?"
+    ],
+    "response_template": "Hello {student_name},\n\nAfter submitting the application, applicants will have access to submit a video interview in the application portal. You will be asked 3 random questions and will have 3 minutes to answer. Please answer as if we were having a face-to-face conversation. There's no need to stress — it's just a way for us to get to know you better. Please submit your interview by the deadline listed in your interview link email.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "minimum_gpa_grad",
+    "subject": "Minimum GPA for Graduate Admission",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Is there a minimum GPA for application?",
+      "What GPA do I need to apply?",
+      "What is the GPA requirement for admission?"
+    ],
+    "response_template": "Hello {student_name},\n\nYes, a 3.0 (out of 4) GPA is preferred. Most successful applicants have a GPA higher than 3.0.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "decision_timing_grad",
+    "subject": "When Admission Decisions Are Released",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "When will I know the decision?",
+      "When are admission decisions released?",
+      "How long does it take to get an admissions decision?"
+    ],
+    "response_template": "Hello {student_name},\n\nApplicants to the MS programs (Financial Engineering, Management Science & Engineering, Industrial Engineering, and Operations Research) for the Fall semester will be notified of their admissions decision or contacted for more information from mid-March to late-April. The IEOR Department does not have rolling admissions. Applications are reviewed after the priority deadline and the review process typically requires 6–10 weeks.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "work_experience_required",
+    "subject": "Work Experience Requirement",
+    "categories": ["admissions", "graduate"],
+    "utterances": [
+      "Is work experience required?",
+      "Do I need professional experience to apply?",
+      "Can I apply straight out of undergrad?"
+    ],
+    "response_template": "Hello {student_name},\n\nWhile not required, we do recommend that prospective students have some professional experience, either in the form of a full-time position or an internship.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "spring_programs_available",
+    "subject": "Programs Available for Spring Admissions",
+    "categories": ["admissions", "graduate", "programs"],
+    "utterances": [
+      "Which programs are available for Spring admissions?",
+      "Can I start in the Spring semester?",
+      "Which MS programs have Spring enrollment?"
+    ],
+    "response_template": "Hello {student_name},\n\nOur MSOR and MSIE programs have both Fall and Spring admissions. Our MSBA, MS&E, and MSFE programs begin in the Fall only.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "careers_after_ieor_grad",
+    "subject": "Careers After IEOR Graduate Programs",
+    "categories": ["careers", "graduate"],
+    "utterances": [
+      "Where can I find more information about careers after IEOR?",
+      "What jobs do IEOR graduates get?",
+      "Where do MS graduates work?"
+    ],
+    "response_template": "Hello {student_name},\n\nInformation about careers after IEOR, including a listing of companies where our graduates work, can be found on the careers page for the Masters programs on the IEOR website.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "professional_development_grad",
+    "subject": "Professional Development Opportunities",
+    "categories": ["careers", "graduate"],
+    "utterances": [
+      "What kind of professional development opportunities are there?",
+      "Does the department help with job placement?",
+      "What career resources are available to graduate students?"
+    ],
+    "response_template": "Hello {student_name},\n\nCareer placement and career development opportunities are offered by the IEOR Department, the Professional Development & Leadership team, and the Graduate Career Placement team. The Department expects all students to fully engage in the required ENGI E4000 Professional Development and Leadership course, which offers over 300 sessions annually.\n\nThe IEOR Career Placement Team also offers one-on-one career coaching, resume and cover letter reviews, mock interviews, employer info sessions, an exclusive job board, and student-alumni networking events and mentorship programs.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "cross_reg_timing",
+    "subject": "When Cross-Registration Opens",
+    "categories": ["cross_registration", "graduate", "registration"],
+    "utterances": [
+      "When can I cross register for classes?",
+      "When does cross-registration open?",
+      "How do I cross register for IEOR courses?"
+    ],
+    "response_template": "Hello {student_name},\n\nThe department will open up select courses each semester for cross-registration on the first Friday of the semester via the SSOL course waitlist system.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "cross_reg_website",
+    "subject": "Cross-Registration Website",
+    "categories": ["cross_registration", "graduate", "registration"],
+    "utterances": [
+      "Where can I find more details about cross-registration?",
+      "Is there a website for cross-registration information?",
+      "Where do I go for cross-registration guidelines?"
+    ],
+    "response_template": "Hello {student_name},\n\nPlease see the cross-registration website for more details: https://ieor.columbia.edu/registration-guidelines-non-ieor-students\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "cross_reg_prerequisites",
+    "subject": "Cross-Registration Prerequisites",
+    "categories": ["cross_registration", "graduate", "registration"],
+    "utterances": [
+      "I am not able to register due to prerequisites.",
+      "The system says I don't meet prerequisites for cross-registration.",
+      "How do prerequisites work for cross-registration?"
+    ],
+    "response_template": "Hello {student_name},\n\nAll necessary prerequisite requirements for the course must be satisfied before you can register.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "cross_reg_available_courses",
+    "subject": "How to Find Courses Open for Cross-Registration",
+    "categories": ["cross_registration", "graduate", "registration"],
+    "utterances": [
+      "How do I know if a course is open for cross-registration?",
+      "Where is the list of courses available for cross-registration?",
+      "Which IEOR courses can I cross-register for?"
+    ],
+    "response_template": "Hello {student_name},\n\nA list of available courses for non-IEOR students for cross-registration will be provided closer to the term start. Courses not listed are closed and/or reserved for IEOR students in a degree program.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "cross_reg_sps",
+    "subject": "Cross-Registration for SPS Students",
+    "categories": ["cross_registration", "graduate", "registration"],
+    "utterances": [
+      "How do I cross register as a SPS student?",
+      "I am a School of Professional Studies student, how do I cross-register?",
+      "What is the SPS cross-registration process?"
+    ],
+    "response_template": "Hello {student_name},\n\nSchool of Professional Studies students must consult with their academic advisor on their cross-registration process. For more information, please review the SPS-SEAS cross-registration process here: https://ieor.columbia.edu/content/sps-seas-cross-registration-process\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "cross_reg_contact",
+    "subject": "Cross-Registration Contact",
+    "categories": ["cross_registration", "graduate", "registration"],
+    "utterances": [
+      "Who can I contact for cross-registration questions?",
+      "What is the cross-registration email?",
+      "How do I get help with cross-registration?"
+    ],
+    "response_template": "Hello {student_name},\n\nPlease email ieor-cross-reg@columbia.edu for cross-registration questions.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "cross_reg_list_timing",
+    "subject": "When Cross-Registration Lists Are Posted",
+    "categories": ["cross_registration", "graduate", "registration"],
+    "utterances": [
+      "When are cross-registration lists added to the website?",
+      "When will I know which courses are available for cross-registration?",
+      "When are the cross-registration course lists published?"
+    ],
+    "response_template": "Hello {student_name},\n\nCross-registration courses for Fall are added in August, and Spring courses are added in December.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "cross_reg_professor_approved",
+    "subject": "Professor Approved But Cannot Register",
+    "categories": ["cross_registration", "graduate", "registration"],
+    "utterances": [
+      "Why can't I register even though the professor approved?",
+      "The professor said yes but I still can't enroll.",
+      "I have instructor permission but the system won't let me register."
+    ],
+    "response_template": "Hello {student_name},\n\nProfessors may allow students to register but the Department may not, due to various reasons like over-enrollment and spacing constraints. If you received permission from the instructor, please forward it to ieor-cross-reg@columbia.edu to be approved off the waitlist. Please note this is not a guarantee that you will be able to register or make it off the waitlist.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "cross_reg_waitlist_frequency",
+    "subject": "How Often Students Are Enrolled Off the Cross-Registration Waitlist",
+    "categories": ["cross_registration", "graduate", "registration"],
+    "utterances": [
+      "How often are students enrolled off the waitlist during cross-registration?",
+      "How quickly will I hear back about the cross-registration waitlist?",
+      "When will I be approved off the cross-registration waitlist?"
+    ],
+    "response_template": "Hello {student_name},\n\nStaff approve students once per day during the cross-registration period. If there is space available, staff will do their best to approve students off the waitlist depending on available spots and the number of students waiting.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "cross_reg_msfe",
+    "subject": "MSFE Core Courses and Cross-Registration",
+    "categories": ["cross_registration", "graduate", "registration"],
+    "utterances": [
+      "Are MSFE core courses available for cross-registration?",
+      "Can I cross-register into MSFE core courses?",
+      "Are Financial Engineering core courses open to non-MSFE students?"
+    ],
+    "response_template": "Hello {student_name},\n\nMSFE core courses are not available for cross-registration.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "cross_reg_phd",
+    "subject": "Enrolling in PhD-Level Courses via Cross-Registration",
+    "categories": ["cross_registration", "graduate", "registration"],
+    "utterances": [
+      "How can I enroll in a PhD course?",
+      "Can I take an IEOR 8100 course as a non-PhD student?",
+      "How do I get into a doctoral-level IEOR course?"
+    ],
+    "response_template": "Hello {student_name},\n\nTo enroll in a PhD-level course (IEOR 8100), please ask for Professor Permission and forward it to ieor-cross-reg@columbia.edu.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "barnard_four_plus_one_grad",
+    "subject": "Barnard 4+1 Program Information",
+    "categories": ["graduate", "programs"],
+    "utterances": [
+      "Where can I find more information on the Barnard 4+1 track?",
+      "I am a Barnard student interested in the 4+1 IEOR program.",
+      "What is the Barnard 4+1 pathway for IEOR?"
+    ],
+    "response_template": "Hello {student_name},\n\nPlease use the following website for an introduction to the Barnard 4+1 track in Industrial Engineering and Operations Research: https://economics.barnard.edu/industrial-engineering-and-operations-research\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "advisor_reference",
+    "subject": "Advisors as Job References",
+    "categories": ["graduate", "careers"],
+    "utterances": [
+      "Can you verify my skills or be a reference for my job search?",
+      "Can my advisor write me a reference letter?",
+      "Can the advising office confirm my performance in classes?"
+    ],
+    "response_template": "Hello {student_name},\n\nAdvisors are not able to confirm how a student performs in class, their experiences, or their personality. For references or skills verification, please list a professional reference who knows you best.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ca_graduation_eligibility",
+    "subject": "CA Eligibility After Graduation",
+    "categories": ["ca_process", "graduate", "employment"],
+    "utterances": [
+      "Can I be a CA even if I graduate?",
+      "Am I still eligible to be a CA after I finish my classes?",
+      "Can I work as a CA after completing my degree?"
+    ],
+    "response_template": "Hello {student_name},\n\nNo, CA positions are only for currently enrolled students. You must be a current student the semester that you are working as a CA. In addition, if you complete all of your classes before the semester ends, your CA eligibility will also end by that date. You cannot be a CA if you are no longer attending in-person classes.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ca_application",
+    "subject": "How to Apply for a CA Position",
+    "categories": ["ca_process", "graduate", "employment"],
+    "utterances": [
+      "How do I apply to be a CA?",
+      "When does the CA application open?",
+      "Where do I apply for a course assistant position?"
+    ],
+    "response_template": "Hello {student_name},\n\nA link will be sent out to all IEOR students in November. Students must apply by December to be considered.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ca_faculty_nomination",
+    "subject": "Faculty Nomination for CA Positions",
+    "categories": ["ca_process", "graduate", "employment"],
+    "utterances": [
+      "Can a faculty member nominate me for a CA position?",
+      "How do I get nominated by a professor for a CA role?",
+      "Can my professor recommend me to be a CA?"
+    ],
+    "response_template": "Hello {student_name},\n\nYes, faculty can nominate their CA for their classes and other classes. If you have a class in mind that you are really interested in, please speak to the faculty and have them nominate you in November, or at the latest, early December.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ca_max_hours",
+    "subject": "Maximum Hours as a CA",
+    "categories": ["ca_process", "graduate", "employment"],
+    "utterances": [
+      "What is the maximum number of hours I can work as a CA?",
+      "How many hours per week can I work as a CA?",
+      "Is there a cap on CA hours?"
+    ],
+    "response_template": "Hello {student_name},\n\nYou can work a maximum of 14 hours per week as a CA. We advise 10 hours per week.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ca_multiple_positions",
+    "subject": "Holding Multiple CA Positions",
+    "categories": ["ca_process", "graduate", "employment"],
+    "utterances": [
+      "Can I have multiple CA positions?",
+      "Can I be a CA for more than one course?",
+      "Is it allowed to hold two CA positions at once?"
+    ],
+    "response_template": "Hello {student_name},\n\nYes, but full-time students must work fewer than 20 hours per week total. Students generally can only hold 1 CA position within IEOR at one time, and both positions combined cannot exceed 20 hours per week.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ta_vs_ca",
+    "subject": "Difference Between TA and CA",
+    "categories": ["ca_process", "graduate", "employment"],
+    "utterances": [
+      "Can I be a TA?",
+      "What is the difference between a TA and a CA?",
+      "Are TA positions available for MS students?"
+    ],
+    "response_template": "Hello {student_name},\n\nTA positions are reserved for PhD students. Master's and undergraduate students can only serve as CAs (Course Assistants).\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ca_employment_letter",
+    "subject": "CA Letter of Employment",
+    "categories": ["ca_process", "graduate", "employment"],
+    "utterances": [
+      "Where can I find a letter of employment as a CA?",
+      "I need an employment letter for my SSN application.",
+      "How do I get a signed letter of employment?"
+    ],
+    "response_template": "Hello {student_name},\n\nA signed letter of employment can be picked up at the IEOR office front desk. This letter is for obtaining your Social Security Number (SSN).\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ca_i9",
+    "subject": "Filling Out the I-9 Form as a CA",
+    "categories": ["ca_process", "graduate", "employment"],
+    "utterances": [
+      "When can I fill out my I-9?",
+      "How do I complete the I-9 form for my CA position?",
+      "What is the I-9 process for CAs?"
+    ],
+    "response_template": "Hello {student_name},\n\nYou can fill out Part 1 of your I-9 online as long as you have an offer letter. Part 2 must be completed in person with an HR personnel.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ca_start_date",
+    "subject": "When a CA Can Start Working",
+    "categories": ["ca_process", "graduate", "employment"],
+    "utterances": [
+      "When can I start working as a CA?",
+      "When am I allowed to begin my CA duties?",
+      "How soon can I start after being hired as a CA?"
+    ],
+    "response_template": "Hello {student_name},\n\nYou can start after you have completed your I-9 and on a date established by the instructor and you.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ca_pac_system",
+    "subject": "Accessing the PAC System for CA Timesheets",
+    "categories": ["ca_process", "graduate", "employment"],
+    "utterances": [
+      "When will I be in the PAC system to submit my timesheets?",
+      "I can't access the PAC system yet.",
+      "How do I submit my CA hours?"
+    ],
+    "response_template": "Hello {student_name},\n\nIt will take a few weeks to have all paperwork processed and in the system so that you can input your hours. You can input hours up to a month prior. If it is close to a month and you still do not have access, please submit a manual timesheet using this form: https://docs.google.com/forms/d/e/1FAIpQLSfnB0yAsSCs6qgXVkqbLofKF2pR6TBkKeXbaYFWJeYFd-9huQ/viewform\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  },
+  {
+    "id": "ca_contact",
+    "subject": "CA Process Contact Information",
+    "categories": ["ca_process", "graduate", "employment"],
+    "utterances": [
+      "What do I do if I cannot contact the instructor for my CA position?",
+      "Who do I email for CA questions?",
+      "What is the email for CA process help?"
+    ],
+    "response_template": "Hello {student_name},\n\nPlease email us at ieor-casual@columbia.edu for assistance with any CA-related questions.\n\nBest regards,\nAcademic Advising Team",
+    "follow_up_questions": [],
+    "metadata": {}
+  }
+]
