@@ -1,0 +1,14 @@
+services:
+  - type: web
+    name: ieor-email-advising-api
+    runtime: python
+    rootDir: Backend
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn api:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false          # set manually in Render dashboard
+      - key: FRONTEND_URL
+        sync: false          # set to your Vercel URL, e.g. https://ieor-advising.vercel.app
+      - key: DATABASE_URL
+        sync: false          # set to your Neon PostgreSQL connection string

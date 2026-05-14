@@ -1,0 +1,133 @@
+HOW RAG / REFERENCE RETRIEVAL WORKS
+=====================================
+Last updated: 2026-03-24
+Relevant files: Backend/email_advising/rag.py
+                Backend/email_advising/similarity.py
+                Backend/data/reference_corpus.json
+
+
+=====================================
+WHAT IS RAG?
+=====================================
+
+RAG = Retrieval-Augmented Generation.
+
+In this system it means: when the advisor composes a reply, it also finds
+relevant supporting documents (policies, how-tos, links) from a reference
+corpus and appends them to the bottom of the email as "References".
+
+The advisor does NOT use an LLM to generate text — the TemplateEmailComposer
+is used by default. RAG here is purely about finding and attaching helpful
+links/snippets to supplement the template reply.
+
+
+=====================================
+THE REFERENCE CORPUS
+=====================================
+
+File: Backend/data/reference_corpus.json
+
+A JSON array of documents. Each document has:
+  id       - unique string identifier
+  title    - human-readable name (shown in the References section)
+  content  - full text used for matching
+  url      - optional link included in the reply
+  tags     - list of keywords for better matching
+
+This is editable via the Settings tab in the UI (Settings > Reference Corpus).
+Changes are saved to reference_corpus.json and the TF-IDF index is rebuilt
+immediately — no restart needed.
+
+
+=====================================
+HOW RETRIEVAL WORKS
+=====================================
+
+File: rag.py > TfidfRetriever
+
+--- Step 1: Build the TF-IDF index at startup ---
+
+For each document in the corpus:
+  - Concatenate: title + content + tags
+  - Tokenize (lowercase, remove stopwords)
+  - Build a TF-IDF vector
+
+This gives each document a numeric fingerprint of its topic.
+(See HOW_CONFIDENCE_SCORING_WORKS.txt for how TF-IDF works.)
+
+--- Step 2: Build the query ---
+
+When a match is found and a reply is being composed, the retriever gets:
+  - The student's original email text
+  - The matched article's subject and categories
+
+These are combined into one query string, tokenized, and converted to
+a TF-IDF vector. Using the article's categories improves relevance —
+e.g., if the article is about "registration deadlines", that context
+helps find documents about registration policy.
+
+--- Step 3: Score all documents ---
+
+Cosine similarity is computed between the query vector and every
+document vector. Documents with score > 0.0 are candidates.
+
+--- Step 4: MMR diversity selection ---
+
+Instead of just picking the top N documents by score, the system uses
+Maximal Marginal Relevance (MMR) to balance relevance vs. diversity.
+
+MMR score = diversity * relevance_score - (1 - diversity) * max_redundancy
+
+Where:
+  diversity    = 0.7 (set at init — 70% weight on relevance, 30% on novelty)
+  relevance    = cosine similarity to the query
+  max_redundancy = highest cosine similarity to any already-selected document
+
+This prevents returning three near-identical documents. For example, if two
+documents are both about "add/drop deadlines", MMR will prefer the second
+most relevant document that covers something different.
+
+--- Step 5: Build snippets ---
+
+For each selected document, a short snippet is extracted:
+  - Find the first sentence that contains any of the query's tokens
+  - Truncate to 200 characters
+  - If no sentence matches, use the first 200 characters of content
+
+--- Step 6: Append to reply ---
+
+The final references are appended to the email body like:
+
+  References:
+  [1] Registration Deadlines (https://...) — Registration closes on...
+  [2] Add/Drop Policy — Students may add or drop...
+
+
+=====================================
+DEFAULT BEHAVIOR
+=====================================
+
+  limit      = 3 (max 3 reference documents per reply)
+  diversity  = 0.7
+  min score  = > 0.0 (any non-zero match is a candidate)
+
+References are only appended when:
+  1. The advisor finds a matching KB article (not a fallback/needs_review response)
+  2. At least one reference document scores > 0.0 against the query
+
+
+=====================================
+HOW TO UPDATE THE REFERENCE CORPUS
+=====================================
+
+Option A: Via UI (Settings > Reference Corpus)
+  - Click "Add Document"
+  - Paste a URL and use "Fetch Content" to auto-populate the content field
+  - Add relevant tags to improve matching
+  - Save — index rebuilds immediately
+
+Option B: Edit reference_corpus.json directly
+  - Add a JSON object with id, title, content, url, tags
+  - Restart the backend OR wait for the file-change watcher to reload it
+
+Note: IDs must be unique. Duplicate IDs will cause a startup error.

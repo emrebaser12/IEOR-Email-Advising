@@ -1,0 +1,155 @@
+HOW SETTINGS CHANGES AFFECT BEHAVIOR
+=====================================
+Last updated: 2026-03-24
+Relevant files: Backend/api.py (email-settings endpoints, ingest logic)
+                Frontend/components/settings-tab.tsx
+
+
+=====================================
+OVERVIEW
+=====================================
+
+The Settings tab controls three categories of behavior:
+  1. Gmail connection (which account emails come from and go to)
+  2. Auto-send settings (when the system sends without advisor approval)
+  3. Knowledge base and reference corpus (what the AI knows)
+
+
+=====================================
+AUTO-SEND ENABLED (toggle)
+=====================================
+
+Default: OFF
+
+When OFF:
+  - All emails are stored as "review" or "auto" but never sent automatically
+  - Advisors must manually review and click "Send" for every email
+  - High-confidence emails pile up in "Pending Send"
+  - Safe for initial setup and testing
+
+When ON:
+  - Emails scoring >= auto_send_threshold are sent immediately at ingest time
+  - No advisor review required for those emails
+  - They go straight to "Sent" status, bypassing the review queue
+  - Personal emails (guardrail flagged) are NEVER auto-sent regardless
+
+Important: Changing this to ON does NOT retroactively send emails already
+sitting in "Pending Send". Only NEW incoming emails benefit.
+
+
+=====================================
+AUTO-SEND THRESHOLD (slider, 0–1)
+=====================================
+
+Default: 0.90 (stored in DB) / 0.95 (ConfidenceSettings default)
+
+This is the minimum confidence score required for auto-send.
+
+Effect of changing:
+  - Lower value (e.g., 0.75): more emails qualify for auto-send.
+    Faster processing but higher risk of sending an incorrect reply.
+  - Higher value (e.g., 0.98): almost nothing auto-sends.
+    Very conservative — nearly all emails go to manual review.
+
+Only affects NEW emails ingested AFTER the change.
+Emails already stored with status "review" or "auto" are not re-evaluated.
+
+Recommended starting values:
+  0.95  → very conservative, minimal risk of bad auto-sends
+  0.85  → moderate, good for high-volume routine questions
+  0.75  → aggressive, only use if you've verified accuracy over time
+
+Note: The review_threshold (0.55) is NOT configurable from the UI.
+It is hardcoded in models.py > ConfidenceSettings and determines whether
+a match is found at all vs. escalated with no suggested reply.
+
+
+=====================================
+CONNECT GMAIL / DISCONNECT GMAIL
+=====================================
+
+Connecting Gmail:
+  - Enables "Sync Emails" to pull real inbox messages
+  - Enables auto-send to actually deliver replies
+  - Without Gmail: you can still ingest emails manually via POST /emails/ingest
+    and see drafts, but cannot send
+
+Disconnecting Gmail:
+  - Deletes gmail_token.json
+  - Auto-send immediately stops working (replies won't be sent)
+  - Sync stops working
+  - Emails already in the DB are unaffected
+  - To reconnect: click "Connect Gmail" again and re-authorize
+
+After reconnecting:
+  - Pending auto emails (status="auto") in the DB are NOT automatically sent
+  - They must be manually sent one by one, or re-synced via a new sync
+    (new sync only pulls unread Gmail messages, not stored DB records)
+
+
+=====================================
+SYNC EMAILS
+=====================================
+
+Clicking "Sync Emails" calls POST /emails/sync (default: up to 20 emails).
+
+What it does:
+  - Pulls up to 20 unread Gmail messages
+  - Marks them as read in Gmail
+  - Runs each through the advisor pipeline
+  - Stores them in the DB
+  - Auto-sends if conditions are met
+
+What it does NOT do:
+  - It does not pull read emails
+  - It does not pull emails already in the DB (duplicate check by subject + body)
+  - It does not continuously poll — you must click the button again
+
+
+=====================================
+KNOWLEDGE BASE CHANGES
+=====================================
+
+Adding an article:
+  - Takes effect immediately for new emails
+  - Existing stored emails are not re-scored
+
+Editing an article's utterances:
+  - Changes what emails match that article going forward
+  - Previous emails that matched it keep their original confidence/reply
+
+Editing an article's response_template:
+  - Changes the draft reply for future matches
+  - Does not update suggested_reply on emails already stored in DB
+
+Deleting an article:
+  - Removes it from matching immediately
+  - Emails that previously matched it still exist in DB with the old reply
+  - Their article_id reference becomes a "dead" pointer (no longer resolvable)
+
+
+=====================================
+REFERENCE CORPUS CHANGES
+=====================================
+
+Adding/editing/deleting a reference document:
+  - TF-IDF index is rebuilt immediately after any change
+  - Future replies may include different reference links
+  - Already-sent emails are not affected
+
+
+=====================================
+QUICK REFERENCE: WHAT CHANGES WHAT
+=====================================
+
+I want to...                           Change this setting
+─────────────────────────────────────────────────────────────────────
+Send more emails automatically         Lower auto_send_threshold
+Send fewer emails automatically        Raise auto_send_threshold OR disable auto-send
+Stop ALL auto-sends immediately        Toggle auto_send_enabled OFF
+Let the system teach itself a new topic  Add KB article with good utterances
+Improve matching for an existing topic   Add more utterances to the KB article
+Change what the reply says             Edit the response_template in the KB article
+Add a reference link to replies        Add to reference corpus with relevant tags
+Use a different Gmail account          Disconnect → reconnect with different account
+Reset and start fresh                  Delete emails.db, disconnect Gmail, restart

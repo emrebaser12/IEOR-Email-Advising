@@ -1,0 +1,248 @@
+HOW CONFIDENCE SCORING WORKS
+=============================
+Last updated: 2026-03-24
+Relevant files: Backend/email_advising/advisor.py
+                Backend/email_advising/similarity.py
+                Backend/email_advising/text_processing.py
+                Backend/email_advising/models.py
+
+
+=====================================
+THE BIG PICTURE
+=====================================
+
+When a student email comes in, the system needs to decide:
+  1. Do I know how to answer this?      → confidence score
+  2. Am I confident enough to auto-send? → compare to auto_send_threshold
+  3. Should it go to a human advisor?    → compare to review_threshold
+
+The confidence score is a number from 0.0 to 1.0. Higher = more certain.
+
+Default thresholds (set in models.py > ConfidenceSettings):
+  auto_send_threshold  = 0.95   (send automatically without human review)
+  review_threshold     = 0.55   (below this, always route to a human)
+  ambiguity_gap        = 0.08   (if top 2 matches are within 0.08 of each other, route to human)
+
+
+=====================================
+STEP 1: TEXT PREPROCESSING
+=====================================
+
+File: text_processing.py
+
+Before any matching happens, the email text is cleaned up:
+
+  1. Lowercase + strip accents (é → e, etc.)
+  2. Remove punctuation, collapse whitespace
+  3. Tokenize into individual words
+  4. Remove stopwords (a, the, is, my, your, how, etc.)
+  5. Augment tokens with:
+     a. Domain synonyms — e.g., "drop" → also adds "withdraw", "withdrawal", "remove"
+                                "enroll" → also adds "register", "registration"
+     b. Bigrams — consecutive word pairs, e.g., ["drop", "course"] → "drop_course"
+
+This means a student writing "I want to withdraw from my class" and one writing
+"I need to drop a course" will produce very similar token sets after augmentation.
+
+
+=====================================
+STEP 2: SCORING EACH KNOWLEDGE BASE ARTICLE
+=====================================
+
+File: advisor.py > EmailAdvisor.rank_articles()
+
+For EACH article in the knowledge base, the system computes 5 signals:
+
+--- Signal 1: TF-IDF Score (weight: 0.2) ---
+
+File: similarity.py > TfIdfVectorizer
+
+TF-IDF stands for Term Frequency - Inverse Document Frequency. It measures how
+semantically relevant the email is to a knowledge base article.
+
+How it's built:
+  - At startup, every article's utterances + categories + subject are tokenized
+    and augmented, forming one "document" per article.
+  - A vocabulary is built from all tokens across all documents.
+  - Each word gets an IDF weight = log((1 + N) / (1 + df)) + 1.0
+    where N = total articles, df = how many articles contain that word.
+    Common words across many articles get low IDF weight.
+    Rare, specific words (like "petitioning") get high IDF weight.
+
+How it scores a query:
+  - The email text is also tokenized and augmented.
+  - A TF-IDF vector is computed for the query.
+  - Cosine similarity is calculated between the query vector and each article vector.
+  - The full email AND each individual sentence are scored; the max is taken.
+
+Result: a float between 0.0 and 1.0.
+
+--- Signal 2: Jaccard Utterance Similarity (weight: 0.5 — highest weight) ---
+
+Each knowledge base article has a list of "utterances": example phrasings of
+questions that belong to that article (e.g., "How do I drop a course?",
+"Can I withdraw from a class?").
+
+Jaccard similarity = |intersection| / |union| of two token sets.
+
+Example:
+  Query tokens:     {drop, course, semester}
+  Utterance tokens: {drop, class, semester}
+  Intersection: {drop, semester} → size 2
+  Union: {drop, course, semester, class} → size 4
+  Jaccard = 2/4 = 0.50
+
+Both raw tokens AND augmented tokens are tried; the best score is kept.
+
+The email is also split into individual sentences, and each sentence is
+scored against each utterance. The max across all sentence/utterance pairs wins.
+
+--- Signal 3: Coverage Signals (weight: 0.2) ---
+
+Two coverage metrics measure partial overlap quality:
+
+  query_coverage    = |intersection| / |query tokens|
+                      (what fraction of the query's words match the utterance?)
+
+  utterance_coverage = |intersection| / |utterance tokens|
+                       (what fraction of the utterance's words appear in the query?)
+
+coverage_signal = average of these two.
+
+These catch cases where Jaccard is dragged down by a long union,
+even though the meaningful words all matched.
+
+--- Signal 4: Category Overlap (weight: 0.1) ---
+
+Each article also belongs to categories (e.g., "registration", "financial aid").
+The query tokens are compared to category tokens via Jaccard.
+
+This is a weak supporting signal — it helps distinguish between articles
+that have similar utterances but belong to different topics.
+
+--- Signal 5: Article Overlap ---
+
+Similar to utterance similarity but across the entire article's token set
+(all utterances + categories + subject combined). Not directly weighted in
+the formula but used as a fallback comparison.
+
+
+=====================================
+STEP 3: BLENDING THE SIGNALS INTO ONE CONFIDENCE SCORE
+=====================================
+
+File: advisor.py lines 216-235
+
+Formula (non-exact match case):
+
+  coverage_signal    = (query_coverage + utterance_coverage) / 2
+  base_confidence    = (0.5 * jaccard_utterance)
+                     + (0.2 * coverage_signal)
+                     + (0.2 * tfidf_score)
+                     + (0.1 * category_overlap)
+
+--- Special cases ---
+
+EXACT MATCH:
+  If the query tokens exactly match any utterance's tokens → confidence = 1.0
+
+WEAK SIGNAL PENALTY:
+  If coverage_signal < 0.15 AND jaccard < 0.2:
+    base_confidence *= 0.6
+  (Very little overlap = we're probably not on topic — penalize heavily.)
+
+FLOOR OVERRIDES (snap up to minimum confidence if similarity is strong):
+  jaccard >= 0.85  → confidence at least 0.92
+  jaccard >= 0.70  → confidence at least 0.85
+  jaccard >= 0.55 AND coverage >= 0.35 → confidence at least 0.78
+  coverage >= 0.55 AND category_overlap >= 0.1 AND jaccard >= 0.5 → at least 0.85
+
+HARD BOUNDS:
+  Final confidence is clamped to [0.05, 0.97].
+  (Never 0 or 1 unless exact match.)
+
+
+=====================================
+STEP 4: ROUTING DECISION
+=====================================
+
+File: advisor.py > process_query()
+
+After all articles are scored and sorted by confidence:
+
+  1. Top match confidence < review_threshold (0.55)?
+     → No suitable match found → route to human (needs_review)
+
+  2. Second-best match score >= review_threshold AND gap between top two < ambiguity_gap (0.08)?
+     → Two plausible answers, system is unsure which → route to human (needs_review)
+
+  3. Top match confidence >= review_threshold but < auto_send_threshold (0.95)?
+     → Good match, but not confident enough to send → draft created, goes to needs_review
+
+  4. Top match confidence >= auto_send_threshold (0.95) AND no missing template placeholders?
+     → AUTO SEND → response sent automatically
+
+  5. Good confidence match but template has unfilled placeholders?
+     → Route to human so the advisor can fill in the missing details
+
+
+=====================================
+QUICK REFERENCE: CONFIDENCE BANDS
+=====================================
+
+  0.05 – 0.54  → Needs review (low confidence, no match found)
+  0.55 – 0.94  → Needs review (match found, but below auto-send bar)
+  0.95 – 0.97  → Auto send (high confidence, complete template)
+  1.00          → Auto send (exact token match to a known utterance)
+
+Note: A score of 0.95+ but with missing template placeholders still goes to
+needs_review, regardless of confidence.
+
+
+=====================================
+EXAMPLE WALKTHROUGH
+=====================================
+
+Student email: "Hi, when does registration close for next semester?"
+
+After preprocessing:
+  Tokens: {registration, close, next, semester}
+  Augmented: {registration, close, next, semester, register, enroll,
+              closes, deadline, end, registration_close, close_next, next_semester}
+
+Suppose the KB has an article "Registration Deadlines" with utterances like:
+  "When does course registration close?"
+  "What is the registration deadline?"
+
+Utterance tokens (example): {course, registration, close}
+Augmented utterance tokens: {course, registration, close, class, register, enroll,
+                              closes, deadline, end, course_registration, registration_close}
+
+Jaccard (augmented):
+  Query augmented:     {registration, close, ..., register, enroll, deadline, ...}
+  Utterance augmented: {course, registration, close, ..., register, enroll, deadline, ...}
+  Lots of overlap → high Jaccard, e.g., ~0.75
+
+With jaccard=0.75, floor override kicks in → confidence >= 0.85
+This clears review_threshold (0.55), but is still below auto_send_threshold (0.95).
+→ Result: Needs review, but a draft reply is prepared using the template.
+
+If the student wrote a more specific, identical phrasing to a known utterance,
+Jaccard could hit 0.9+ → confidence 0.95+ → auto send.
+
+
+=====================================
+HOW TO ADJUST THRESHOLDS
+=====================================
+
+Thresholds are configurable via the Settings tab in the UI, or directly in:
+  Backend/email_advising/models.py > ConfidenceSettings
+
+  auto_send_threshold: lower this to auto-send more aggressively
+                       (e.g., 0.85 = send anything that scores 85%+)
+  review_threshold:    lower this to reduce "no match" escalations
+  ambiguity_gap:       increase this to be more conservative when two
+                       articles score similarly close
+
+Caution: lowering auto_send_threshold too much means the system may send
+incorrect or incomplete replies without advisor review.

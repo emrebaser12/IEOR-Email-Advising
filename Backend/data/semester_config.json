@@ -1,0 +1,27 @@
+{
+  "_comment": "Update the SEMESTER section at the start of each new term. Static links rarely need to change.",
+
+  "SEMESTER": {
+    "term": "Fall 2026",
+    "registration_deadline": "September 17",
+    "withdrawal_deadline": "November 19",
+    "graduation_application_deadline": "January 1",
+    "start_date": "TBD",
+    "end_date": "TBD"
+  },
+
+  "STATIC_LINKS": {
+    "link_to_undergrad_advising": "https://ieor.columbia.edu/undergraduate-advising-resources",
+    "link_to_undergrad_curriculum": "https://ieor.columbia.edu/content/undergraduate-curriculum",
+    "link_to_csa_declaration": "https://www.cc-seas.columbia.edu/major-declaration",
+    "link_to_research": "https://ieor.columbia.edu/research",
+    "link_to_uat": "https://bulletin.columbia.edu/columbia-engineering/academic-departments-programs/industrial-engineering-operations-research/undergraduate-programs/undergraduate-advanced-track/",
+    "link_to_uat_app": "https://docs.google.com/forms/d/e/1FAIpQLSfECNwgImPJl_VmYomyNoiwx3TVj3TUZMDwmpDB7mRR5yDwbg/viewform",
+    "link_to_health_wellness": "https://wellness.engineering.columbia.edu/",
+    "study_abroad_opportunities": "https://www.engineering.columbia.edu/academics/academic-resources/study-abroad",
+    "barnard_four_plus_one": "https://barnard.edu/beyond-barnard/4plus1-pathways/4plus1-pathway-engineering",
+    "combined_plan_link": "https://bulletin.columbia.edu/columbia-engineering/undergraduate-studies/undergraduate-programs/combined-plan-programs/",
+    "MS_express_link": "https://www.engineering.columbia.edu/academics/programs/masters-programs/accelerated-ms-pathways/ms-express",
+    "ieor_course_approval_request_form": "https://docs.google.com/forms/d/e/1FAIpQLSdJboLrf_8r0hH938BeO3US7yP2sDx2FepJ95Lwa8x7GXES9w/viewform?pli=1&pli=1"
+  }
+}
